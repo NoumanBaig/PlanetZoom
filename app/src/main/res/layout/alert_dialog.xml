@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.angadi.tripmanagementa.utils.CustomFontTextView
+            android:id="@+id/dialog_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="Alert!"
+            android:textColor="@color/black"
+            android:textSize="@dimen/textlarge"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <com.angadi.tripmanagementa.utils.CustomFontTextView
+        android:id="@+id/dialog_msg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Message here "
+        android:textColor="@color/black"
+        android:textSize="@dimen/textmed" />
+
+    <com.angadi.tripmanagementa.utils.CustomFontTextView
+        android:id="@+id/dialog_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorAccent"
+        android:padding="10dp"
+        android:text="Ok"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textmed" />
+
+    </LinearLayout>
+
+</LinearLayout>

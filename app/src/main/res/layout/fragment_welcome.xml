@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="world_animate.json"
+        app:lottie_loop="true" />
+
+    <com.angadi.tripmanagementa.utils.CustomFontTextView
+        android:id="@+id/txt"
+        android:textSize="@dimen/textxlarge"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.angadi.tripmanagementa.utils.CustomFontTextView
+        android:text="@string/welcome_to"
+        android:padding="10dp"
+        android:textAllCaps="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textlarge"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.angadi.tripmanagementa.utils.CustomFontTextView
+        android:text="@string/planet_zoom"
+        android:padding="5dp"
+        android:textAllCaps="true"
+        android:textStyle="italic"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textxxxlarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.angadi.tripmanagementa.utils.CustomFontTextView
+        android:text="@string/scan_to_connect"
+        android:textAllCaps="true"
+        android:textStyle="italic"
+        android:textColor="@color/white"
+        android:textSize="@dimen/textmed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.angadi.tripmanagementa.utils.CustomFontButton
+        android:id="@+id/btn_getStarted"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/black_background"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="@string/get_started"
+        android:textColor="@color/white"/>
+
+
+</LinearLayout>

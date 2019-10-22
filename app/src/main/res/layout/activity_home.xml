@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:id="@+id/container"
+    tools:context=".activities.HomeActivity">
+
+    <include
+        layout="@layout/toolbar"/>
+
+    <com.itparsa.circlenavigation.CircleNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:active_center_button_background_color="@color/black"
+        app:active_center_button_icon_color="@color/white"
+        app:active_item_color="@color/white"
+        app:center_button_icon="@drawable/ic_qr"
+        app:center_button_selected_icon="@drawable/ic_qr"
+        app:elevation="5dp"
+        app:inactive_center_button_background_color="@color/white"
+        app:inactive_center_button_icon_color="@color/black"
+        app:inactive_item_color="@color/black"
+        app:space_background_color="@color/colorAccent" />
+
+
+</RelativeLayout>
