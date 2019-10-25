@@ -1,12 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/design_default_color_primary"
-    android:gravity="center"
     android:layout_marginTop="?attr/actionBarSize"
-    android:orientation="vertical">
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingBottom="40dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
 
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:weightSum="2"
+      android:orientation="vertical">
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:id="@+id/layout_organise"
+          android:foreground="?attr/selectableItemBackground"
+          android:background="@drawable/organise_event"
+          android:orientation="vertical">
+
+          <com.angadi.tripmanagementa.utils.CustomFontTextView
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:padding="10dp"
+              android:textColor="@color/white"
+              android:background="@color/transparent"
+              android:textSize="18sp"
+              android:textStyle="bold"
+              android:textAllCaps="true"
+              android:text="Organise Events"/>
+
+      </LinearLayout>
+
+      <View
+          android:layout_width="match_parent"
+          android:layout_height="3dp"
+          android:background="@color/yellow"/>
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="0dp"
+          android:layout_weight="1"
+          android:id="@+id/layout_explore"
+          android:foreground="?attr/selectableItemBackground"
+          android:gravity="center"
+          android:background="@drawable/explore_event"
+          android:orientation="vertical">
+
+          <com.angadi.tripmanagementa.utils.CustomFontTextView
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:padding="10dp"
+              android:textColor="@color/white"
+              android:background="@color/transparent"
+              android:textSize="18sp"
+              android:textStyle="bold"
+              android:textAllCaps="true"
+              android:text="Explore Events"/>
+
+
+      </LinearLayout>
+
+  </LinearLayout>
+
+        <include
+            android:id="@+id/loading_layout"
+            layout="@layout/loading_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </FrameLayout>
 </LinearLayout>

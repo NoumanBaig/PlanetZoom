@@ -11,6 +11,7 @@
     <string name="terms"><u>Terms and Conditions</u></string>
     <string name="sub"><u>Select Sub Category</u></string>
     <string name="upload"><u>Upload Logo</u></string>
+    <string name="upload_event"><u>Upload Event Image</u></string>
     <string name="business_info"><u>Business Info</u></string>
     <string name="social_info"><u>Social Info</u></string>
     <string name="otp">OTP has been sent to your</string>
@@ -41,6 +42,19 @@
     <string name="youtube">Youtube</string>
     <string name="linkedin">Linkedin</string>
     <string name="whatsapp">WhatsApp</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_desc">Event Description</string>
+    <string name="event_venue">Event Venue</string>
+    <string name="event_loc">Event Location</string>
+    <string name="date">Date</string>
+    <string name="time">Time</string>
+    <string name="price">Price</string>
+    <string name="no_of_tickets">No of tickets</string>
+    <string name="create">Create Event</string>
+    <string name="event_org">Event Organisation</string>
+    <string name="event_dates">Event Dates</string>
+    <string name="sponsors">Sponsors</string>
+    <string name="activities">Activities</string>
 
     <string name="transition">transit</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>

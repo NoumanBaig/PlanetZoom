@@ -178,29 +178,31 @@
                             android:inputType="textWebEditText" />
 
 
-                        <FrameLayout
+                        <LinearLayout
+                            android:weightSum="1"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                             <com.angadi.tripmanagementa.utils.CustomFontEditText
                                 android:id="@+id/edt_adds"
-                                android:layout_width="match_parent"
+                                android:layout_weight="0.9"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
                                 android:hint="@string/adds_loc"
                                 android:imeOptions="actionNext"
                                 android:inputType="textPostalAddress" />
 
                             <ImageView
                                 android:id="@+id/img_loc"
-                                android:layout_width="wrap_content"
+                                android:layout_weight="0.1"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center|right"
-                                android:layout_marginEnd="10dp"
-                                android:layout_marginRight="10dp"
                                 android:src="@drawable/ic_my_location" />
 
-                        </FrameLayout>
+                        </LinearLayout>
 
                         <com.angadi.tripmanagementa.utils.CustomFontTextView
                             android:layout_width="wrap_content"

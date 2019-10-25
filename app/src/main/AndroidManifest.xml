@@ -3,11 +3,21 @@
     package="com.angadi.tripmanagementa"
     android:installLocation="auto">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+
+    <uses-feature
+        android:name="android.hardware.location.network"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
 
     <application
         android:icon="@mipmap/ic_launcher"
@@ -16,7 +26,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.ImagePickerActivity"></activity>
+        <activity android:name=".activities.AddSubEventsActivity"></activity>
+        <activity android:name=".activities.EventDetailsActivity" />
+        <activity android:name=".activities.CreateEventActivity" />
+        <activity android:name=".activities.ShowEventsActivity" />
+        <activity android:name=".activities.ImagePickerActivity" />
         <activity android:name=".activities.ScanResultActivity" />
         <activity android:name=".activities.CreateQrThreeActivity" />
         <activity android:name=".activities.CreateQrTwoActivity" />
@@ -46,6 +60,9 @@
         </activity>
 
         <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyANBgzAB3bcVhHUejLag31UNExauM921Kk" />
+        <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/planet_zoom" />
         <!--
@@ -66,25 +83,7 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-        <activity
-            android:name="com.schibstedspain.leku.LocationPickerActivity"
-            android:label="@string/leku_title_activity_location_picker"
-            android:parentActivityName=".activities.CreateQrTwoActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustPan">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/leku_searchable" />
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".activities.CreateQrTwoActivity" />
-        </activity> <!-- uCrop cropping activity -->
+        </service> <!-- uCrop cropping activity -->
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
             android:screenOrientation="portrait"
@@ -98,6 +97,24 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
+        <activity
+            android:name="com.schibstedspain.leku.LocationPickerActivity"
+            android:label="@string/leku_title_activity_location_picker"
+            android:parentActivityName=".activities.CreateQrTwoActivity"
+            android:theme="@style/AppTheme.Map"
+            android:windowSoftInputMode="adjustPan">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/leku_searchable" />
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.CreateQrTwoActivity" />
+        </activity>
     </application>
 
 </manifest>

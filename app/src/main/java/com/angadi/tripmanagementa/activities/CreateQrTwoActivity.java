@@ -44,6 +44,7 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import com.schibstedspain.leku.LocationPickerActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -59,6 +60,7 @@ import retrofit2.Response;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LATITUDE;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LOCATION_ADDRESS;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LONGITUDE;
+
 
 public class CreateQrTwoActivity extends AppCompatActivity {
 
@@ -91,7 +93,6 @@ public class CreateQrTwoActivity extends AppCompatActivity {
     public static final int REQUEST_IMAGE = 100;
     @BindView(R.id.img_logo)
     ImageView img_logo;
-
     String base64String;
 
     @Override
@@ -176,7 +177,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
             return;
         }
         fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                .addOnSuccessListener(CreateQrTwoActivity.this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
                         // Got last known location. In some rare situations this can be null.
@@ -203,10 +204,10 @@ public class CreateQrTwoActivity extends AppCompatActivity {
                         edt_whatsapp.getText().toString(),edt_facebook.getText().toString(),edt_facebook.getText().toString(),edt_youtube.getText().toString());
                 break;
             case R.id.img_loc:
-//                startActivityForResult(new LocationPickerActivity.Builder()
-//                        .withLocation(latitude, longitude).withSatelliteViewHidden().shouldReturnOkOnBackPressed()
-//                        .withGooglePlacesEnabled()
-//                        .build(this), 1);
+                startActivityForResult(new LocationPickerActivity.Builder()
+                        .withLocation(latitude, longitude).withSatelliteViewHidden().shouldReturnOkOnBackPressed()
+                        .withGooglePlacesEnabled()
+                        .build(CreateQrTwoActivity.this), 1);
                 break;
             case R.id.img_logo:
                 Dexter.withActivity(this)
@@ -338,9 +339,6 @@ public class CreateQrTwoActivity extends AppCompatActivity {
 
     private void loadProfile(String url) {
         Log.e("", "Image cache path: " + url);
-//        Glide.with(this).load(url)
-//                .into(imgProfile);
-//        imgProfile.setColorFilter(ContextCompat.getColor(this, android.R.color.transparent));
         Picasso.get().load(url).into(img_logo);
     }
 

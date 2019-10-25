@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_gradient"
+    tools:context=".activities.EventDetailsActivity">
+
+    <include
+        android:id="@+id/tool"
+        layout="@layout/toolbar_two" />
+
+<!--    <FrameLayout-->
+<!--        android:id="@+id/content_frame"-->
+<!--        android:background="@drawable/bg_gradient"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+
+
+
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="vertical">-->
+
+
+                <com.angadi.tripmanagementa.utils.TicketView
+                    android:id="@+id/layout_ticket"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_below="@+id/tool"
+                    android:background="@android:color/transparent"
+                    android:orientation="vertical"
+                    android:paddingTop="20dp">
+
+                    <androidx.core.widget.NestedScrollView
+                        android:layout_below="@+id/tool"
+                        android:id="@+id/scrollView"
+                        android:paddingBottom="60dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:fillViewport="true">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/img"
+                        android:layout_marginTop="10dp"
+                        android:src="@drawable/organise_event"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp" />
+
+                    <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:textStyle="bold"
+                        android:padding="10dp"
+                        android:textColor="@color/black"
+                        android:id="@+id/txt_name"
+                        android:textSize="18sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:textStyle="bold"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:textSize="10sp"
+                        android:text="@string/desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:id="@+id/txt_desc"
+                        android:textColor="@color/black"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray"
+                        android:layout_margin="10dp"/>
+
+                    <LinearLayout
+                        android:weightSum="2"
+                        android:layout_marginBottom="10dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+
+                            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:textSize="10sp"
+                                android:text="@string/date"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:id="@+id/txt_date"
+                                android:textColor="@color/black"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+
+                            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:textSize="10sp"
+                                android:text="@string/price"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:id="@+id/txt_price"
+                                android:textColor="@color/black"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+
+
+
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray"
+                        android:layout_margin="10dp"/>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:textStyle="bold"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:textSize="10sp"
+                            android:text="@string/event_venue"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:textStyle="bold"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:id="@+id/txt_venue"
+                            android:textColor="@color/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+
+                    </LinearLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray"
+                        android:layout_margin="10dp"/>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:textStyle="bold"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:textSize="10sp"
+                            android:text="@string/address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:id="@+id/txt_address"
+                            android:textColor="@color/black"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray"
+                        android:layout_margin="10dp"/>
+
+                    <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="@string/event_dates"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerDates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
+
+
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="@string/sponsors"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerSponsors"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
+
+
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="@string/activities"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
+
+
+
+                    </LinearLayout>
+                    </LinearLayout>
+
+                    </androidx.core.widget.NestedScrollView>
+
+                </com.angadi.tripmanagementa.utils.TicketView>
+
+<!--                </LinearLayout>-->
+
+
+
+
+
+
+<!--    </FrameLayout>-->
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/loading_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <com.angadi.tripmanagementa.utils.CustomFontButton
+        android:layout_width="match_parent"
+        android:layout_marginRight="40dp"
+        android:layout_marginLeft="40dp"
+        android:textColor="@color/white"
+        android:text="Buy"
+        android:id="@+id/btn_buy"
+        android:textStyle="bold"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

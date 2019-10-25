@@ -66,19 +66,23 @@ public class DashboardFragment extends Fragment {
             public void onResponse(Call<DashboardResponse> call, Response<DashboardResponse> response) {
                 Log.e("dashboard_res", new Gson().toJson(response));
                 loadingIndicator.setVisibility(View.GONE);
-                if (response.body().getStatus().equalsIgnoreCase("success")){
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")){
 
-                    List<DashboardResult> resultList = response.body().getResults();
+                        List<DashboardResult> resultList = response.body().getResults();
 
-                    adapter = new CountSectionAdapter(getActivity(),resultList);
-                    recyclerView.setAdapter(adapter);
+                        adapter = new CountSectionAdapter(getActivity(),resultList);
+                        recyclerView.setAdapter(adapter);
 
-                    GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
-                    SectionedSpanSizeLookup lookup = new SectionedSpanSizeLookup(adapter, layoutManager);
-                    layoutManager.setSpanSizeLookup(lookup);
-                    recyclerView.setLayoutManager(layoutManager);
-                }else {
-                    Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+                        SectionedSpanSizeLookup lookup = new SectionedSpanSizeLookup(adapter, layoutManager);
+                        layoutManager.setSpanSizeLookup(lookup);
+                        recyclerView.setLayoutManager(layoutManager);
+                    }else {
+                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 

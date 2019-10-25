@@ -107,7 +107,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-       // FirebaseApp.initializeApp(LoginActivity.this);
+        FirebaseApp.initializeApp(LoginActivity.this);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity {
             ((ViewGroup) findViewById(R.id.container)).getLayoutTransition()
                     .enableTransitionType(LayoutTransition.CHANGING);
         }
-      ///  getDeviceToken();
+        getDeviceToken();
         str_device_token = "hdkajskajsajkajsksjasajksaksjakjsdhhdhd";
 
         // avi.smoothToShow();
@@ -133,6 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                         // Get new Instance ID token
                         str_device_token = task.getResult().getToken();
+                        Log.e("str_device_token",str_device_token);
                     }
                 });
 
@@ -272,7 +273,9 @@ public class LoginActivity extends AppCompatActivity {
                             layout_firstName.setVisibility(View.GONE);
                             str_otp = String.valueOf(response.body().getRand());
                             str_fname = String.valueOf(response.body().getFname());
+                            String str_uid = String.valueOf(response.body().getUID());
                             Prefs.with(LoginActivity.this).save("firstName",str_fname);
+                            Prefs.with(LoginActivity.this).save("str_uid",str_uid);
                             toggle();
                             pinView.setText(str_otp);
                         }

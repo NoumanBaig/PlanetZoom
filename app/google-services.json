@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "606788096291",
+    "firebase_url": "https://planetzoom1-5cb8a.firebaseio.com",
+    "project_id": "planetzoom1-5cb8a",
+    "storage_bucket": "planetzoom1-5cb8a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606788096291:android:a77c28b99c4461a6",
+        "android_client_info": {
+          "package_name": "com.angadi.tripmanagementa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "606788096291-svfpqade0fi2p5bcctuniegj5dvus838.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.angadi.tripmanagementa",
+            "certificate_hash": "b2b900c40ac659b039a2e9678b4d1834f0e1d80e"
+          }
+        },
+        {
+          "client_id": "606788096291-pbn6h7sc013tq5ndvp2a168v7accj5oh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBFW0-0XRnvqvZmVEDiZh9XJeuiDM5gkw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "606788096291-pbn6h7sc013tq5ndvp2a168v7accj5oh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

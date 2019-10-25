@@ -18,5 +18,12 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.Map">
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
 
 </resources>
