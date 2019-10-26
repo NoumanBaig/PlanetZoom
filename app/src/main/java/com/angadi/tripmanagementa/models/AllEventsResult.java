@@ -28,6 +28,9 @@ public class AllEventsResult {
     @SerializedName("pea_org")
     @Expose
     private String peaOrg;
+    @SerializedName("pea_logo")
+    @Expose
+    private String pea_logo;
 
     public String getPeaId() {
         return peaId;
@@ -91,5 +94,13 @@ public class AllEventsResult {
 
     public void setPeaOrg(String peaOrg) {
         this.peaOrg = peaOrg;
+    }
+
+    public String getPea_logo() {
+        return pea_logo;
+    }
+
+    public void setPea_logo(String peaOrg) {
+        this.pea_logo = pea_logo;
     }
 }

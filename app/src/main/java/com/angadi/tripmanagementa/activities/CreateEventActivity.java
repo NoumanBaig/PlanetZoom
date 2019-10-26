@@ -23,6 +23,7 @@ import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,6 +39,7 @@ import com.angadi.tripmanagementa.models.AllEventsResponse;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.models.CreateEventResponse;
 import com.angadi.tripmanagementa.models.CreateQrResponse;
+import com.angadi.tripmanagementa.models.EventDetailsResponse;
 import com.angadi.tripmanagementa.models.MembersResponse;
 import com.angadi.tripmanagementa.models.MembersResult;
 import com.angadi.tripmanagementa.rest.ApiClient;
@@ -109,6 +111,10 @@ public class CreateEventActivity extends AppCompatActivity {
     NestedScrollView scrollView;
     @BindView(R.id.recyclerMembers)
     RecyclerView recyclerMembers;
+    @BindView(R.id.btn_create)
+    Button btn_create;
+
+    String pea_id,str_id;
 
 
     @Override
@@ -118,10 +124,22 @@ public class CreateEventActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Create Event");
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getCurrentLocation();
+
+        if (getIntent().getExtras() != null){
+            str_id = getIntent().getStringExtra("id");
+            getSupportActionBar().setTitle("Update Event");
+            btn_create.setText("Update Event");
+            getEventDetails(str_id);
+            Log.e("btn_create",btn_create.getText().toString());
+        }else {
+            getSupportActionBar().setTitle("Create Event");
+            btn_create.setText("Create Event");
+            Log.e("btn_create",btn_create.getText().toString());
+        }
 
         showHideLayouts();
     }
@@ -130,7 +148,7 @@ public class CreateEventActivity extends AppCompatActivity {
         if (Constants.event_created){
             layout_add.setVisibility(View.VISIBLE);
             layout_members.setVisibility(View.VISIBLE);
-            getMembers();
+//            getMembers();
         }else {
             layout_add.setVisibility(View.GONE);
             layout_members.setVisibility(View.GONE);
@@ -225,7 +243,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
                 break;
             case R.id.btn_addDays:
-                startActivity(new Intent(this,AddSubEventsActivity.class));
+                startActivity(new Intent(this,AddSubEventsActivity.class)
+                .putExtra("id",pea_id));
                 break;
             case R.id.btn_addMembers:
                 getMembers();
@@ -391,9 +410,16 @@ public class CreateEventActivity extends AppCompatActivity {
         } else if (edt_price.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please enter price", Toast.LENGTH_SHORT).show();
         } else {
-            createEvent(edt_name.getText().toString(), edt_price.getText().toString(), edt_noOfTickets.getText().toString(),
-                    edt_location.getText().toString(), edt_venue.getText().toString(), edt_desc.getText().toString(), txt_date.getText().toString(),
-                    txt_time.getText().toString(), edt_organisation.getText().toString());
+            if (btn_create.getText().toString().equalsIgnoreCase("Create Event")){
+                createEvent(edt_name.getText().toString(), edt_price.getText().toString(), edt_noOfTickets.getText().toString(),
+                        edt_location.getText().toString(), edt_venue.getText().toString(), edt_desc.getText().toString(), txt_date.getText().toString(),
+                        txt_time.getText().toString(), edt_organisation.getText().toString());
+
+            }else {
+                updateEvent(edt_name.getText().toString(), edt_price.getText().toString(), edt_noOfTickets.getText().toString(),
+                        edt_location.getText().toString(), edt_venue.getText().toString(), edt_desc.getText().toString(), txt_date.getText().toString(),
+                        txt_time.getText().toString(), edt_organisation.getText().toString(),pea_id);
+            }
         }
     }
 
@@ -409,7 +435,7 @@ public class CreateEventActivity extends AppCompatActivity {
         call.enqueue(new Callback<CreateEventResponse>() {
             @Override
             public void onResponse(Call<CreateEventResponse> call, Response<CreateEventResponse> response) {
-                Log.e("getAllEvents", new Gson().toJson(response));
+                Log.e("createEvent", new Gson().toJson(response));
                 loadingIndicator.setVisibility(View.GONE);
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
@@ -429,11 +455,46 @@ public class CreateEventActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<CreateEventResponse> call, Throwable t) {
-                Log.e("getAllEvents", "" + t);
+                Log.e("createEvent", "" + t);
                 loadingIndicator.setVisibility(View.GONE);
             }
         });
     }
+
+    private void updateEvent(String name, String price, String tickets, String location, String venue, String desc,
+                             String date, String time, String organisation, String id) {
+        loadingIndicator.setVisibility(View.VISIBLE);
+        String token = Prefs.with(CreateEventActivity.this).getString("token", "");
+        Log.e("token", token);
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<CreateEventResponse> call = apiInterface.updateEvents("true", token, name, price, tickets, location, venue, desc, date, time, organisation, "0", base64String,id,"1");
+
+        call.enqueue(new Callback<CreateEventResponse>() {
+            @Override
+            public void onResponse(Call<CreateEventResponse> call, Response<CreateEventResponse> response) {
+                Log.e("updateEvent", new Gson().toJson(response));
+                loadingIndicator.setVisibility(View.GONE);
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        getEventDetails(str_id);
+                    } else {
+                        Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CreateEventResponse> call, Throwable t) {
+                Log.e("updateEvent", "" + t);
+                loadingIndicator.setVisibility(View.GONE);
+            }
+        });
+    }
+
 
     private void getMembers(){
         loadingIndicator.setVisibility(View.VISIBLE);
@@ -469,10 +530,62 @@ public class CreateEventActivity extends AppCompatActivity {
 
         adapter.setClickListener(new MembersAdapter.ClickListener() {
             @Override
-            public void onClick(View view, int position, String id) {
+            public void onClick(View view, int position, String id,String title) {
                 Log.e("id---->",""+id);
+                startActivity(new Intent(CreateEventActivity.this,AddMembersActivity.class)
+                .putExtra("mem_id",id)
+                .putExtra("mem_title",title));
             }
         });
     }
+
+    private void getEventDetails(String event_id){
+        loadingIndicator.setVisibility(View.VISIBLE);
+        String token = Prefs.with(CreateEventActivity.this).getString("token", "");
+        Log.e("token", token);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<EventDetailsResponse> call = apiInterface.getEventDetails("true",token,event_id);
+        call.enqueue(new Callback<EventDetailsResponse>() {
+            @Override
+            public void onResponse(Call<EventDetailsResponse> call, Response<EventDetailsResponse> response) {
+                Log.e("getEventDetails", new Gson().toJson(response));
+                loadingIndicator.setVisibility(View.GONE);
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+
+                        edt_name.setText(response.body().getPeaName());
+                        edt_desc.setText(response.body().getPeaDesc());
+                        edt_location.setText(response.body().getPeaLocation());
+                        txt_date.setText(response.body().getPeaDate());
+                        txt_time.setText(response.body().getPeaTime());
+                        edt_venue.setText(response.body().getPeaVenue());
+                        edt_noOfTickets.setText(response.body().getPeaTickets());
+                        edt_price.setText(response.body().getPeaPrice());
+                        edt_organisation.setText(response.body().getPea_org());
+//                        if (!response.body().getPeaLogo().equalsIgnoreCase("") || response.body().getPeaLogo() != null){
+                        Picasso.get().load(Constants.BASE_URL+response.body().getPeaLogo()).into(img_logo);
+                        layout_add.setVisibility(View.VISIBLE);
+                        layout_members.setVisibility(View.VISIBLE);
+                        pea_id = response.body().getPeaId();
+                        Log.e("pea_id",""+pea_id);
+//                        getMembers();
+                    } else {
+                         Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EventDetailsResponse> call, Throwable t) {
+                Log.e("getEventDetails", "" + t);
+                loadingIndicator.setVisibility(View.GONE);
+            }
+        });
+
+    }
+
 
 }

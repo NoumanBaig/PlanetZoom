@@ -1,7 +1,9 @@
 package com.angadi.tripmanagementa.rest;
 
 
-import com.angadi.tripmanagementa.fragments.ProfileResponse;
+import com.angadi.tripmanagementa.models.AddMembersResponse;
+import com.angadi.tripmanagementa.models.DeleteSubEventResponse;
+import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.models.AdminEventsResponse;
 import com.angadi.tripmanagementa.models.AdminResponse;
 import com.angadi.tripmanagementa.models.AllEventsResponse;
@@ -16,18 +18,16 @@ import com.angadi.tripmanagementa.models.LogoutResponse;
 import com.angadi.tripmanagementa.models.MembersResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.models.RegisterResponse;
+import com.angadi.tripmanagementa.models.ShowSubEventResponse;
 import com.angadi.tripmanagementa.models.SubCategoriesResponse;
+import com.angadi.tripmanagementa.models.SubEventResponse;
 import com.angadi.tripmanagementa.models.VerifyOtp;
 
-import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiInterface {
 
@@ -85,79 +85,140 @@ public interface ApiInterface {
     @FormUrlEncoded
     Call<DashboardResponse> dashboard(@Field("show_all_categories") String show,
                                       @Field("token") String token);
+
     @POST("qrcode/scan/")
     @FormUrlEncoded
     Call<QrScanResponse> scanResult(@Field("scan") String show,
-                                   @Field("scan_id") String scan_id,
+                                    @Field("scan_id") String scan_id,
                                     @Field("token") String token);
 
     @POST("profile/show/")
     @FormUrlEncoded
-    Call<ProfileResponse> getProfile(@Field("show") String  show,
-                                     @Field("token") String  token);
+    Call<ProfileResponse> getProfile(@Field("show") String show,
+                                     @Field("token") String token);
 
     @POST("profile/edit/")
     @FormUrlEncoded
-    Call<EditProfileResponse> editProfile(@Field("edit_profile") String  show,
-                                          @Field("token") String  token,
-                                          @Field("fname") String  fname,
-                                          @Field("lname") String  lname,
-                                          @Field("ura_about") String  ura_about,
-                                          @Field("ura_address") String  ura_address,
-                                          @Field("ura_company_name") String  ura_company_name,
-                                          @Field("ura_designation") String  ura_designation,
-                                          @Field("ura_website") String  ura_website,
-                                          @Field("ura_biz_phone") String  ura_biz_phone,
-                                          @Field("ura_biz_email") String  ura_biz_email,
-                                          @Field("ura_facebook") String  ura_facebook,
-                                          @Field("ura_whatsapp") String  ura_whatsapp,
-                                          @Field("ura_linkedin") String  ura_linkedin,
-                                          @Field("ura_youtube") String  ura_youtube,
-                                          @Field("ura_instagram") String  ura_instagram,
-                                          @Field("photo_upload") String  photo_upload);
+    Call<EditProfileResponse> editProfile(@Field("edit_profile") String show,
+                                          @Field("token") String token,
+                                          @Field("fname") String fname,
+                                          @Field("lname") String lname,
+                                          @Field("ura_about") String ura_about,
+                                          @Field("ura_address") String ura_address,
+                                          @Field("ura_company_name") String ura_company_name,
+                                          @Field("ura_designation") String ura_designation,
+                                          @Field("ura_website") String ura_website,
+                                          @Field("ura_biz_phone") String ura_biz_phone,
+                                          @Field("ura_biz_email") String ura_biz_email,
+                                          @Field("ura_facebook") String ura_facebook,
+                                          @Field("ura_whatsapp") String ura_whatsapp,
+                                          @Field("ura_linkedin") String ura_linkedin,
+                                          @Field("ura_youtube") String ura_youtube,
+                                          @Field("ura_instagram") String ura_instagram,
+                                          @Field("photo_upload") String photo_upload);
 
 
     @POST("events/set_admin/")
     @FormUrlEncoded
-    Call<AdminResponse> setAdmin(@Field("set_admin") String  set,
-                                   @Field("token") String  token,
-                                 @Field("admin_enable") String  enable);
+    Call<AdminResponse> setAdmin(@Field("set_admin") String set,
+                                 @Field("token") String token,
+                                 @Field("admin_enable") String enable);
+
     @POST("events/add/")
     @FormUrlEncoded
-    Call<CreateEventResponse> addEvents(@Field("add_events") String  add,
-                                       @Field("token") String  token,
-                                       @Field("pea_name") String  pea_name,
-                                        @Field("pea_price") String  pea_price,
-                                        @Field("pea_tickets") String  pea_tickets,
-                                        @Field("pea_location") String  pea_location,
-                                        @Field("pea_venue") String  pea_venue,
-                                        @Field("pea_desc") String  pea_desc,
-                                        @Field("pea_date") String  pea_date,
-                                        @Field("pea_time") String  pea_time,
-                                        @Field("pea_org") String  pea_org,
-                                        @Field("pea_report") String  pea_report,
-                                        @Field("pea_logo") String  pea_logo);
+    Call<CreateEventResponse> addEvents(@Field("add_events") String add,
+                                        @Field("token") String token,
+                                        @Field("pea_name") String pea_name,
+                                        @Field("pea_price") String pea_price,
+                                        @Field("pea_tickets") String pea_tickets,
+                                        @Field("pea_location") String pea_location,
+                                        @Field("pea_venue") String pea_venue,
+                                        @Field("pea_desc") String pea_desc,
+                                        @Field("pea_date") String pea_date,
+                                        @Field("pea_time") String pea_time,
+                                        @Field("pea_org") String pea_org,
+                                        @Field("pea_report") String pea_report,
+                                        @Field("pea_logo") String pea_logo);
+
+    @POST("events/add/")
+    @FormUrlEncoded
+    Call<CreateEventResponse> updateEvents(@Field("add_events") String add,
+                                           @Field("token") String token,
+                                           @Field("pea_name") String pea_name,
+                                           @Field("pea_price") String pea_price,
+                                           @Field("pea_tickets") String pea_tickets,
+                                           @Field("pea_location") String pea_location,
+                                           @Field("pea_venue") String pea_venue,
+                                           @Field("pea_desc") String pea_desc,
+                                           @Field("pea_date") String pea_date,
+                                           @Field("pea_time") String pea_time,
+                                           @Field("pea_org") String pea_org,
+                                           @Field("pea_report") String pea_report,
+                                           @Field("pea_logo") String pea_logo,
+                                           @Field("pea_id") String pea_id,
+                                           @Field("pea_update") String pea_update);
 
     @POST("events/show_all_events/")
     @FormUrlEncoded
-    Call<AllEventsResponse> getAllEvents(@Field("show_all_events") String  show,
-                                     @Field("token") String  token);
+    Call<AllEventsResponse> getAllEvents(@Field("show_all_events") String show,
+                                         @Field("token") String token);
 
     @POST("events/show_one_user_events/")
     @FormUrlEncoded
-    Call<AdminEventsResponse> getAdminEvents(@Field("show_one_user_events") String  show,
-                                           @Field("token") String  token,
-                                             @Field("user_id") String  user_id);
+    Call<AdminEventsResponse> getAdminEvents(@Field("show_one_user_events") String show,
+                                             @Field("token") String token,
+                                             @Field("user_id") String user_id);
 
     @POST("events/show_one_event_data/")
     @FormUrlEncoded
-    Call<EventDetailsResponse> getEventDetails(@Field("show_one_event_data") String  show,
-                                              @Field("token") String  token,
-                                              @Field("show_event_id") String  event_id);
+    Call<EventDetailsResponse> getEventDetails(@Field("show_one_event_data") String show,
+                                               @Field("token") String token,
+                                               @Field("show_event_id") String event_id);
 
     @POST("events/showing_events_user_lists/")
     @FormUrlEncoded
-    Call<MembersResponse> getMembers(@Field("showing_events_user_lists") String  show);
+    Call<MembersResponse> getMembers(@Field("showing_events_user_lists") String show);
+
+    @POST("events/sub_event_creation/")
+    @FormUrlEncoded
+    Call<SubEventResponse> createSubEvent(@Field("sub_event_creation") String show,
+                                          @Field("token") String token,
+                                          @Field("event_id") String event_id,
+                                          @Field("sub_title") String sub_title,
+                                          @Field("sub_desc") String sub_desc);
+
+    @POST("events/sub_event_creation/")
+    @FormUrlEncoded
+    Call<SubEventResponse> updateSubEvent(@Field("sub_event_creation") String show,
+                                          @Field("token") String token,
+                                          @Field("event_id") String event_id,
+                                          @Field("sub_title") String sub_title,
+                                          @Field("sub_desc") String sub_desc,
+                                          @Field("esaa_id") String esaa_id,
+                                          @Field("esaa_update") String esaa_update);
+
+    @POST("events/show_sub_event/")
+    @FormUrlEncoded
+    Call<ShowSubEventResponse> showSubEvent(@Field("show_sub_event") String show,
+                                            @Field("token") String token,
+                                            @Field("event_id") String event_id);
+
+    @POST("events/deleting_sub_events/")
+    @FormUrlEncoded
+    Call<DeleteSubEventResponse> deleteSubEvent(@Field("deleting_sub_events") String show,
+                                                @Field("token") String token,
+                                                @Field("event_id") String event_id,
+                                                @Field("sub_event_id") String sub_event_id);
+
+    @POST("events/add_members/")
+    @FormUrlEncoded
+    Call<AddMembersResponse> addMembers(@Field("add_members") String show,
+                                        @Field("token") String token,
+                                        @Field("eauqa_name") String eauqa_name,
+                                        @Field("eauqa_email") String eauqa_email,
+                                        @Field("eauqa_phone") String eauqa_phone,
+                                        @Field("eauqa_about") String eauqa_about,
+                                        @Field("eauqa_users_type") String eauqa_users_type);
 //    @POST("logout/")
 //    @FormUrlEncoded
 //    Call<Logout> logout(@Field("token_id") String token);

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/linear"
+    android:background="@color/background"
+    android:foreground="?attr/selectableItemBackground">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/background"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_weight="1.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                android:text="text"
+                android:padding="10dp"
+                android:id="@+id/txt"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:gravity="center|center_vertical"
+            android:id="@+id/layout_view"
+            android:layout_height="wrap_content">
+
+            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:text="View more"/>
+
+           <ImageView
+               android:id="@+id/img_delete"
+               android:src="@drawable/ic_chevron_right"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray"/>
+
+
+</androidx.cardview.widget.CardView>

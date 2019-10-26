@@ -1,6 +1,7 @@
 package com.angadi.tripmanagementa.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.AllEventsResult;
+import com.angadi.tripmanagementa.utils.Constants;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -48,6 +51,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         holder.txt_title.setText(resultList.get(position).getPeaName());
         holder.txt_date.setText(resultList.get(position).getPeaDate());
         holder.txt_location.setText(resultList.get(position).getPeaVenue());
+        if (!resultList.get(position).getPea_logo().isEmpty()){
+            Picasso.get().load(Constants.BASE_URL+resultList.get(position).getPea_logo()).into(holder.imageView);
+        }else {
+            if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")){
+                Picasso.get().load(R.drawable.organise_event)
+                        .error(R.drawable.organise_event)
+                        .placeholder(R.drawable.organise_event)
+                        .into(holder.imageView);
+            }
+        }
+
+
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override

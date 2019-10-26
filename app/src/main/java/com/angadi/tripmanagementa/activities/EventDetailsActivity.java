@@ -2,6 +2,8 @@ package com.angadi.tripmanagementa.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,9 +13,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.adapters.DaysAdapter;
+import com.angadi.tripmanagementa.adapters.SubEventsAdapter;
 import com.angadi.tripmanagementa.models.AllEventsResponse;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.models.EventDetailsResponse;
+import com.angadi.tripmanagementa.models.ShowSubEventResponse;
+import com.angadi.tripmanagementa.models.SubEventResult;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
@@ -47,8 +53,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     TextView txt_address;
     @BindView(R.id.img)
     ImageView imageView;
-
-
+    @BindView(R.id.recyclerDates)
+    RecyclerView recyclerDates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,11 +102,19 @@ public class EventDetailsActivity extends AppCompatActivity {
                         txt_date.setText(response.body().getPeaDate());
                         txt_venue.setText(response.body().getPeaVenue());
                         txt_price.setText(response.body().getPeaPrice());
-//                        if (!response.body().getPeaLogo().equalsIgnoreCase("") || response.body().getPeaLogo() != null){
-                            Picasso.get().load(Constants.BASE_URL+response.body().getPeaLogo()).error(R.drawable.explore_event).placeholder(R.drawable.explore_event).into(imageView);
+
+                        if (!response.body().getPeaLogo().isEmpty()){
+                            Picasso.get().load(Constants.BASE_URL+response.body().getPeaLogo()).into(imageView);
+                        }else {
+                            Picasso.get().load(R.drawable.organise_event)
+                                    .error(R.drawable.organise_event)
+                                    .placeholder(R.drawable.organise_event)
+                                    .into(imageView);
+                        }
+                        getSubEvents(event_id);
 
                     } else {
-                       // Toast.makeText(ShowEventsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -115,4 +129,47 @@ public class EventDetailsActivity extends AppCompatActivity {
         });
 
     }
+
+    private void getSubEvents(String id) {
+        loadingIndicator.setVisibility(View.VISIBLE);
+        String token = Prefs.with(EventDetailsActivity.this).getString("token", "");
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ShowSubEventResponse> call = apiInterface.showSubEvent("show",token,id);
+        call.enqueue(new Callback<ShowSubEventResponse>() {
+            @Override
+            public void onResponse(Call<ShowSubEventResponse> call, Response<ShowSubEventResponse> response) {
+                Log.e("getSubEvents", new Gson().toJson(response));
+                loadingIndicator.setVisibility(View.GONE);
+                if (response.body().getStatus().equalsIgnoreCase("success")) {
+                    List<SubEventResult> resultList = response.body().getResults();
+                    setAdapter(resultList);
+                } else {
+                    Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ShowSubEventResponse> call, Throwable t) {
+                Log.e("getSubEventsExp", "" + t);
+                loadingIndicator.setVisibility(View.GONE);
+            }
+        });
+
+    }
+
+    private void setAdapter(List<SubEventResult> resultList) {
+        recyclerDates.setLayoutManager(new LinearLayoutManager(this));
+        SubEventsAdapter subEventsAdapter = new SubEventsAdapter(this, resultList);
+        recyclerDates.setAdapter(subEventsAdapter);
+
+        subEventsAdapter.setClickListener(new SubEventsAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position, String id,String title, String desc) {
+
+            }
+        });
+    }
+
+
 }

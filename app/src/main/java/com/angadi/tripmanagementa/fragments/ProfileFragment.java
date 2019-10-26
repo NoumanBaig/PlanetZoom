@@ -20,17 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.angadi.tripmanagementa.R;
-import com.angadi.tripmanagementa.activities.CreateQrTwoActivity;
 import com.angadi.tripmanagementa.activities.ImagePickerActivity;
 import com.angadi.tripmanagementa.activities.LoginActivity;
-import com.angadi.tripmanagementa.adapters.CountSectionAdapter;
-import com.angadi.tripmanagementa.models.DashboardResponse;
-import com.angadi.tripmanagementa.models.DashboardResult;
 import com.angadi.tripmanagementa.models.EditProfileResponse;
 import com.angadi.tripmanagementa.models.LogoutResponse;
+import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
@@ -43,7 +39,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.squareup.picasso.Picasso;
-import com.truizlop.sectionedrecyclerview.SectionedSpanSizeLookup;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,9 +49,6 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Field;
-
-import static com.angadi.tripmanagementa.activities.CreateQrTwoActivity.REQUEST_IMAGE;
 
 public class ProfileFragment extends Fragment {
 

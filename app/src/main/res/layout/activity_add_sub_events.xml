@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
+    android:background="@color/background"
     tools:context=".activities.AddSubEventsActivity">
 
     <include layout="@layout/toolbar_two" />
@@ -21,9 +22,52 @@
             android:fillViewport="true">
 
             <LinearLayout
+                android:padding="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <com.angadi.tripmanagementa.utils.CustomFontEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edt_title"
+                    android:hint="@string/title"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords"
+                    android:layout_marginBottom="10dp"/>
+
+                <com.angadi.tripmanagementa.utils.CustomFontEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/edt_desc"
+                    android:hint="@string/desc"
+                    android:layout_marginBottom="10dp"/>
+
+                <com.angadi.tripmanagementa.utils.CustomFontButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/black_background"
+                    android:textColor="@color/white"
+                    android:textAllCaps="true"
+                    android:text="@string/add_day"
+                    android:id="@+id/btn_add"/>
+
+                <com.angadi.tripmanagementa.utils.CustomFontTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/added_days"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/colorAccent"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/recyclerDays"/>
 
             </LinearLayout>
 

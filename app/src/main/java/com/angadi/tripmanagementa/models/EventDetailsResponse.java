@@ -46,6 +46,9 @@ public class EventDetailsResponse {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("pea_org")
+    @Expose
+    private String pea_org;
 
     public String getPeaId() {
         return peaId;
@@ -157,5 +160,13 @@ public class EventDetailsResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPea_org() {
+        return pea_org;
+    }
+
+    public void setPea_org(String pea_org) {
+        this.pea_org = pea_org;
     }
 }

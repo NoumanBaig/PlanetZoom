@@ -55,6 +55,10 @@
     <string name="event_dates">Event Dates</string>
     <string name="sponsors">Sponsors</string>
     <string name="activities">Activities</string>
+    <string name="title">Title</string>
+    <string name="add_day">Add Day</string>
+    <string name="added_days"><u> Added Days</u></string>
+    <string name="name">Name</string>
 
     <string name="transition">transit</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>

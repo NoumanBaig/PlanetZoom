@@ -31,7 +31,7 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.Category
     }
 
     public interface ClickListener {
-        void onClick(View view, int position, String id);
+        void onClick(View view, int position, String id,String title);
     }
 
     public void setClickListener(ClickListener clickListener) {
@@ -52,7 +52,8 @@ public class MembersAdapter extends RecyclerView.Adapter<MembersAdapter.Category
             @Override
             public void onClick(View view) {
                 if (clickListener != null) {
-                    clickListener.onClick(holder.linearLayout, position, resultList.get(position).getEulaaId());
+                    clickListener.onClick(holder.linearLayout, position, resultList.get(position).getEulaaId(),
+                            resultList.get(position).getEulaaName());
                 }
             }
         });

@@ -1,4 +1,4 @@
-package com.angadi.tripmanagementa.fragments;
+package com.angadi.tripmanagementa.models;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

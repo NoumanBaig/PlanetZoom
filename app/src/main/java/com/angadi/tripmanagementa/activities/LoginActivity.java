@@ -307,8 +307,6 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         str_otp = String.valueOf(response.body().getRand());
-                       String uid = String.valueOf(response.body().getUID());
-                       Prefs.with(LoginActivity.this).save("UID",uid);
                         toggle();
                         pinView.setText(str_otp);
                     } else {
@@ -337,7 +335,9 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         String token = response.body().getToken();
+                        String user_id = response.body().getUser_id();
                         Prefs.with(LoginActivity.this).save("token",token);
+                        Prefs.with(LoginActivity.this).save("user_id",user_id);
 
                         WelcomeFragment welcomeFragment = new WelcomeFragment();
                         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

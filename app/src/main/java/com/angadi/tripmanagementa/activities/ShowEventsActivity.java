@@ -73,12 +73,15 @@ public class ShowEventsActivity extends AppCompatActivity {
                 layout_adminEvents.setVisibility(View.VISIBLE);
                 layout_create.setVisibility(View.VISIBLE);
                 try {
-                    String event_id = Prefs.with(ShowEventsActivity.this).getString("event_id", "");
-                    String str_uid = Prefs.with(ShowEventsActivity.this).getString("str_uid", "");
-                    if (!event_id.equalsIgnoreCase("")) {
-                        getAdminEvents(event_id);
-                    } else if (!str_uid.equalsIgnoreCase("")){
-                        getAdminEvents(str_uid);
+                   // String event_id = Prefs.with(ShowEventsActivity.this).getString("event_id", "");
+                    String user_id = Prefs.with(ShowEventsActivity.this).getString("user_id", "");
+//                    Log.e("event_id", event_id);
+                    Log.e("user_id", user_id);
+//                    if (!event_id.equalsIgnoreCase("")) {
+//                        getAdminEvents(event_id);
+//                    } else
+                        if (!user_id.equalsIgnoreCase("")){
+                        getAdminEvents(user_id);
                     }
                     else {
                         Toast.makeText(this, "No Events right now.", Toast.LENGTH_SHORT).show();
@@ -92,9 +95,10 @@ public class ShowEventsActivity extends AppCompatActivity {
                 layout_adminEvents.setVisibility(View.VISIBLE);
                 layout_create.setVisibility(View.VISIBLE);
                 try {
-                    String event_id = Prefs.with(ShowEventsActivity.this).getString("event_id", "");
-                    if (!event_id.equalsIgnoreCase("")) {
-                        getAdminEvents(event_id);
+                    String user_id = Prefs.with(ShowEventsActivity.this).getString("user_id", "");
+                    Log.e("user_id", user_id);
+                    if (!user_id.equalsIgnoreCase("")) {
+                        getAdminEvents(user_id);
                     } else {
                         Toast.makeText(this, "No Events right now.", Toast.LENGTH_SHORT).show();
                     }
@@ -157,7 +161,7 @@ public class ShowEventsActivity extends AppCompatActivity {
         String token = Prefs.with(ShowEventsActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<AdminEventsResponse> call = apiInterface.getAdminEvents("true", token, id);
+        Call<AdminEventsResponse> call = apiInterface.getAdminEvents("true", token, "3");
         call.enqueue(new Callback<AdminEventsResponse>() {
             @Override
             public void onResponse(Call<AdminEventsResponse> call, Response<AdminEventsResponse> response) {
@@ -206,7 +210,9 @@ public class ShowEventsActivity extends AppCompatActivity {
             public void onClick(View view, int position, String id) {
 //                EventDetailsFragment fragment = new EventDetailsFragment();
 //                loadFragment(fragment);
-                startActivity(new Intent(ShowEventsActivity.this,CreateEventActivity.class));
+                startActivity(new Intent(ShowEventsActivity.this,CreateEventActivity.class)
+                .putExtra("id",id));
+                finish();
             }
         });
     }

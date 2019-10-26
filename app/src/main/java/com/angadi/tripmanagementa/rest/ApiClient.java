@@ -1,5 +1,8 @@
 package com.angadi.tripmanagementa.rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
