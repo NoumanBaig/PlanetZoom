@@ -3,6 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/create_qr"
-        android:title="Create QR Code"
+        android:title="Biz QR Code"
         app:showAsAction="always" />
 </menu>

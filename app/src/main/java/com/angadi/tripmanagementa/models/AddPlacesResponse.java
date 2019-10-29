@@ -3,13 +3,10 @@ package com.angadi.tripmanagementa.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class CreateQrResponse {
+public class AddPlacesResponse {
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("qr_code_id_secure_link")
-    @Expose
-    private String qrCodeId;
     @SerializedName("status")
     @Expose
     private String status;
@@ -20,14 +17,6 @@ public class CreateQrResponse {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public String getQrCodeId() {
-        return qrCodeId;
-    }
-
-    public void setQrCodeId(String qrCodeId) {
-        this.qrCodeId = qrCodeId;
     }
 
     public String getStatus() {

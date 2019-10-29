@@ -58,7 +58,13 @@
     <string name="title">Title</string>
     <string name="add_day">Add Day</string>
     <string name="added_days"><u> Added Days</u></string>
+    <string name="add_mapping"><u> Add Mapping Places</u></string>
+    <string name="added_places"><u> Added Places</u></string>
+    <string name="search_volunteer"><u>Search Volunteers</u></string>
+    <string name="added_volunteer"><u>Added Volunteers</u></string>
+    <string name="added_members"><u>Added Members</u></string>
     <string name="name">Name</string>
+    <string name="enter_places">Enter Places</string>
 
     <string name="transition">transit</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>

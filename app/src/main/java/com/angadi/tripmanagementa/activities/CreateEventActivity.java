@@ -532,9 +532,20 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position, String id,String title) {
                 Log.e("id---->",""+id);
-                startActivity(new Intent(CreateEventActivity.this,AddMembersActivity.class)
-                .putExtra("mem_id",id)
-                .putExtra("mem_title",title));
+                if (title.equalsIgnoreCase("Volunteers")){
+                    startActivity(new Intent(CreateEventActivity.this,AddVolunteersActivity.class)
+                            .putExtra("mem_id",id)
+                            .putExtra("str_id",str_id)
+                            .putExtra("mem_title",title));
+
+                }else {
+                    startActivity(new Intent(CreateEventActivity.this,AddMembersActivity.class)
+                            .putExtra("mem_id",id)
+                            .putExtra("str_id",str_id)
+                            .putExtra("mem_title",title));
+
+                }
+
             }
         });
     }
@@ -564,7 +575,12 @@ public class CreateEventActivity extends AppCompatActivity {
                         edt_price.setText(response.body().getPeaPrice());
                         edt_organisation.setText(response.body().getPea_org());
 //                        if (!response.body().getPeaLogo().equalsIgnoreCase("") || response.body().getPeaLogo() != null){
-                        Picasso.get().load(Constants.BASE_URL+response.body().getPeaLogo()).into(img_logo);
+                        if (response.body().getPeaLogo().equalsIgnoreCase("NULL")) {
+                            Picasso.get().load(R.drawable.organise_event)
+                                    .into(img_logo);
+                        } else {
+                            Picasso.get().load(Constants.BASE_URL+response.body().getPeaLogo()).into(img_logo);
+                        }
                         layout_add.setVisibility(View.VISIBLE);
                         layout_members.setVisibility(View.VISIBLE);
                         pea_id = response.body().getPeaId();

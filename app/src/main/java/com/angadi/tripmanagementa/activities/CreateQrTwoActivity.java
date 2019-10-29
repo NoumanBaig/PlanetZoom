@@ -56,6 +56,7 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Field;
 
 import static com.schibstedspain.leku.LocationPickerActivityKt.LATITUDE;
 import static com.schibstedspain.leku.LocationPickerActivityKt.LOCATION_ADDRESS;
@@ -164,7 +165,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
        categoryAdapter.setClickListener(new SubCategoryAdapter.SubCategoryClickListener() {
            @Override
            public void onClick(View view, int position, String id, String sub_id, Boolean selected, String cat_name, String image) {
-               Toast.makeText(CreateQrTwoActivity.this, ""+position+" "+sub_id+" "+cat_name, Toast.LENGTH_SHORT).show();
+//               Toast.makeText(CreateQrTwoActivity.this, ""+position+" "+sub_id+" "+cat_name, Toast.LENGTH_SHORT).show();
                str_sub_id=sub_id;
            }
        });
@@ -200,8 +201,8 @@ public class CreateQrTwoActivity extends AppCompatActivity {
                scrollDown();
                break;
             case R.id.btn_generate:
-                validate(edt_name.getText().toString(),edt_email.getText().toString(),edt_website.getText().toString(),edt_adds.getText().toString(),
-                        edt_whatsapp.getText().toString(),edt_facebook.getText().toString(),edt_facebook.getText().toString(),edt_youtube.getText().toString());
+                validate(edt_name.getText().toString(),edt_email.getText().toString(),edt_mobile.getText().toString(),edt_whatsapp.getText().toString(),
+                        edt_facebook.getText().toString(),edt_youtube.getText().toString(),edt_website.getText().toString(),edt_adds.getText().toString());
                 break;
             case R.id.img_loc:
                 startActivityForResult(new LocationPickerActivity.Builder()
@@ -259,7 +260,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
 
         // setting maximum bitmap width and height
-        intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true);
+        intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, false);
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 1000);
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 1000);
 
@@ -271,7 +272,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_GALLERY_IMAGE);
 
         // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
         startActivityForResult(intent, REQUEST_IMAGE);
@@ -343,16 +344,17 @@ public class CreateQrTwoActivity extends AppCompatActivity {
     }
 
 
-    private void validate(String name,String email, String mobile, String website, String address, String whatsApp, String faceBook, String youTube){
+    private void validate(String name,String email, String mobile, String whatsApp, String faceBook, String youTube, String website, String address){
         if (name.equalsIgnoreCase("")){
             Toast.makeText(this, "Please enter Name", Toast.LENGTH_SHORT).show();
         }else {
-           createQRcode( name, email,  mobile,  website,  address,  whatsApp,  faceBook,  youTube);
+           createQRcode( name, email,  mobile,whatsApp,faceBook,youTube,  website,  address );
         }
 
     }
 
-    private void createQRcode(String name,String email, String mobile, String website, String address, String whatsApp, String faceBook, String youTube){
+
+    private void createQRcode(String name,String email, String mobile, String whatsApp, String faceBook, String youTube, String website, String address){
         loadingIndicator.setVisibility(View.VISIBLE);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<CreateQrResponse> responseCall = apiInterface.create_qr(Prefs.with(CreateQrTwoActivity.this).getString("token","")
@@ -369,6 +371,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
                     intent.putExtra("qr_id",response.body().getQrCodeId());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
+                    Log.e("getQrCodeId",""+response.body().getQrCodeId());
                 }else {
                     Toast.makeText(CreateQrTwoActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }

@@ -2,6 +2,8 @@ package com.angadi.tripmanagementa.rest;
 
 
 import com.angadi.tripmanagementa.models.AddMembersResponse;
+import com.angadi.tripmanagementa.models.AddPlacesResponse;
+import com.angadi.tripmanagementa.models.AddVolunteerResponse;
 import com.angadi.tripmanagementa.models.DeleteSubEventResponse;
 import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.models.AdminEventsResponse;
@@ -18,6 +20,10 @@ import com.angadi.tripmanagementa.models.LogoutResponse;
 import com.angadi.tripmanagementa.models.MembersResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.models.RegisterResponse;
+import com.angadi.tripmanagementa.models.SearchVolunteerResponse;
+import com.angadi.tripmanagementa.models.ShowAllMembersResponse;
+import com.angadi.tripmanagementa.models.ShowMembersResponse;
+import com.angadi.tripmanagementa.models.ShowPlacesResponse;
 import com.angadi.tripmanagementa.models.ShowSubEventResponse;
 import com.angadi.tripmanagementa.models.SubCategoriesResponse;
 import com.angadi.tripmanagementa.models.SubEventResponse;
@@ -89,6 +95,11 @@ public interface ApiInterface {
     @POST("qrcode/scan/")
     @FormUrlEncoded
     Call<QrScanResponse> scanResult(@Field("scan") String show,
+                                    @Field("scan_id") String scan_id,
+                                    @Field("token") String token);
+    @POST("qrcode/scan_event_qr/")
+    @FormUrlEncoded
+    Call<QrScanResponse> scanEventResult(@Field("scan") String show,
                                     @Field("scan_id") String scan_id,
                                     @Field("token") String token);
 
@@ -218,7 +229,48 @@ public interface ApiInterface {
                                         @Field("eauqa_email") String eauqa_email,
                                         @Field("eauqa_phone") String eauqa_phone,
                                         @Field("eauqa_about") String eauqa_about,
+                                        @Field("eauqa_event_id") String eauqa_event_id,
                                         @Field("eauqa_users_type") String eauqa_users_type);
+
+    @POST("events/add_volunteers/")
+    @FormUrlEncoded
+    Call<AddVolunteerResponse> addVolunteer(@Field("add_volunteers") String show,
+                                              @Field("token") String token,
+                                              @Field("eavqa_uid") String event_id,
+                                              @Field("eavqa_event_id") String sub_event_id,
+                                            @Field("eavqa_about") String eavqa_about,
+                                            @Field("eavqa_map_place_id") String eavqa_map_place_id,
+                                            @Field("eavqa_users_type") String eavqa_users_type);
+
+    @POST("events/searching_volunteers/")
+    @FormUrlEncoded
+    Call<SearchVolunteerResponse> searchVolunteer(@Field("searching_volunteers") String show,
+                                               @Field("login_id") String login_id);
+
+    @POST("events/add_map_places/")
+    @FormUrlEncoded
+    Call<AddPlacesResponse> addPlaces(@Field("add_map_places") String show,
+                                            @Field("token") String token,
+                                      @Field("etlaa_event_id") String etlaa_event_id,
+                                      @Field("etlaa_places") String etlaa_places);
+
+    @POST("events/show_map_places/")
+    @FormUrlEncoded
+    Call<ShowPlacesResponse> showPlaces(@Field("show_map_places") String show,
+                                       @Field("etlaa_event_id") String etlaa_event_id);
+
+    @POST("events/show_added_members/")
+    @FormUrlEncoded
+    Call<ShowMembersResponse> showMembers(@Field("show_added_members") String show,
+                                         @Field("token") String token,
+                                          @Field("show_event_id") String show_event_id,
+                                          @Field("list_id") String list_id);
+    @POST("events/show_added_members/")
+    @FormUrlEncoded
+    Call<ShowAllMembersResponse> showAllMembers(@Field("show_added_members") String show,
+                                             @Field("token") String token,
+                                             @Field("show_event_id") String show_event_id,
+                                             @Field("list_id") String list_id);
 //    @POST("logout/")
 //    @FormUrlEncoded
 //    Call<Logout> logout(@Field("token_id") String token);

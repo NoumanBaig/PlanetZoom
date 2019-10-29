@@ -26,28 +26,54 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activities.AddMembersActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.AddSubEventsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.EventDetailsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.CreateEventActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.ShowEventsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.ImagePickerActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.ScanResultActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.CreateQrThreeActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.CreateQrTwoActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.CreateQrActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.HomeActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AddVolunteersActivity"></activity>
+        <activity android:name=".activities.MyTicketDetailsActivity" />
+        <activity android:name=".activities.MyTicketActivity" />
+        <activity
+            android:name=".activities.AddMembersActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.AddSubEventsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.EventDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CreateEventActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ShowEventsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ImagePickerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ScanResultActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CreateQrThreeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CreateQrTwoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.CreateQrActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.HomeActivity"
+            android:screenOrientation="portrait" >
+        <intent-filter android:autoVerify="true">
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+
+            <data
+                android:host="product"
+                android:pathPrefix="/view"
+                android:scheme="planetzoom" />
+        </intent-filter>
+        </activity>
         <activity
             android:name=".activities.LoginActivity"
             android:screenOrientation="portrait"

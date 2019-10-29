@@ -110,6 +110,9 @@ public class AddSubEventsActivity extends AppCompatActivity {
                 loadingIndicator.setVisibility(View.GONE);
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     Toast.makeText(AddSubEventsActivity.this, "Day Added Successfully", Toast.LENGTH_SHORT).show();
+                    edt_title.setText("");
+                    edt_desc.setText("");
+                    edt_title.requestFocus();
                     getSubEvents(str_id);
                 } else {
                     Toast.makeText(AddSubEventsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();

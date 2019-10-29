@@ -1,7 +1,6 @@
 package com.angadi.tripmanagementa.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,66 +12,66 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
-import com.angadi.tripmanagementa.models.AdminEventResult;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.MyViewHolder> {
+public class MyTicketsAdapter extends RecyclerView.Adapter<MyTicketsAdapter.MyViewHolder> {
 
     Context mContext;
-    List<AdminEventResult> resultList;
-    AdminEventClickListener adminEventClickListener;
+//    List<AllEventsResult> resultList;
+    TicketClickListener ticketClickListener;
 
-    public AdminEventsAdapter(Context context, List<AdminEventResult> resultList) {
+    public MyTicketsAdapter(Context context) {
         super();
         this.mContext = context;
-        this.resultList = resultList;
+//        this.resultList = resultList;
     }
 
-    public interface AdminEventClickListener {
+    public interface TicketClickListener {
         void onClick(View view, int position, String id);
     }
 
-    public void setClickListener(AdminEventClickListener adminEventClickListener) {
-        this.adminEventClickListener = adminEventClickListener;
+    public void setClickListener(TicketClickListener ticketClickListener) {
+        this.ticketClickListener = ticketClickListener;
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.cell_admin_events, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.cell_events, parent, false);
         return new MyViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        holder.txt_title.setText(resultList.get(position).getPeaName());
-        holder.txt_date.setText(resultList.get(position).getPeaDate());
-        holder.txt_location.setText(resultList.get(position).getPeaVenue());
-        if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")) {
-            Picasso.get().load(R.drawable.organise_event)
-                    .into(holder.imageView);
-        } else {
-            Picasso.get().load(Constants.BASE_URL + resultList.get(position).getPea_logo()).into(holder.imageView);
-        }
-
+//        holder.txt_title.setText(resultList.get(position).getPeaName());
+//        holder.txt_date.setText(resultList.get(position).getPeaDate());
+//        holder.txt_location.setText(resultList.get(position).getPeaVenue());
+//        if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")) {
+//            Picasso.get().load(R.drawable.organise_event)
+//                    .into(holder.imageView);
+//        } else {
+//            Picasso.get().load(Constants.BASE_URL + resultList.get(position).getPea_logo()).into(holder.imageView);
+//        }
+//
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (adminEventClickListener != null) {
-                    adminEventClickListener.onClick(view, position, resultList.get(position).getPeaId());
+                if (ticketClickListener != null) {
+                    ticketClickListener.onClick(view, position,"1");
                 }
             }
         });
+
     }
 
     @Override
     public int getItemCount() {
-        return resultList.size();
+        return 10;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

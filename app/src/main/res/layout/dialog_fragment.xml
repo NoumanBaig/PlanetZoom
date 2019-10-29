@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ScanResultActivity">
+    android:orientation="vertical">
 
-    <include layout="@layout/toolbar_two"/>
-
-    <FrameLayout
-        android:id="@+id/content_frame"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetStartWithNavigation="0dp"
+            app:navigationIcon="@drawable/ic_arrow_back" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
@@ -32,195 +41,195 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp" />
 
-                <LinearLayout
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="5">
-
                     <LinearLayout
-                        android:layout_width="0dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:weightSum="5">
 
                         <LinearLayout
-                            android:id="@+id/linear_fav"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_favorite" />
-
-                        </LinearLayout>
-
-                        <com.angadi.tripmanagementa.utils.CustomFontTextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:padding="4dp"
-                            android:text="Favorites"
-                            android:textAllCaps="true"
-                            android:textColor="@color/black"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:id="@+id/linear_like"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
+                            android:layout_weight="1"
                             android:gravity="center"
                             android:orientation="vertical">
 
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_thumb_up" />
+                            <LinearLayout
+                                android:id="@+id/linear_fav"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:background="@drawable/round_background"
+                                android:foreground="?attr/selectableItemBackground"
+                                android:gravity="center"
+                                android:orientation="vertical">
 
-                        </LinearLayout>
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_favorite" />
 
-                        <com.angadi.tripmanagementa.utils.CustomFontTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="4dp"
-                            android:text="Likes"
-                            android:textAllCaps="true"
-                            android:textColor="@color/black"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:id="@+id/linear_dislike"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_thumb_down" />
-
-                        </LinearLayout>
-
-                        <com.angadi.tripmanagementa.utils.CustomFontTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="4dp"
-                            android:text="Dis likes"
-                            android:textAllCaps="true"
-                            android:textColor="@color/black"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:id="@+id/linear_share"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
-                            android:gravity="center"
-                            android:orientation="vertical">
-
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_share" />
-
-                        </LinearLayout>
-
-                        <com.angadi.tripmanagementa.utils.CustomFontTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="4dp"
-                            android:text="Share"
-                            android:textAllCaps="true"
-                            android:textColor="@color/black"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:id="@+id/linear_ratings"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
-                            android:gravity="center"
-                            android:orientation="vertical">
+                            </LinearLayout>
 
                             <com.angadi.tripmanagementa.utils.CustomFontTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="4.5"
-                                android:textColor="@color/white"
-                                android:textSize="16sp"
+                                android:padding="4dp"
+                                android:text="Favorites"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"
                                 android:textStyle="bold" />
 
                         </LinearLayout>
 
-                        <com.angadi.tripmanagementa.utils.CustomFontTextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:padding="4dp"
-                            android:text="Ratings"
-                            android:textAllCaps="true"
-                            android:textColor="@color/black"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/linear_like"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:background="@drawable/round_background"
+                                android:foreground="?attr/selectableItemBackground"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_thumb_up" />
+
+                            </LinearLayout>
+
+                            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Likes"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/linear_dislike"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:background="@drawable/round_background"
+                                android:foreground="?attr/selectableItemBackground"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_thumb_down" />
+
+                            </LinearLayout>
+
+                            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Dis likes"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/linear_share"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:background="@drawable/round_background"
+                                android:foreground="?attr/selectableItemBackground"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_share" />
+
+                            </LinearLayout>
+
+                            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Share"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <LinearLayout
+                                android:id="@+id/linear_ratings"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:background="@drawable/round_background"
+                                android:foreground="?attr/selectableItemBackground"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="4.5"
+                                    android:textColor="@color/white"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="4dp"
+                                android:text="Ratings"
+                                android:textAllCaps="true"
+                                android:textColor="@color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
 
                     </LinearLayout>
-
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:paddingLeft="20dp"
@@ -491,18 +500,9 @@
                 </LinearLayout>
 
             </LinearLayout>
-
         </androidx.core.widget.NestedScrollView>
 
-        <include
-            android:id="@+id/loading_layout"
-            layout="@layout/loading_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-    </FrameLayout>
+    </LinearLayout>
 
 
 </LinearLayout>

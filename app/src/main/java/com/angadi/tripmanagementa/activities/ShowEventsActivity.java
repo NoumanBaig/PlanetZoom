@@ -73,23 +73,22 @@ public class ShowEventsActivity extends AppCompatActivity {
                 layout_adminEvents.setVisibility(View.VISIBLE);
                 layout_create.setVisibility(View.VISIBLE);
                 try {
-                   // String event_id = Prefs.with(ShowEventsActivity.this).getString("event_id", "");
+                    // String event_id = Prefs.with(ShowEventsActivity.this).getString("event_id", "");
                     String user_id = Prefs.with(ShowEventsActivity.this).getString("user_id", "");
 //                    Log.e("event_id", event_id);
                     Log.e("user_id", user_id);
 //                    if (!event_id.equalsIgnoreCase("")) {
 //                        getAdminEvents(event_id);
 //                    } else
-                        if (!user_id.equalsIgnoreCase("")){
+                    if (!user_id.equalsIgnoreCase("")) {
                         getAdminEvents(user_id);
-                    }
-                    else {
+                    } else {
                         Toast.makeText(this, "No Events right now.", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }else if (string.equalsIgnoreCase("created")) {
+            } else if (string.equalsIgnoreCase("created")) {
                 layout_allEvents.setVisibility(View.GONE);
                 layout_all.setVisibility(View.GONE);
                 layout_adminEvents.setVisibility(View.VISIBLE);
@@ -105,8 +104,7 @@ public class ShowEventsActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            else {
+            } else {
                 layout_allEvents.setVisibility(View.VISIBLE);
                 layout_all.setVisibility(View.VISIBLE);
                 layout_adminEvents.setVisibility(View.GONE);
@@ -139,7 +137,7 @@ public class ShowEventsActivity extends AppCompatActivity {
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         List<AllEventsResult> resultList = response.body().getResults();
-                       setAdapter(resultList);
+                        setAdapter(resultList);
                     } else {
                         Toast.makeText(ShowEventsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -161,7 +159,7 @@ public class ShowEventsActivity extends AppCompatActivity {
         String token = Prefs.with(ShowEventsActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<AdminEventsResponse> call = apiInterface.getAdminEvents("true", token, "3");
+        Call<AdminEventsResponse> call = apiInterface.getAdminEvents("true", token, id);
         call.enqueue(new Callback<AdminEventsResponse>() {
             @Override
             public void onResponse(Call<AdminEventsResponse> call, Response<AdminEventsResponse> response) {
@@ -189,19 +187,19 @@ public class ShowEventsActivity extends AppCompatActivity {
 
     }
 
-    private void setAdapter(List<AllEventsResult> resultList){
+    private void setAdapter(List<AllEventsResult> resultList) {
         recyclerEvents.setLayoutManager(new LinearLayoutManager(ShowEventsActivity.this));
         EventsAdapter eventsAdapter = new EventsAdapter(ShowEventsActivity.this, resultList);
         recyclerEvents.setAdapter(eventsAdapter);
         eventsAdapter.setClickListener(new EventsAdapter.EventClickListener() {
             @Override
             public void onClick(View view, int position, String id) {
-                startActivity(new Intent(ShowEventsActivity.this,EventDetailsActivity.class).putExtra("event_id",id));
+                startActivity(new Intent(ShowEventsActivity.this, EventDetailsActivity.class).putExtra("event_id", id));
             }
         });
     }
 
-    private void setAdminAdapter(List<AdminEventResult> resultList){
+    private void setAdminAdapter(List<AdminEventResult> resultList) {
         recyclerAdminEvents.setLayoutManager(new LinearLayoutManager(ShowEventsActivity.this));
         AdminEventsAdapter eventsAdapter = new AdminEventsAdapter(ShowEventsActivity.this, resultList);
         recyclerAdminEvents.setAdapter(eventsAdapter);
@@ -210,26 +208,30 @@ public class ShowEventsActivity extends AppCompatActivity {
             public void onClick(View view, int position, String id) {
 //                EventDetailsFragment fragment = new EventDetailsFragment();
 //                loadFragment(fragment);
-                startActivity(new Intent(ShowEventsActivity.this,CreateEventActivity.class)
-                .putExtra("id",id));
+                startActivity(new Intent(ShowEventsActivity.this, CreateEventActivity.class)
+                        .putExtra("id", id));
                 finish();
             }
         });
     }
 
-    private void loadFragment(Fragment fragment){
+    private void loadFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame,fragment);
+        fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
-    @OnClick({R.id.txt_createEvent})
+    @OnClick({R.id.txt_createEvent, R.id.txt_myTickets})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.txt_createEvent:
                 startActivity(new Intent(this, CreateEventActivity.class));
                 finish();
+                break;
+            case R.id.txt_myTickets:
+                startActivity(new Intent(this, MyTicketActivity.class));
+//                finish();
                 break;
 
         }

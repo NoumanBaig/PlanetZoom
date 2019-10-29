@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/bg_gradient"
     tools:context=".activities.EventDetailsActivity">
 
     <include
@@ -31,13 +29,9 @@
                     android:id="@+id/layout_ticket"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginRight="10dp"
                     android:layout_below="@+id/tool"
                     android:background="@android:color/transparent"
-                    android:orientation="vertical"
-                    android:paddingTop="20dp">
+                    android:orientation="vertical">
 
                     <androidx.core.widget.NestedScrollView
                         android:layout_below="@+id/tool"
@@ -48,6 +42,7 @@
                         android:fillViewport="true">
 
                     <LinearLayout
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -61,7 +56,7 @@
 
                     <com.angadi.tripmanagementa.utils.CustomFontTextView
                         android:textStyle="bold"
-                        android:padding="10dp"
+                        android:padding="15dp"
                         android:textColor="@color/black"
                         android:id="@+id/txt_name"
                         android:textSize="18sp"
@@ -257,19 +252,19 @@
                             android:background="@color/gray" />
 
 
-                        <com.angadi.tripmanagementa.utils.CustomFontTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:padding="10dp"
-                            android:text="@string/sponsors"
-                            android:textColor="@color/black"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+<!--                        <com.angadi.tripmanagementa.utils.CustomFontTextView-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:padding="10dp"-->
+<!--                            android:text="@string/sponsors"-->
+<!--                            android:textColor="@color/black"-->
+<!--                            android:textSize="16sp"-->
+<!--                            android:textStyle="bold" />-->
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/gray" />
+<!--                        <View-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="1dp"-->
+<!--                            android:background="@color/gray" />-->
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recyclerSponsors"
@@ -307,6 +302,42 @@
                             android:background="@color/gray" />
 
 
+                        <LinearLayout
+                            android:weightSum="3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"/>
+
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                            </LinearLayout>
+
+
+
+                        </LinearLayout>
 
                     </LinearLayout>
                     </LinearLayout>

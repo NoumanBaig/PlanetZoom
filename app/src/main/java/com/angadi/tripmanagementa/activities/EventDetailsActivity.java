@@ -5,6 +5,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,10 +15,13 @@ import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.adapters.DaysAdapter;
+import com.angadi.tripmanagementa.adapters.MembersAdapter;
 import com.angadi.tripmanagementa.adapters.SubEventsAdapter;
 import com.angadi.tripmanagementa.models.AllEventsResponse;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.models.EventDetailsResponse;
+import com.angadi.tripmanagementa.models.MembersResponse;
+import com.angadi.tripmanagementa.models.MembersResult;
 import com.angadi.tripmanagementa.models.ShowSubEventResponse;
 import com.angadi.tripmanagementa.models.SubEventResult;
 import com.angadi.tripmanagementa.rest.ApiClient;
@@ -55,6 +59,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     ImageView imageView;
     @BindView(R.id.recyclerDates)
     RecyclerView recyclerDates;
+    @BindView(R.id.recyclerSponsors)
+    RecyclerView recyclerSponsors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +74,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        if (getIntent().getExtras() != null){
+        if (getIntent().getExtras() != null) {
             String event_id = getIntent().getStringExtra("event_id");
             getEventDetails(event_id);
         }
@@ -81,13 +87,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         return true;
     }
 
-    private void getEventDetails(String event_id){
+    private void getEventDetails(String event_id) {
         loadingIndicator.setVisibility(View.VISIBLE);
         String token = Prefs.with(EventDetailsActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<EventDetailsResponse> call = apiInterface.getEventDetails("true",token,event_id);
+        Call<EventDetailsResponse> call = apiInterface.getEventDetails("true", token, event_id);
         call.enqueue(new Callback<EventDetailsResponse>() {
             @Override
             public void onResponse(Call<EventDetailsResponse> call, Response<EventDetailsResponse> response) {
@@ -103,13 +109,11 @@ public class EventDetailsActivity extends AppCompatActivity {
                         txt_venue.setText(response.body().getPeaVenue());
                         txt_price.setText(response.body().getPeaPrice());
 
-                        if (!response.body().getPeaLogo().isEmpty()){
-                            Picasso.get().load(Constants.BASE_URL+response.body().getPeaLogo()).into(imageView);
-                        }else {
+                        if (response.body().getPeaLogo().equalsIgnoreCase("NULL")) {
                             Picasso.get().load(R.drawable.organise_event)
-                                    .error(R.drawable.organise_event)
-                                    .placeholder(R.drawable.organise_event)
                                     .into(imageView);
+                        } else {
+                            Picasso.get().load(Constants.BASE_URL + response.body().getPeaLogo()).into(imageView);
                         }
                         getSubEvents(event_id);
 
@@ -135,7 +139,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         String token = Prefs.with(EventDetailsActivity.this).getString("token", "");
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ShowSubEventResponse> call = apiInterface.showSubEvent("show",token,id);
+        Call<ShowSubEventResponse> call = apiInterface.showSubEvent("show", token, id);
         call.enqueue(new Callback<ShowSubEventResponse>() {
             @Override
             public void onResponse(Call<ShowSubEventResponse> call, Response<ShowSubEventResponse> response) {
@@ -162,14 +166,51 @@ public class EventDetailsActivity extends AppCompatActivity {
         recyclerDates.setLayoutManager(new LinearLayoutManager(this));
         SubEventsAdapter subEventsAdapter = new SubEventsAdapter(this, resultList);
         recyclerDates.setAdapter(subEventsAdapter);
-
+        getMembers();
         subEventsAdapter.setClickListener(new SubEventsAdapter.ClickListener() {
             @Override
-            public void onClick(View view, int position, String id,String title, String desc) {
+            public void onClick(View view, int position, String id, String title, String desc) {
 
             }
         });
     }
 
+    private void getMembers(){
+        loadingIndicator.setVisibility(View.VISIBLE);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<MembersResponse> call = apiInterface.getMembers("true");
+        call.enqueue(new Callback<MembersResponse>() {
+            @Override
+            public void onResponse(Call<MembersResponse> call, Response<MembersResponse> response) {
+                Log.e("getMembers",new Gson().toJson(response));
+                loadingIndicator.setVisibility(View.GONE);
+                if (response.body().getStatus().equalsIgnoreCase("success")){
+                    List<MembersResult> membersResultList = response.body().getResults();
+                    setMembersAdapter(membersResultList);
+                }else {
+                    Toast.makeText(EventDetailsActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MembersResponse> call, Throwable t) {
+                Log.e("getMembers",""+t);
+                loadingIndicator.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void setMembersAdapter(List<MembersResult> membersResultList){
+        recyclerSponsors.setLayoutManager(new LinearLayoutManager(this));
+        MembersAdapter adapter = new MembersAdapter(this,membersResultList);
+        recyclerSponsors.setAdapter(adapter);
+
+        adapter.setClickListener(new MembersAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position, String id,String title) {
+                Log.e("title---->",""+title);
+            }
+        });
+    }
 
 }

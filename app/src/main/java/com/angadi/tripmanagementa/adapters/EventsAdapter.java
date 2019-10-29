@@ -19,15 +19,16 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHolder>{
+public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHolder> {
 
     Context mContext;
     List<AllEventsResult> resultList;
     EventClickListener eventClickListener;
+
     public EventsAdapter(Context context, List<AllEventsResult> resultList) {
         super();
-        this.mContext=context;
-        this.resultList=resultList;
+        this.mContext = context;
+        this.resultList = resultList;
     }
 
     public interface EventClickListener {
@@ -41,7 +42,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.cell_events,parent,false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.cell_events, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -51,24 +52,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         holder.txt_title.setText(resultList.get(position).getPeaName());
         holder.txt_date.setText(resultList.get(position).getPeaDate());
         holder.txt_location.setText(resultList.get(position).getPeaVenue());
-        if (!resultList.get(position).getPea_logo().isEmpty()){
-            Picasso.get().load(Constants.BASE_URL+resultList.get(position).getPea_logo()).into(holder.imageView);
-        }else {
-            if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")){
-                Picasso.get().load(R.drawable.organise_event)
-                        .error(R.drawable.organise_event)
-                        .placeholder(R.drawable.organise_event)
-                        .into(holder.imageView);
-            }
+        if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")) {
+            Picasso.get().load(R.drawable.organise_event)
+                    .into(holder.imageView);
+        } else {
+            Picasso.get().load(Constants.BASE_URL + resultList.get(position).getPea_logo()).into(holder.imageView);
         }
-
-
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (eventClickListener != null){
-                    eventClickListener.onClick(view,position,resultList.get(position).getPeaId());
+                if (eventClickListener != null) {
+                    eventClickListener.onClick(view, position, resultList.get(position).getPeaId());
                 }
             }
         });
@@ -80,9 +75,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         return resultList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder{
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txt_title,txt_date,txt_location;
+        TextView txt_title, txt_date, txt_location;
         ImageView imageView;
         LinearLayout layout;
 

@@ -4,12 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,11 +24,23 @@ import com.angadi.tripmanagementa.fragments.EventsFragment;
 import com.angadi.tripmanagementa.fragments.ProfileFragment;
 import com.angadi.tripmanagementa.fragments.DashboardFragment;
 import com.angadi.tripmanagementa.fragments.OffersFragment;
+import com.angadi.tripmanagementa.fragments.ScanResultDialogFragment;
+import com.angadi.tripmanagementa.models.QrScanResponse;
+import com.angadi.tripmanagementa.rest.ApiClient;
+import com.angadi.tripmanagementa.rest.ApiInterface;
+import com.angadi.tripmanagementa.utils.Prefs;
+import com.google.gson.Gson;
 import com.itparsa.circlenavigation.CircleItem;
 import com.itparsa.circlenavigation.CircleNavigationView;
 import com.itparsa.circlenavigation.CircleOnClickListener;
 
-public class HomeActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class HomeActivity extends AppCompatActivity implements ScanResultDialogFragment.MessageDialogListener{
 
     private static final int ZXING_CAMERA_PERMISSION = 1;
     @Override
@@ -99,6 +113,36 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        Uri data = intent.getData();
+
+        if (data != null) {
+            Log.e("data",""+data);
+            String qr_code_id = data.getQueryParameter("qr_code_id");
+            String qr_type = data.getQueryParameter("qr_type");
+            Log.e("qr_code_id ",""+qr_code_id);
+            Log.e("qr_type ",""+qr_type);
+           showResultDialog(qr_code_id,qr_type, String.valueOf(data));
+
+        }
+    }
+
+    public void showResultDialog(String qr_code_id,String qr_code_type,String qr_url) {
+        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance("Scan Results", qr_code_id,qr_code_type,qr_url,this);
+        newFragment2.show(HomeActivity.this.getSupportFragmentManager(), "scan_results");
+//        ScanResultDialogFragment fragment = MessageDialogFragment.newInstance("Scan Results", message, this);
+//        fragment.show(getActivity().getSupportFragmentManager(), "scan_results");
+    }
+
+
+
+
+
+
     private void loadFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,fragment);
@@ -147,5 +191,10 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
     }
 }

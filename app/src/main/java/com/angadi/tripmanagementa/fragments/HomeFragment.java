@@ -1,22 +1,24 @@
 package com.angadi.tripmanagementa.fragments;
 
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import com.angadi.tripmanagementa.R;
 import com.google.zxing.Result;
-import butterknife.BindView;
+
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class HomeFragment extends Fragment implements ZXingScannerView.ResultHandler,MessageDialogFragment.MessageDialogListener{
+public class HomeFragment extends Fragment implements ZXingScannerView.ResultHandler, ScanResultDialogFragment.DialogListener,
+ScanResultDialogFragment.MessageDialogListener{
 
 //    @BindView(R.id.flash)
 //    ImageView flash;
@@ -47,6 +49,8 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
        // mScannerView.setAspectTolerance(0.2f);
         mScannerView.startCamera();
         mScannerView.setFlash(mFlash);
+
+
     }
 
     @Override
@@ -63,8 +67,18 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 
     @Override
     public void handleResult(Result rawResult) {
-        showMessageDialog("Contents = " + rawResult.getText() + ", Format = " + rawResult.getBarcodeFormat().toString());
+        Log.e("rawResult",""+rawResult);
+//        showMessageDialog(rawResult.getText());
+        Uri data = Uri.parse(rawResult.getText());
 
+        if (data != null) {
+            String qr_code_id = data.getQueryParameter("qr_code_id");
+            String qr_type = data.getQueryParameter("qr_type");
+            Log.e("qr_code_id ",""+qr_code_id);
+            Log.e("qr_type ",""+qr_type);
+            showResultDialog(qr_code_id,qr_type, String.valueOf(data));
+
+        }
         // Note:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
@@ -78,9 +92,11 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //        }, 2000);
     }
 
-    public void showMessageDialog(String message) {
-        DialogFragment fragment = MessageDialogFragment.newInstance("Scan Results", message, this);
-        fragment.show(getActivity().getSupportFragmentManager(), "scan_results");
+    public void showResultDialog(String qr_code_id,String qr_code_type,String qr_url) {
+        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance("Scan Results", qr_code_id,qr_code_type,qr_url,this);
+        newFragment2.show(getActivity().getSupportFragmentManager(), "scan_results");
+//        ScanResultDialogFragment fragment = MessageDialogFragment.newInstance("Scan Results", message, this);
+//        fragment.show(getActivity().getSupportFragmentManager(), "scan_results");
     }
 
 //    @OnClick(R.id.flash)
@@ -89,9 +105,20 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //        mScannerView.setFlash(mFlash);
 //    }
 
+//    @Override
+//    public void onDialogPositiveClick(ScanResultDialogFragment dialog) {
+//        // Resume the camera
+//        mScannerView.resumeCameraPreview(this);
+//    }
+
+    @Override
+    public void updateResult(View view, int position, String id, String name, Integer cost, Integer tax) {
+        // Resume the camera
+
+    }
+
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        // Resume the camera
         mScannerView.resumeCameraPreview(this);
     }
 }

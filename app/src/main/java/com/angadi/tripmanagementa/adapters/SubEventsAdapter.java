@@ -68,15 +68,15 @@ public class SubEventsAdapter extends RecyclerView.Adapter<SubEventsAdapter.Cate
             }
         });
 
-        holder.layout_view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (clickListener != null) {
-                    clickListener.onClick(holder.linearLayout, position, resultList.get(position).getEsaaId(),
-                            resultList.get(position).getEsaaSubTitle(),resultList.get(position).getEsaaDesc());
-                }
-            }
-        });
+//        holder.layout_view.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (clickListener != null) {
+//                    clickListener.onClick(holder.linearLayout, position, resultList.get(position).getEsaaId(),
+//                            resultList.get(position).getEsaaSubTitle(),resultList.get(position).getEsaaDesc());
+//                }
+//            }
+//        });
 
     }
 
@@ -89,7 +89,7 @@ public class SubEventsAdapter extends RecyclerView.Adapter<SubEventsAdapter.Cate
 
         TextView textView;
         CardView linearLayout;
-        LinearLayout layout_view;
+//        LinearLayout layout_view;
 //        ImageView img_delete;
 
         public CategoryHolder(@NonNull View itemView) {
@@ -97,7 +97,7 @@ public class SubEventsAdapter extends RecyclerView.Adapter<SubEventsAdapter.Cate
 //            checkBox = itemView.findViewById(R.id.checkbox);
             textView = itemView.findViewById(R.id.txt);
             linearLayout = itemView.findViewById(R.id.linear);
-            layout_view = itemView.findViewById(R.id.layout_view);
+//            layout_view = itemView.findViewById(R.id.layout_view);
 //            img_delete = itemView.findViewById(R.id.img_delete);
         }
     }
