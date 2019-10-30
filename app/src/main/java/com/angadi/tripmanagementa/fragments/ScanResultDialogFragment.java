@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,8 +20,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import com.angadi.tripmanagementa.R;
-import com.angadi.tripmanagementa.activities.HomeActivity;
 import com.angadi.tripmanagementa.models.QrScanResponse;
+import com.angadi.tripmanagementa.models.ScanEventQrResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
@@ -31,8 +32,6 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.squareup.picasso.Picasso;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +50,7 @@ public class ScanResultDialogFragment extends DialogFragment {
     RecyclerView recyclerView;
     EditText edt_search;
     View loading;
-    String title,qr_code_id,qr_code_type,token,qr_url;
+    String title,qr_code_id,qr_code_type,token,qr_url,user_id;
     private MessageDialogListener mListener;
     View view;
     @BindView(R.id.imageView)
@@ -70,6 +69,10 @@ public class ScanResultDialogFragment extends DialogFragment {
     TextView txt_website;
     @BindView(R.id.txt_address)
     TextView txt_address;
+    @BindView(R.id.layout_normal)
+    LinearLayout layout_normal;
+    @BindView(R.id.layout_event)
+    LinearLayout layout_event;
     double screenInches;
     BitMatrix result;
 
@@ -80,13 +83,13 @@ public class ScanResultDialogFragment extends DialogFragment {
         setStyle(androidx.fragment.app.DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
     }
 
-    public static ScanResultDialogFragment newInstance(String title, String qr_code_id,String qr_code_type,String qr_url, MessageDialogListener listener) {
+    public static ScanResultDialogFragment newInstance(String title, String qr_code_id,String qr_code_type,String qr_url,String user_id, MessageDialogListener listener) {
         ScanResultDialogFragment dialogFragment = new ScanResultDialogFragment();
         dialogFragment.title=title;
         dialogFragment.qr_code_id=qr_code_id;
         dialogFragment.qr_code_type=qr_code_type;
-        dialogFragment.qr_code_type=qr_code_type;
         dialogFragment.qr_url=qr_url;
+        dialogFragment.user_id=user_id;
         dialogFragment.mListener=listener;
         return dialogFragment;
     }
@@ -127,7 +130,7 @@ public class ScanResultDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        view = inflater.inflate(R.layout.dialog_fragment, container, false);
+        view = inflater.inflate(R.layout.scan_dialog_fragment, container, false);
         ButterKnife.bind(this, view);
         toolbar = view.findViewById(R.id.toolbar);
 
@@ -142,6 +145,10 @@ public class ScanResultDialogFragment extends DialogFragment {
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
          token = Prefs.with(getActivity()).getString("token","");
          Log.e("token",token);
+         Log.e("user_id",user_id);
+         Log.e("qr_code_id",qr_code_id);
+         Log.e("qr_code_type",qr_code_type);
+         Log.e("qr_url",qr_url);
       //  Toast.makeText(getActivity(), ""+qr_code_id, Toast.LENGTH_SHORT).show();
 //        toolbar.inflateMenu(R.menu.example_dialog);
 //        toolbar.setOnMenuItemClickListener(item -> {
@@ -158,10 +165,14 @@ public class ScanResultDialogFragment extends DialogFragment {
             }
         });
 
-        if (qr_code_type.equalsIgnoreCase("events")){
-            getScanEventResult(qr_code_id);
+        if (qr_code_type.equalsIgnoreCase("event")){
+            layout_event.setVisibility(View.VISIBLE);
+            layout_normal.setVisibility(View.GONE);
+            getScanEventResult(user_id,qr_code_id);
         }else {
             getScanResult(qr_code_id);
+            layout_event.setVisibility(View.GONE);
+            layout_normal.setVisibility(View.VISIBLE);
         }
     }
 
@@ -184,7 +195,6 @@ public class ScanResultDialogFragment extends DialogFragment {
                 Log.e("scan_res", new Gson().toJson(response));
                 // loadingIndicator.setVisibility(View.GONE);
                 if (response.body().getStatus().equalsIgnoreCase("success")){
-
                     String name = response.body().getQcaaName();
                     String category = response.body().getQcaaCat();
                     String subCat = response.body().getQcaaSubCat();
@@ -219,25 +229,25 @@ public class ScanResultDialogFragment extends DialogFragment {
         });
     }
 
-    private void getScanEventResult(String id){
+    private void getScanEventResult(String user_id,String scan_id){
         // loadingIndicator.setVisibility(View.VISIBLE);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<QrScanResponse> responseCall = apiInterface.scanResult("true",id,token);
-        responseCall.enqueue(new Callback<QrScanResponse>() {
+        Call<ScanEventQrResponse> call = apiInterface.scanEventQr("true",token,user_id,scan_id);
+        call.enqueue(new Callback<ScanEventQrResponse>() {
             @Override
-            public void onResponse(Call<QrScanResponse> call, Response<QrScanResponse> response) {
-                Log.e("scan_res", new Gson().toJson(response));
+            public void onResponse(Call<ScanEventQrResponse> call, Response<ScanEventQrResponse> response) {
+                Log.e("getScanEventResult", new Gson().toJson(response));
                 // loadingIndicator.setVisibility(View.GONE);
                 if (response.body().getStatus().equalsIgnoreCase("success")){
-
+                    Toast.makeText(getActivity(), ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                 }else {
-                    // Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), ""+response.body().getStatus(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<QrScanResponse> call, Throwable t) {
-                Log.e("scan_res", ""+t);
+            public void onFailure(Call<ScanEventQrResponse> call, Throwable t) {
+                Log.e("getScanEventExp", ""+t);
                 // loadingIndicator.setVisibility(View.GONE);
             }
         });

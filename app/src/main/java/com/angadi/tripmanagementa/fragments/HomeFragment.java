@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+
 import com.angadi.tripmanagementa.R;
 import com.google.zxing.Result;
 
@@ -18,9 +19,9 @@ import butterknife.ButterKnife;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class HomeFragment extends Fragment implements ZXingScannerView.ResultHandler, ScanResultDialogFragment.DialogListener,
-ScanResultDialogFragment.MessageDialogListener{
+        ScanResultDialogFragment.MessageDialogListener {
 
-//    @BindView(R.id.flash)
+    //    @BindView(R.id.flash)
 //    ImageView flash;
     private static final String FLASH_STATE = "FLASH_STATE";
     private ZXingScannerView mScannerView;
@@ -46,7 +47,7 @@ ScanResultDialogFragment.MessageDialogListener{
         mScannerView.setResultHandler(this);
         // You can optionally set aspect ratio tolerance level
         // that is used in calculating the optimal Camera preview size
-       // mScannerView.setAspectTolerance(0.2f);
+        // mScannerView.setAspectTolerance(0.2f);
         mScannerView.startCamera();
         mScannerView.setFlash(mFlash);
 
@@ -67,17 +68,27 @@ ScanResultDialogFragment.MessageDialogListener{
 
     @Override
     public void handleResult(Result rawResult) {
-        Log.e("rawResult",""+rawResult);
-//        showMessageDialog(rawResult.getText());
-        Uri data = Uri.parse(rawResult.getText());
+        Log.e("rawResult", "" + rawResult);
+        try {
+            Uri data = Uri.parse(rawResult.getText());
+            if (data != null) {
+    //            rawResult: https://planetzoom.app/qr/MTQ=?qr_type=profile
+                String new_qr_id = String.valueOf(rawResult);
+                new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 20);
+                new_qr_id = new_qr_id.substring(0, new_qr_id.indexOf("?"));
+                Log.e("new_qr_id", new_qr_id);
 
-        if (data != null) {
-            String qr_code_id = data.getQueryParameter("qr_code_id");
-            String qr_type = data.getQueryParameter("qr_type");
-            Log.e("qr_code_id ",""+qr_code_id);
-            Log.e("qr_type ",""+qr_type);
-            showResultDialog(qr_code_id,qr_type, String.valueOf(data));
+                String qr_type = data.getQueryParameter("qr_type");
+                String qr_user_id = data.getQueryParameter("qr_user_id");
+                Log.e("qr_type ", "" + qr_type);
+                Log.e("qr_user_id ", "" + qr_user_id);
 
+                showResultDialog(new_qr_id, qr_type, String.valueOf(data), qr_user_id);
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         // Note:
         // * Wait 2 seconds to resume the preview.
@@ -92,8 +103,8 @@ ScanResultDialogFragment.MessageDialogListener{
 //        }, 2000);
     }
 
-    public void showResultDialog(String qr_code_id,String qr_code_type,String qr_url) {
-        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance("Scan Results", qr_code_id,qr_code_type,qr_url,this);
+    public void showResultDialog(String qr_code_id, String qr_code_type, String qr_url, String user_id) {
+        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance("Scan Results", qr_code_id, qr_code_type, qr_url, user_id, this);
         newFragment2.show(getActivity().getSupportFragmentManager(), "scan_results");
 //        ScanResultDialogFragment fragment = MessageDialogFragment.newInstance("Scan Results", message, this);
 //        fragment.show(getActivity().getSupportFragmentManager(), "scan_results");

@@ -19,6 +19,7 @@ import com.angadi.tripmanagementa.adapters.MembersAdapter;
 import com.angadi.tripmanagementa.adapters.SubEventsAdapter;
 import com.angadi.tripmanagementa.models.AllEventsResponse;
 import com.angadi.tripmanagementa.models.AllEventsResult;
+import com.angadi.tripmanagementa.models.BuyTicketResponse;
 import com.angadi.tripmanagementa.models.EventDetailsResponse;
 import com.angadi.tripmanagementa.models.MembersResponse;
 import com.angadi.tripmanagementa.models.MembersResult;
@@ -35,6 +36,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,6 +63,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     RecyclerView recyclerDates;
     @BindView(R.id.recyclerSponsors)
     RecyclerView recyclerSponsors;
+    String event_id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +78,9 @@ public class EventDetailsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         if (getIntent().getExtras() != null) {
-            String event_id = getIntent().getStringExtra("event_id");
+             event_id = getIntent().getStringExtra("event_id");
             getEventDetails(event_id);
+            Log.e("event_id",""+event_id);
         }
 
     }
@@ -85,6 +89,11 @@ public class EventDetailsActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+
+    @OnClick(R.id.btn_buy)
+    public void onClick(View view){
+        checkTicket();
     }
 
     private void getEventDetails(String event_id) {
@@ -209,6 +218,61 @@ public class EventDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, int position, String id,String title) {
                 Log.e("title---->",""+title);
+            }
+        });
+    }
+
+    private void checkTicket(){
+        loadingIndicator.setVisibility(View.VISIBLE);
+        String token = Prefs.with(EventDetailsActivity.this).getString("token", "");
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<BuyTicketResponse> call = apiInterface.checkTicket("true",token,event_id);
+        call.enqueue(new Callback<BuyTicketResponse>() {
+            @Override
+            public void onResponse(Call<BuyTicketResponse> call, Response<BuyTicketResponse> response) {
+                Log.e("checkTicket",new Gson().toJson(response));
+                loadingIndicator.setVisibility(View.GONE);
+                if (response.body().getStatus().equalsIgnoreCase("success")){
+                    buyTicket();
+                }else {
+                    Toast.makeText(EventDetailsActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BuyTicketResponse> call, Throwable t) {
+                Log.e("checkTicket",""+t);
+                loadingIndicator.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    private void buyTicket(){
+        loadingIndicator.setVisibility(View.VISIBLE);
+        String token = Prefs.with(EventDetailsActivity.this).getString("token", "");
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<BuyTicketResponse> call = apiInterface.buyTicket("true",token,event_id);
+        call.enqueue(new Callback<BuyTicketResponse>() {
+            @Override
+            public void onResponse(Call<BuyTicketResponse> call, Response<BuyTicketResponse> response) {
+                Log.e("buyTicket",new Gson().toJson(response));
+                loadingIndicator.setVisibility(View.GONE);
+                if (response.body().getStatus().equalsIgnoreCase("success")){
+                    Toast.makeText(EventDetailsActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                    startActivity(new Intent(EventDetailsActivity.this,MyTicketActivity.class));
+                    finish();
+                }else {
+                    Toast.makeText(EventDetailsActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BuyTicketResponse> call, Throwable t) {
+                Log.e("buyTicket",""+t);
+                loadingIndicator.setVisibility(View.GONE);
             }
         });
     }

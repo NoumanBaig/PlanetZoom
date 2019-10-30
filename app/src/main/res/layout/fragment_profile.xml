@@ -31,6 +31,13 @@
                 android:padding="30dp">
 
                 <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+
+
+                <FrameLayout
+                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
 
@@ -45,14 +52,22 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/img_edit"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:layout_marginBottom="5dp"
                         android:layout_gravity="bottom|right"
                         android:src="@drawable/pencil"
                         app:civ_circle_background_color="@color/white" />
                 </FrameLayout>
 
+                    <ImageView
+                        android:id="@+id/img_settings"
+                        android:layout_gravity="top|right"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:src="@drawable/ic_settings"/>
+                </FrameLayout>
 
             </LinearLayout>
 
@@ -323,14 +338,6 @@
                         android:textColor="@color/white"
                         android:textStyle="bold" />
 
-                    <com.angadi.tripmanagementa.utils.CustomFontButton
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:text="Logout"
-                        android:textStyle="bold"
-                        android:id="@+id/btn_logout"
-                        android:layout_marginBottom="20dp"
-                        android:background="@drawable/edittext_background"/>
 
                 </LinearLayout>
 

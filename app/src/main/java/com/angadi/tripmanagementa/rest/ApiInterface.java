@@ -4,7 +4,10 @@ package com.angadi.tripmanagementa.rest;
 import com.angadi.tripmanagementa.models.AddMembersResponse;
 import com.angadi.tripmanagementa.models.AddPlacesResponse;
 import com.angadi.tripmanagementa.models.AddVolunteerResponse;
+import com.angadi.tripmanagementa.models.BuyTicketResponse;
+import com.angadi.tripmanagementa.models.CheckAdminResponse;
 import com.angadi.tripmanagementa.models.DeleteSubEventResponse;
+import com.angadi.tripmanagementa.models.MyTicketsResponse;
 import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.models.AdminEventsResponse;
 import com.angadi.tripmanagementa.models.AdminResponse;
@@ -20,6 +23,7 @@ import com.angadi.tripmanagementa.models.LogoutResponse;
 import com.angadi.tripmanagementa.models.MembersResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.models.RegisterResponse;
+import com.angadi.tripmanagementa.models.ScanEventQrResponse;
 import com.angadi.tripmanagementa.models.SearchVolunteerResponse;
 import com.angadi.tripmanagementa.models.ShowAllMembersResponse;
 import com.angadi.tripmanagementa.models.ShowMembersResponse;
@@ -271,6 +275,35 @@ public interface ApiInterface {
                                              @Field("token") String token,
                                              @Field("show_event_id") String show_event_id,
                                              @Field("list_id") String list_id);
+
+    @POST("events/is_set_admin/")
+    @FormUrlEncoded
+    Call<CheckAdminResponse> checkAdmin(@Field("is_set_admin") String set,
+                                      @Field("token") String token);
+
+    @POST("tickets/check_tickets/")
+    @FormUrlEncoded
+    Call<BuyTicketResponse> checkTicket(@Field("check_tickets") String check,
+                                        @Field("token") String token,
+                                        @Field("event_id") String event_id);
+
+    @POST("tickets/buying/")
+    @FormUrlEncoded
+    Call<BuyTicketResponse> buyTicket(@Field("buying") String buy,
+                                        @Field("token") String token,
+                                        @Field("event_id") String event_id);
+
+    @POST("tickets/my_tickets/")
+    @FormUrlEncoded
+    Call<MyTicketsResponse> myTickets(@Field("my_tickets") String show,
+                                      @Field("token") String token);
+
+    @POST("qrcode/scan_event_qr/")
+    @FormUrlEncoded
+    Call<ScanEventQrResponse> scanEventQr(@Field("scan_event_qr") String scan,
+                                        @Field("token") String token,
+                                          @Field("user_id") String user_id,
+                                          @Field("scan_id") String scan_id);
 //    @POST("logout/")
 //    @FormUrlEncoded
 //    Call<Logout> logout(@Field("token_id") String token);

@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
@@ -25,6 +26,8 @@ import com.angadi.tripmanagementa.fragments.ProfileFragment;
 import com.angadi.tripmanagementa.fragments.DashboardFragment;
 import com.angadi.tripmanagementa.fragments.OffersFragment;
 import com.angadi.tripmanagementa.fragments.ScanResultDialogFragment;
+import com.angadi.tripmanagementa.models.CheckAdminResponse;
+import com.angadi.tripmanagementa.models.LogoutResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
@@ -58,10 +61,11 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mCircleNavigationView.addCircleItem(new CircleItem("Events", R.drawable.event));
         mCircleNavigationView.addCircleItem(new CircleItem("Dashboard", R.drawable.dashboard));
         mCircleNavigationView.addCircleItem(new CircleItem("Profile", R.drawable.user));
-//        mCircleNavigationView.setCenterButtonSelectedIcon(R.drawable.ic_chat);
-//        mCircleNavigationView.setCenterButtonResourceBackground(R.drawable.ic_arrow_back);
+
         HomeFragment homeFragment = new HomeFragment();
         loadFragment(homeFragment);
+        //checking whether user is a organiser or not
+        checkAdmin();
         mCircleNavigationView.setCircleOnClickListener(new CircleOnClickListener() {
             @Override
             public void onCentreButtonClick() {
@@ -124,23 +128,21 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
             Log.e("data",""+data);
             String qr_code_id = data.getQueryParameter("qr_code_id");
             String qr_type = data.getQueryParameter("qr_type");
+            String qr_user_id = data.getQueryParameter("qr_user_id");
+
             Log.e("qr_code_id ",""+qr_code_id);
             Log.e("qr_type ",""+qr_type);
-           showResultDialog(qr_code_id,qr_type, String.valueOf(data));
-
+            Log.e("qr_user_id ",""+qr_user_id);
+           showResultDialog(qr_code_id,qr_type, String.valueOf(data),qr_user_id);
         }
     }
 
-    public void showResultDialog(String qr_code_id,String qr_code_type,String qr_url) {
-        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance("Scan Results", qr_code_id,qr_code_type,qr_url,this);
+    public void showResultDialog(String qr_code_id,String qr_code_type,String qr_url,String user_id) {
+        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance("Scan Results", qr_code_id,qr_code_type,qr_url,user_id,this);
         newFragment2.show(HomeActivity.this.getSupportFragmentManager(), "scan_results");
 //        ScanResultDialogFragment fragment = MessageDialogFragment.newInstance("Scan Results", message, this);
 //        fragment.show(getActivity().getSupportFragmentManager(), "scan_results");
     }
-
-
-
-
 
 
     private void loadFragment(Fragment fragment){
@@ -197,4 +199,33 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
     public void onDialogPositiveClick(DialogFragment dialog) {
 
     }
+
+    private void checkAdmin() {
+//        loadingIndicator.setVisibility(View.VISIBLE);
+        String token = Prefs.with(HomeActivity.this).getString("token","");
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<CheckAdminResponse> call = apiInterface.checkAdmin("true",token);
+        call.enqueue(new Callback<CheckAdminResponse>() {
+            @Override
+            public void onResponse(Call<CheckAdminResponse> call, Response<CheckAdminResponse> response) {
+                Log.e("checkAdmin", new Gson().toJson(response));
+                if (response.body().getStatus().equalsIgnoreCase("success")) {
+                  if (response.body().getStatusAdmin().equalsIgnoreCase("ADMIN")){
+                      Prefs.with(HomeActivity.this).save("organiser","true");
+                  }else {
+                      Prefs.with(HomeActivity.this).save("organiser","false");
+                  }
+                } else {
+                    Log.e("checkAdmin", "" + response.body().getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<CheckAdminResponse> call, Throwable t) {
+                Log.e("checkAdmin", "" + t);
+
+            }
+        });
+    }
+
 }

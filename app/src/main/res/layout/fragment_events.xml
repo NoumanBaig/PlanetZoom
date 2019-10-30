@@ -15,6 +15,7 @@
 
 
   <LinearLayout
+      android:id="@+id/layout_both"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:weightSum="2"
@@ -74,6 +75,40 @@
       </LinearLayout>
 
   </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_one"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:id="@+id/layout_explorer"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:background="@drawable/explore_event"
+                android:orientation="vertical">
+
+                <com.angadi.tripmanagementa.utils.CustomFontTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="@color/yellow"
+                    android:background="@color/transparent"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+                    android:text="Explore Events"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
         <include
             android:id="@+id/loading_layout"

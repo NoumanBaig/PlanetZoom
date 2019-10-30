@@ -573,7 +573,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         edt_venue.setText(response.body().getPeaVenue());
                         edt_noOfTickets.setText(response.body().getPeaTickets());
                         edt_price.setText(response.body().getPeaPrice());
-                        edt_organisation.setText(response.body().getPea_org());
+                        edt_organisation.setText(response.body().getPeaOrg());
 //                        if (!response.body().getPeaLogo().equalsIgnoreCase("") || response.body().getPeaLogo() != null){
                         if (response.body().getPeaLogo().equalsIgnoreCase("NULL")) {
                             Picasso.get().load(R.drawable.organise_event)

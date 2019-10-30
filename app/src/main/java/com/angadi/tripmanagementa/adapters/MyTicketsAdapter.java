@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.AllEventsResult;
+import com.angadi.tripmanagementa.models.MyTicketsResult;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.squareup.picasso.Picasso;
 
@@ -21,13 +22,13 @@ import java.util.List;
 public class MyTicketsAdapter extends RecyclerView.Adapter<MyTicketsAdapter.MyViewHolder> {
 
     Context mContext;
-//    List<AllEventsResult> resultList;
+    List<MyTicketsResult> resultList;
     TicketClickListener ticketClickListener;
 
-    public MyTicketsAdapter(Context context) {
+    public MyTicketsAdapter(Context context, List<MyTicketsResult> resultList) {
         super();
         this.mContext = context;
-//        this.resultList = resultList;
+        this.resultList = resultList;
     }
 
     public interface TicketClickListener {
@@ -48,21 +49,21 @@ public class MyTicketsAdapter extends RecyclerView.Adapter<MyTicketsAdapter.MyVi
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-//        holder.txt_title.setText(resultList.get(position).getPeaName());
-//        holder.txt_date.setText(resultList.get(position).getPeaDate());
-//        holder.txt_location.setText(resultList.get(position).getPeaVenue());
-//        if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")) {
-//            Picasso.get().load(R.drawable.organise_event)
-//                    .into(holder.imageView);
-//        } else {
-//            Picasso.get().load(Constants.BASE_URL + resultList.get(position).getPea_logo()).into(holder.imageView);
-//        }
-//
+        holder.txt_title.setText(resultList.get(position).getPeaName());
+        holder.txt_date.setText(resultList.get(position).getPeaDate());
+        holder.txt_location.setText(resultList.get(position).getPeaVenue());
+        if (resultList.get(position).getPeaLogo().equalsIgnoreCase("NULL")) {
+            Picasso.get().load(R.drawable.explore_event)
+                    .into(holder.imageView);
+        } else {
+            Picasso.get().load(Constants.BASE_URL + resultList.get(position).getPeaLogo()).into(holder.imageView);
+        }
+
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (ticketClickListener != null) {
-                    ticketClickListener.onClick(view, position,"1");
+                    ticketClickListener.onClick(view, position,resultList.get(position).getPeaId());
                 }
             }
         });
@@ -71,7 +72,7 @@ public class MyTicketsAdapter extends RecyclerView.Adapter<MyTicketsAdapter.MyVi
 
     @Override
     public int getItemCount() {
-        return 10;
+        return resultList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

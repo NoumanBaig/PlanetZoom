@@ -19,6 +19,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.angadi.tripmanagementa.R;
@@ -50,7 +51,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements SettingsDialogFragment.MessageDialogListener {
 
     @BindView(R.id.img_edit)
     ImageView img_edit;
@@ -145,15 +146,17 @@ public class ProfileFragment extends Fragment {
         edt_youtube.setText(response.body().getUraYoutube());
         edt_insta.setText(response.body().getUraInstagram());
 
-        Picasso.get().load(Constants.BASE_URL+response.body().getUraImg()).into(imageView);
+        if (response.body().getUraImg().equalsIgnoreCase("NULL")){
+            Picasso.get().load(R.drawable.ic_account_circle).into(imageView);
+        }else {
+            Picasso.get().load(Constants.BASE_URL+response.body().getUraImg()).into(imageView);
+
+        }
     }
 
-    @OnClick({R.id.btn_logout,R.id.btn_update,R.id.img_edit})
+    @OnClick({R.id.btn_update,R.id.img_edit,R.id.img_settings})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.btn_logout:
-                logout();
-                break;
             case R.id.btn_update:
                 editProfile(edt_name.getText().toString(),"",edt_about.getText().toString(),edt_address.getText().toString(),
                         edt_company.getText().toString(),edt_designation.getText().toString(),edt_website.getText().toString(),edt_busi_phone.getText().toString(),
@@ -181,6 +184,10 @@ public class ProfileFragment extends Fragment {
                             }
                         }).check();
 
+                break;
+            case R.id.img_settings:
+                DialogFragment dialogFragment = SettingsDialogFragment.newInstance("Settings",this);
+                dialogFragment.show(getActivity().getSupportFragmentManager(), "scan_results");
                 break;
         }
     }
@@ -310,34 +317,9 @@ public class ProfileFragment extends Fragment {
     }
 
 
-    private void logout() {
-        loadingIndicator.setVisibility(View.VISIBLE);
-        String token = Prefs.with(getActivity()).getString("token", "");
-        Log.e("token", token);
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-       Call<LogoutResponse> responseCall = apiInterface.logout(token);
-       responseCall.enqueue(new Callback<LogoutResponse>() {
-           @Override
-           public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
-               Log.e("logout", new Gson().toJson(response));
-               loadingIndicator.setVisibility(View.GONE);
-               if (response.body().getStatus().equalsIgnoreCase("success")) {
-                   Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                   Prefs.with(getActivity()).remove();
-                   Intent i = new Intent(getActivity(), LoginActivity.class);
-                   i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                   startActivity(i);
-               } else {
-                   Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-               }
-           }
 
-           @Override
-           public void onFailure(Call<LogoutResponse> call, Throwable t) {
-               Log.e("logout", "" + t);
-               loadingIndicator.setVisibility(View.GONE);
-           }
-       });
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
     }
-
 }
