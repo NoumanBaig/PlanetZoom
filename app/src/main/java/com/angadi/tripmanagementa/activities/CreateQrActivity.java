@@ -20,6 +20,7 @@ import com.angadi.tripmanagementa.models.VerifyOtp;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.AbstractBaseActivity;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -37,8 +38,8 @@ public class CreateQrActivity extends AppCompatActivity {
 
     @BindView(R.id.recyclerCat)
     RecyclerView recyclerView;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class CreateQrActivity extends AppCompatActivity {
 
     private void getAllCategories(){
        // showLoadingLayout(loadingIndicator);
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(CreateQrActivity.this,"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 //        RequestBody requestBody = new MultipartBody.Builder()
 //                .setType(MultipartBody.FORM)
@@ -85,7 +86,7 @@ public class CreateQrActivity extends AppCompatActivity {
             public void onResponse(Call<CategoriesResponse> call, Response<CategoriesResponse> response) {
                 Log.e("getAllCategories", new Gson().toJson(response));
               //  hideLoadingLayout(loadingIndicator);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
                     List<Result> results = response.body().getResults();
                     Log.e("results",""+results);
@@ -98,7 +99,7 @@ public class CreateQrActivity extends AppCompatActivity {
             public void onFailure(Call<CategoriesResponse> call, Throwable t) {
                 Log.e("getAllCat_fail", ""+t);
               // hideLoadingLayout(loadingIndicator);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }

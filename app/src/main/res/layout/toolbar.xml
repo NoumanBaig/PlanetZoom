@@ -25,6 +25,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
+                    android:id="@+id/img_toolbar"
                     android:src="@drawable/planet_zoom_white"
                     android:layout_width="100dp"
                     android:padding="5dp"

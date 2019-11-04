@@ -86,6 +86,7 @@ public class CountSectionAdapter extends SectionedRecyclerViewAdapter<CountHeade
 
     @Override
     protected void onBindItemViewHolder(CountItemViewHolder holder, int section, int position) {
-        holder.render(dashboardResultList.get(section).getQrCodeUniqueId().get(position).getQcaaId(), context.getResources().getColor(R.color.white));
+        holder.render(dashboardResultList.get(section).getQrCodeUniqueId().get(position).getQcaaCodeIdSecure(),
+                dashboardResultList.get(section).getQrCodeUniqueId().get(position).getQcaaCodeIdSecureLink(),context.getResources().getColor(R.color.white));
     }
 }

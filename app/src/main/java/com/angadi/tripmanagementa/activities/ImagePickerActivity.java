@@ -56,6 +56,10 @@ public class ImagePickerActivity extends AppCompatActivity {
         void onChooseGallerySelected();
     }
 
+    public interface PickerCameraListener {
+        void onTakeCameraSelected();
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +102,31 @@ public class ImagePickerActivity extends AppCompatActivity {
                 case 1:
                     listener.onChooseGallerySelected();
                     break;
+            }
+        });
+
+        // create and show the alert dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    public static void showCameraOnly(Context context, PickerCameraListener listener) {
+        // setup the alert builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Set Event Pic");
+
+        // add a list
+        String[] animals = {"Take a picture"};
+        builder.setItems(animals, (dialog, which) -> {
+            switch (which) {
+                case 0:
+                    listener.onTakeCameraSelected();
+                    break;
+                    default:
+                        break;
+//                case 1:
+//                    listener.onChooseGallerySelected();
+//                    break;
             }
         });
 

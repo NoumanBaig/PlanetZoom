@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
@@ -36,9 +37,12 @@ import com.google.gson.Gson;
 import com.itparsa.circlenavigation.CircleItem;
 import com.itparsa.circlenavigation.CircleNavigationView;
 import com.itparsa.circlenavigation.CircleOnClickListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -46,10 +50,14 @@ import retrofit2.Response;
 public class HomeActivity extends AppCompatActivity implements ScanResultDialogFragment.MessageDialogListener{
 
     private static final int ZXING_CAMERA_PERMISSION = 1;
+    @BindView(R.id.img_toolbar)
+    ImageView img_toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final CircleNavigationView mCircleNavigationView;
@@ -61,7 +69,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mCircleNavigationView.addCircleItem(new CircleItem("Events", R.drawable.event));
         mCircleNavigationView.addCircleItem(new CircleItem("Dashboard", R.drawable.dashboard));
         mCircleNavigationView.addCircleItem(new CircleItem("Profile", R.drawable.user));
-
+        Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
         HomeFragment homeFragment = new HomeFragment();
         loadFragment(homeFragment);
         //checking whether user is a organiser or not
@@ -69,6 +77,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mCircleNavigationView.setCircleOnClickListener(new CircleOnClickListener() {
             @Override
             public void onCentreButtonClick() {
+                Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
                 HomeFragment homeFragment = new HomeFragment();
                 loadFragment(homeFragment);
 //                Toast.makeText(HomeActivity.this, "Center Item Click", Toast.LENGTH_SHORT).show();
@@ -82,20 +91,24 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
 //
                if (itemIndex==0){
                    Log.e("Zero","---->");
+                   Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
                    OffersFragment zeroFragment = new OffersFragment();
                    loadFragment(zeroFragment);
                }else if (itemIndex==1){
                    Log.e("One","---->");
+                   Picasso.get().load(R.drawable.planet_event).into(img_toolbar);
                    EventsFragment oneFragment = new EventsFragment();
                    loadFragment(oneFragment);
                }
                else if (itemIndex==2){
                    Log.e("Two","---->");
+                   Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
                    DashboardFragment zeroFragment = new DashboardFragment();
                    loadFragment(zeroFragment);
                }
                else if (itemIndex==3){
                    Log.e("Three","---->");
+                   Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
                    ProfileFragment zeroFragment = new ProfileFragment();
                    loadFragment(zeroFragment);
                }
@@ -138,7 +151,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
     }
 
     public void showResultDialog(String qr_code_id,String qr_code_type,String qr_url,String user_id) {
-        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance("Scan Results", qr_code_id,qr_code_type,qr_url,user_id,this);
+        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance(HomeActivity.this,"Scan Results", qr_code_id,qr_code_type,qr_url,user_id,this);
         newFragment2.show(HomeActivity.this.getSupportFragmentManager(), "scan_results");
 //        ScanResultDialogFragment fragment = MessageDialogFragment.newInstance("Scan Results", message, this);
 //        fragment.show(getActivity().getSupportFragmentManager(), "scan_results");
@@ -190,6 +203,8 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         //noinspection SimplifiableIfStatement
         if (id == R.id.create_qr) {
            startActivity(new Intent(HomeActivity.this,CreateQrActivity.class));
+        }else if (id == R.id.search){
+            Toast.makeText(this, "Search clicked...", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);

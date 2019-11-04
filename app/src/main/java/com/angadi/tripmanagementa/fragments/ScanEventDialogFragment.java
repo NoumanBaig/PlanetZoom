@@ -1,11 +1,9 @@
 package com.angadi.tripmanagementa.fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -19,10 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
@@ -40,7 +38,6 @@ import com.google.zxing.common.BitMatrix;
 import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +48,7 @@ import retrofit2.Response;
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
-public class ScanResultDialogFragment extends DialogFragment {
+public class ScanEventDialogFragment extends DialogFragment {
 
     public static final String TAG = "example_dialog";
 
@@ -60,38 +57,38 @@ public class ScanResultDialogFragment extends DialogFragment {
     EditText edt_search;
     View loading;
     String title,qr_code_id,qr_code_type,token,qr_url,user_id;
-    private MessageDialogListener mListener;
+    private EventDialogListener mListener;
     View view;
-    @BindView(R.id.imageView)
-    ImageView imageView;
-    @BindView(R.id.img_qr_code)
-    ImageView img_qr_code;
-    @BindView(R.id.txt_name)
-    TextView txt_name;
-    @BindView(R.id.txt_cat)
-    TextView txt_cat;
-    @BindView(R.id.txt_mobile)
-    TextView txt_mobile;
-    @BindView(R.id.txt_email)
-    TextView txt_email;
-    @BindView(R.id.txt_website)
-    TextView txt_website;
-    @BindView(R.id.txt_address)
-    TextView txt_address;
     double screenInches;
     BitMatrix result;
-    Context mContext;
+    @BindView(R.id.img)
+    ImageView imageView;
+    @BindView(R.id.txt_name)
+    TextView txt_name;
+    @BindView(R.id.txt_date)
+    TextView txt_date;
+    @BindView(R.id.txt_venue)
+    TextView txt_venue;
+    @BindView(R.id.txt_location)
+    TextView txt_location;
+    @BindView(R.id.txt_amount)
+    TextView txt_amount;
+
+    @BindView(R.id.layout_ticket)
+    LinearLayout layout_ticket;
+    @BindView(R.id.layout_animation)
+    LinearLayout layout_animation;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setStyle(androidx.fragment.app.DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
     }
 
-    public static ScanResultDialogFragment newInstance(Context context,String title, String qr_code_id,String qr_code_type,String qr_url,String user_id, MessageDialogListener listener) {
-        ScanResultDialogFragment dialogFragment = new ScanResultDialogFragment();
-        dialogFragment.mContext=context;
+    public static ScanEventDialogFragment newInstance(String title, String qr_code_id, String qr_code_type, String qr_url, String user_id, EventDialogListener listener) {
+        ScanEventDialogFragment dialogFragment = new ScanEventDialogFragment();
         dialogFragment.title=title;
         dialogFragment.qr_code_id=qr_code_id;
         dialogFragment.qr_code_type=qr_code_type;
@@ -107,8 +104,8 @@ public class ScanResultDialogFragment extends DialogFragment {
         void updateResult(View view, int position, String id, String name, Integer cost, Integer tax);
     }
 
-    public interface MessageDialogListener {
-        public void onDialogPositiveClick(androidx.fragment.app.DialogFragment dialog);
+    public interface EventDialogListener {
+        public void onEventPositiveClick(DialogFragment dialog);
     }
 
 //    @Override
@@ -131,14 +128,15 @@ public class ScanResultDialogFragment extends DialogFragment {
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
-            MyProgressDialog.show(mContext,"Loading...");
+            MyProgressDialog.show(getActivity(), "Loading...");
+
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        view = inflater.inflate(R.layout.scan_dialog_fragment, container, false);
+        view = inflater.inflate(R.layout.scan_event_fragment, container, false);
         ButterKnife.bind(this, view);
         toolbar = view.findViewById(R.id.toolbar);
 
@@ -152,7 +150,7 @@ public class ScanResultDialogFragment extends DialogFragment {
         toolbar.setTitle(title);
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
         try {
-            token = Prefs.with(mContext).getString("token","");
+            token = Prefs.with(getActivity()).getString("token","");
             Log.e("token",token);
             Log.e("user_id",user_id);
             Log.e("qr_code_id",qr_code_id);
@@ -171,13 +169,13 @@ public class ScanResultDialogFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if(mListener != null) {
-                    mListener.onDialogPositiveClick(ScanResultDialogFragment.this);
+                    mListener.onEventPositiveClick(ScanEventDialogFragment.this);
                 }
                 dismiss();
             }
         });
 
-        getScanResult(qr_code_id);
+        getScanEventResult(user_id,qr_code_id);
 
     }
 
@@ -185,57 +183,101 @@ public class ScanResultDialogFragment extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         if(mListener != null) {
-            mListener.onDialogPositiveClick(ScanResultDialogFragment.this);
+            mListener.onEventPositiveClick(ScanEventDialogFragment.this);
         }
         dialog.dismiss();
     }
 
-    private void getScanResult(String id){
 
+    private void getScanEventResult(String user_id,String scan_id){
+        MyProgressDialog.show(getActivity(),"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<QrScanResponse> responseCall = apiInterface.scanResult("true",id,token);
-        responseCall.enqueue(new Callback<QrScanResponse>() {
+        Call<ScanEventQrResponse> call = apiInterface.scanEventQr("true",token,user_id,scan_id);
+        call.enqueue(new Callback<ScanEventQrResponse>() {
             @Override
-            public void onResponse(Call<QrScanResponse> call, Response<QrScanResponse> response) {
-                Log.e("scan_res", new Gson().toJson(response));
+            public void onResponse(Call<ScanEventQrResponse> call, Response<ScanEventQrResponse> response) {
+                Log.e("getScanEventResult", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
-                    String name = response.body().getQcaaName();
-                    String category = response.body().getQcaaCat();
-                    String subCat = response.body().getQcaaSubCat();
-                    String emailId = response.body().getQcaaEmailId();
-                    String phoneNo = response.body().getQcaaPhoneNo();
-                    String website = response.body().getQcaaWebsite();
-                    String place = response.body().getQcaaPlace();
-                    String logo = response.body().getQcaaProfileLogo();
-
-                    try {
-                        Picasso.get().load(Constants.BASE_URL+logo).into(imageView);
-                        txt_name.setText(name);
-                        txt_cat.setText(category+", "+subCat);
-                        txt_email.setText(emailId);
-                        txt_mobile.setText(phoneNo);
-                        txt_website.setText(website);
-                        txt_address.setText(place);
-                        //showQrCode(qr_url);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    layout_ticket.setVisibility(View.VISIBLE);
+                    layout_animation.setVisibility(View.GONE);
+                    txt_name.setText(response.body().getPeaName());
+                    txt_date.setText(response.body().getPeaDate());
+                    txt_venue.setText(response.body().getPeaVenue());
+                    txt_location.setText(response.body().getPeaLocation());
+                    txt_amount.setText(response.body().getPeaPrice());
+                    Picasso.get().load(Constants.BASE_URL+response.body().getPea_ticket_selfi()).into(imageView);
                 }else {
-                     Toast.makeText(mContext, "Error while fetching data", Toast.LENGTH_SHORT).show();
+                    layout_ticket.setVisibility(View.GONE);
+                    layout_animation.setVisibility(View.VISIBLE);
+                    Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<QrScanResponse> call, Throwable t) {
-                Log.e("scan_res", ""+t);
+            public void onFailure(Call<ScanEventQrResponse> call, Throwable t) {
+                Log.e("getScanEventExp", ""+t);
                MyProgressDialog.dismiss();
             }
         });
     }
 
+    private void showQrCode(String str_qr_id){
+        try {
+            Bitmap bitmap = encodeAsBitmap(str_qr_id);
+           // img_qr_code.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
 
+    Bitmap encodeAsBitmap(String list) throws WriterException {
+        Log.e("-----------------", String.valueOf(screenInches));
 
+        try {
+            Log.e("screenInches---->", String.valueOf(screenInches));
+            if (screenInches <= 5.2) {
+                Log.e("first", "first");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 600, 600, null);
+            } else if (screenInches >= 5.21 && screenInches <= 5.3) {
+                Log.e("second", "second");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
 
+            } else if (screenInches >= 5.31 && screenInches <= 5.5) {
+                Log.e("second1", "second1");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+
+            } else if (screenInches >= 5.6 && screenInches <= 5.99) {
+                Log.e("third", "third");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+
+            } else if (screenInches >= 6.1 && screenInches <= 6.5) {
+                Log.e("Fourth", "Fourth");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 760, 760, null);
+
+            } else {
+                Log.e("else", "else");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+            }
+
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
+        return bitmap;
+    }
 
 }

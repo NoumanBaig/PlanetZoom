@@ -46,6 +46,12 @@ public class ScanEventQrResponse {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("message")
+    @Expose
+    private String message;
+    @SerializedName("pea_ticket_selfi")
+    @Expose
+    private String pea_ticket_selfi;
 
     public String getPeaUid() {
         return peaUid;
@@ -157,5 +163,19 @@ public class ScanEventQrResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+    public String getPea_ticket_selfi() {
+        return pea_ticket_selfi;
+    }
+
+    public void setPea_ticket_selfi(String pea_ticket_selfi) {
+        this.pea_ticket_selfi = pea_ticket_selfi;
     }
 }

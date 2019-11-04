@@ -21,6 +21,7 @@ import com.angadi.tripmanagementa.models.QrCodeUniqueId;
 import com.angadi.tripmanagementa.models.Result;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.gson.Gson;
 import com.truizlop.sectionedrecyclerview.SectionedSpanSizeLookup;
@@ -38,8 +39,8 @@ public class DashboardFragment extends Fragment {
 
     @BindView(R.id.recyclerDashboard)
     RecyclerView recyclerView;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
     CountSectionAdapter adapter;
 
     @Nullable
@@ -56,7 +57,7 @@ public class DashboardFragment extends Fragment {
 
 
     private void getDashboardQrCodes(){
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(getActivity(),"Loading...");
         String token = Prefs.with(getActivity()).getString("token","");
         Log.e("token",token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -65,7 +66,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onResponse(Call<DashboardResponse> call, Response<DashboardResponse> response) {
                 Log.e("dashboard_res", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")){
 
@@ -89,7 +90,7 @@ public class DashboardFragment extends Fragment {
             @Override
             public void onFailure(Call<DashboardResponse> call, Throwable t) {
                 Log.e("dashboard_res", ""+t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
     }

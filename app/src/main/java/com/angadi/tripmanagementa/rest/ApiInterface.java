@@ -112,6 +112,12 @@ public interface ApiInterface {
     Call<ProfileResponse> getProfile(@Field("show") String show,
                                      @Field("token") String token);
 
+    @POST("profile/show/")
+    @FormUrlEncoded
+    Call<ProfileResponse> getScanProfile(@Field("show") String show,
+                                     @Field("token") String token,
+                                         @Field("profile_id") String profile_id);
+
     @POST("profile/edit/")
     @FormUrlEncoded
     Call<EditProfileResponse> editProfile(@Field("edit_profile") String show,
@@ -291,7 +297,8 @@ public interface ApiInterface {
     @FormUrlEncoded
     Call<BuyTicketResponse> buyTicket(@Field("buying") String buy,
                                         @Field("token") String token,
-                                        @Field("event_id") String event_id);
+                                        @Field("event_id") String event_id,
+                                      @Field("photo_upload") String photo_upload);
 
     @POST("tickets/my_tickets/")
     @FormUrlEncoded

@@ -46,6 +46,7 @@ import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.ImageUtil;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -83,8 +84,8 @@ public class CreateEventActivity extends AppCompatActivity {
     @BindView(R.id.img_logo)
     ImageView img_logo;
     String base64String;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
     @BindView(R.id.edt_name)
     EditText edt_name;
     @BindView(R.id.edt_desc)
@@ -306,12 +307,12 @@ public class CreateEventActivity extends AppCompatActivity {
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_IMAGE_CAPTURE);
 
         // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
 
         // setting maximum bitmap width and height
-        intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true);
+        intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, false);
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 1000);
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 1000);
 
@@ -323,7 +324,7 @@ public class CreateEventActivity extends AppCompatActivity {
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_GALLERY_IMAGE);
 
         // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
         startActivityForResult(intent, REQUEST_IMAGE);
@@ -425,7 +426,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void createEvent(String name, String price, String tickets, String location, String venue, String desc,
                              String date, String time, String organisation) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
 
@@ -436,7 +437,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CreateEventResponse> call, Response<CreateEventResponse> response) {
                 Log.e("createEvent", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -456,14 +457,14 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<CreateEventResponse> call, Throwable t) {
                 Log.e("createEvent", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }
 
     private void updateEvent(String name, String price, String tickets, String location, String venue, String desc,
                              String date, String time, String organisation, String id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
 
@@ -474,7 +475,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<CreateEventResponse> call, Response<CreateEventResponse> response) {
                 Log.e("updateEvent", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -490,21 +491,21 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<CreateEventResponse> call, Throwable t) {
                 Log.e("updateEvent", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }
 
 
     private void getMembers(){
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<MembersResponse> call = apiInterface.getMembers("true");
         call.enqueue(new Callback<MembersResponse>() {
             @Override
             public void onResponse(Call<MembersResponse> call, Response<MembersResponse> response) {
                 Log.e("getMembers",new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
                     List<MembersResult> membersResultList = response.body().getResults();
                     layout_members.setVisibility(View.VISIBLE);
@@ -518,7 +519,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<MembersResponse> call, Throwable t) {
                 Log.e("getMembers",""+t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }
@@ -551,7 +552,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void getEventDetails(String event_id){
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -561,7 +562,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<EventDetailsResponse> call, Response<EventDetailsResponse> response) {
                 Log.e("getEventDetails", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
 
@@ -597,7 +598,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<EventDetailsResponse> call, Throwable t) {
                 Log.e("getEventDetails", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
 

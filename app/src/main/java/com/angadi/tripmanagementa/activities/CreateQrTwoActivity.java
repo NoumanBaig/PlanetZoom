@@ -34,6 +34,7 @@ import com.angadi.tripmanagementa.models.SubResults;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.ImageUtil;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -68,8 +69,8 @@ public class CreateQrTwoActivity extends AppCompatActivity {
     @BindView(R.id.recyclerSubCat)
     RecyclerView recyclerView;
     String str_cat_id,str_sub_id;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
     @BindView(R.id.scrollView)
     NestedScrollView scrollView;
     double latitude = 12.9716, longitude = 77.5946;
@@ -122,14 +123,14 @@ public class CreateQrTwoActivity extends AppCompatActivity {
     }
 
     private void getSubCategories(String cat_id){
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(CreateQrTwoActivity.this,"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<SubCategoriesResponse> responseCall = apiInterface.getSubCategories("true",cat_id);
         responseCall.enqueue(new Callback<SubCategoriesResponse>() {
             @Override
             public void onResponse(Call<SubCategoriesResponse> call, Response<SubCategoriesResponse> response) {
                 Log.e("getSubCategories", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
                     List<SubResults> results = response.body().getResults();
                     Log.e("results",""+results);
@@ -141,7 +142,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SubCategoriesResponse> call, Throwable t) {
                 Log.e("getSubCat_fail", ""+t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
 
@@ -355,7 +356,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
 
 
     private void createQRcode(String name,String email, String mobile, String whatsApp, String faceBook, String youTube, String website, String address){
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(CreateQrTwoActivity.this,"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<CreateQrResponse> responseCall = apiInterface.create_qr(Prefs.with(CreateQrTwoActivity.this).getString("token","")
                 ,str_cat_id,str_sub_id,name,email,mobile,whatsApp,faceBook,youTube,website,address,base64String);
@@ -364,7 +365,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
             public void onResponse(Call<CreateQrResponse> call, Response<CreateQrResponse> response) {
                 Log.e("onResponse",new Gson().toJson(response));
                 Log.e("getSubCategories", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
                     Toast.makeText(CreateQrTwoActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(CreateQrTwoActivity.this,CreateQrThreeActivity.class);
@@ -380,7 +381,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<CreateQrResponse> call, Throwable t) {
                 Log.e("onFailure",""+t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
     }

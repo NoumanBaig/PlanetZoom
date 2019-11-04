@@ -22,6 +22,7 @@ import com.angadi.tripmanagementa.models.SubEventResponse;
 import com.angadi.tripmanagementa.models.SubEventResult;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.gson.Gson;
 
@@ -36,8 +37,8 @@ import retrofit2.Response;
 
 public class AddSubEventsActivity extends AppCompatActivity {
 
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
     @BindView(R.id.recyclerDays)
     RecyclerView recyclerView;
     @BindView(R.id.edt_title)
@@ -99,7 +100,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
     }
 
     private void createSubEvent(String id, String title, String desc) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(AddSubEventsActivity.this,"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         String token = Prefs.with(AddSubEventsActivity.this).getString("token", "");
         Call<SubEventResponse> call = apiInterface.createSubEvent("true", token, id, title, desc);
@@ -107,7 +108,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SubEventResponse> call, Response<SubEventResponse> response) {
                 Log.e("createSubEvent", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     Toast.makeText(AddSubEventsActivity.this, "Day Added Successfully", Toast.LENGTH_SHORT).show();
                     edt_title.setText("");
@@ -122,13 +123,13 @@ public class AddSubEventsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SubEventResponse> call, Throwable t) {
                 Log.e("createSubEvent", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
     }
 
     private void getSubEvents(String id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+       MyProgressDialog.show(AddSubEventsActivity.this,"Loading...");
         String token = Prefs.with(AddSubEventsActivity.this).getString("token", "");
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -137,7 +138,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ShowSubEventResponse> call, Response<ShowSubEventResponse> response) {
                 Log.e("getSubEvents", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     List<SubEventResult> resultList = response.body().getResults();
                     setAdapter(resultList);
@@ -149,7 +150,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ShowSubEventResponse> call, Throwable t) {
                 Log.e("getSubEventsExp", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
 
@@ -183,7 +184,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
 
 
     private void deleteSubEvent(String id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+       MyProgressDialog.show(AddSubEventsActivity.this,"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         String token = Prefs.with(AddSubEventsActivity.this).getString("token", "");
 
@@ -192,7 +193,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<DeleteSubEventResponse> call, Response<DeleteSubEventResponse> response) {
                 Log.e("deleteSubEvent", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     Toast.makeText(AddSubEventsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 } else {
@@ -203,7 +204,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<DeleteSubEventResponse> call, Throwable t) {
                 Log.e("deleteSubEvent", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
 
@@ -211,7 +212,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
 
 
     private void updateSubEvent(String id, String title, String desc,String click_id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+       MyProgressDialog.show(AddSubEventsActivity.this,"Loading...");
         String token = Prefs.with(AddSubEventsActivity.this).getString("token", "");
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -220,7 +221,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SubEventResponse> call, Response<SubEventResponse> response) {
                 Log.e("createSubEvent", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     Toast.makeText(AddSubEventsActivity.this, "Day Updated Successfully", Toast.LENGTH_SHORT).show();
                     btn_add.setText("Add");
@@ -235,7 +236,7 @@ public class AddSubEventsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SubEventResponse> call, Throwable t) {
                 Log.e("createSubEvent", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }

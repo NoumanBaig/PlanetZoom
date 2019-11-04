@@ -18,6 +18,7 @@ import com.angadi.tripmanagementa.models.MyTicketsResponse;
 import com.angadi.tripmanagementa.models.MyTicketsResult;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.gson.Gson;
 
@@ -33,8 +34,8 @@ public class MyTicketActivity extends AppCompatActivity {
 
     @BindView(R.id.recyclerViewTickets)
     RecyclerView recyclerView;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class MyTicketActivity extends AppCompatActivity {
     }
 
     private void getTickets(){
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(MyTicketActivity.this,"Loading...");
         String token = Prefs.with(MyTicketActivity.this).getString("token", "");
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -67,7 +68,7 @@ public class MyTicketActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MyTicketsResponse> call, Response<MyTicketsResponse> response) {
                 Log.e("getTickets",new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
 
                     List<MyTicketsResult> resultList = response.body().getResults();
@@ -80,7 +81,7 @@ public class MyTicketActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<MyTicketsResponse> call, Throwable t) {
                 Log.e("getTickets",""+t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
 

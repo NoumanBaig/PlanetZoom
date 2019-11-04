@@ -18,8 +18,8 @@ import com.google.zxing.Result;
 import butterknife.ButterKnife;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class HomeFragment extends Fragment implements ZXingScannerView.ResultHandler, ScanResultDialogFragment.DialogListener,
-        ScanResultDialogFragment.MessageDialogListener {
+public class HomeFragment extends Fragment implements ZXingScannerView.ResultHandler,
+        ScanResultDialogFragment.MessageDialogListener,ScanEventDialogFragment.EventDialogListener,ScanProfileDialogFragment.ProfileDialogListener {
 
     //    @BindView(R.id.flash)
 //    ImageView flash;
@@ -103,9 +103,20 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //        }, 2000);
     }
 
-    public void showResultDialog(String qr_code_id, String qr_code_type, String qr_url, String user_id) {
-        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance("Scan Results", qr_code_id, qr_code_type, qr_url, user_id, this);
-        newFragment2.show(getActivity().getSupportFragmentManager(), "scan_results");
+    private void showResultDialog(String qr_code_id, String qr_code_type, String qr_url, String user_id) {
+        if (qr_code_type.equalsIgnoreCase("event")){
+            DialogFragment event_ticket = ScanEventDialogFragment.newInstance("Event Ticket", qr_code_id, qr_code_type, qr_url, user_id, this);
+            event_ticket.show(getActivity().getSupportFragmentManager(), "event_ticket");
+
+        }else if (qr_code_type.equalsIgnoreCase("user")){
+            DialogFragment user_profile = ScanProfileDialogFragment.newInstance("User Profile", qr_code_id, qr_code_type, qr_url, user_id, this);
+            user_profile.show(getActivity().getSupportFragmentManager(), "user_profile");
+
+        }else {
+            DialogFragment scan_results = ScanResultDialogFragment.newInstance(getActivity(),"Scan Results", qr_code_id, qr_code_type, qr_url, user_id, this);
+            scan_results.show(getActivity().getSupportFragmentManager(), "scan_results");
+
+        }
 //        ScanResultDialogFragment fragment = MessageDialogFragment.newInstance("Scan Results", message, this);
 //        fragment.show(getActivity().getSupportFragmentManager(), "scan_results");
     }
@@ -122,14 +133,24 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //        mScannerView.resumeCameraPreview(this);
 //    }
 
-    @Override
-    public void updateResult(View view, int position, String id, String name, Integer cost, Integer tax) {
-        // Resume the camera
-
-    }
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         mScannerView.resumeCameraPreview(this);
     }
+
+    @Override
+    public void onEventPositiveClick(DialogFragment dialog) {
+        mScannerView.resumeCameraPreview(this);
+    }
+
+    @Override
+    public void onProfilePositiveClick(DialogFragment dialog) {
+        mScannerView.resumeCameraPreview(this);
+    }
+
+//    @Override
+//    public void onDialogPositiveClick(DialogFragment dialog) {
+//        mScannerView.resumeCameraPreview(this);
+//    }
 }

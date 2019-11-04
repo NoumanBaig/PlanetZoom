@@ -24,6 +24,7 @@ import com.angadi.tripmanagementa.models.AllEventsResponse;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.gson.Gson;
 
@@ -50,8 +51,8 @@ public class ShowEventsActivity extends AppCompatActivity {
     FrameLayout layout_create;
     @BindView(R.id.layout_all)
     FrameLayout layout_all;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +124,7 @@ public class ShowEventsActivity extends AppCompatActivity {
     }
 
     private void getAllEvents() {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(ShowEventsActivity.this,"Loading...");
         String token = Prefs.with(ShowEventsActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -133,7 +134,7 @@ public class ShowEventsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AllEventsResponse> call, Response<AllEventsResponse> response) {
                 Log.e("getAllEvents", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         List<AllEventsResult> resultList = response.body().getResults();
@@ -149,13 +150,13 @@ public class ShowEventsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<AllEventsResponse> call, Throwable t) {
                 Log.e("getAllEvents", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }
 
     private void getAdminEvents(String id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(ShowEventsActivity.this,"Loading...");
         String token = Prefs.with(ShowEventsActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -164,7 +165,7 @@ public class ShowEventsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AdminEventsResponse> call, Response<AdminEventsResponse> response) {
                 Log.e("getAdminEvents", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         List<AdminEventResult> resultList = response.body().getResults();
@@ -181,7 +182,7 @@ public class ShowEventsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<AdminEventsResponse> call, Throwable t) {
                 Log.e("getAdminEvents", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
 

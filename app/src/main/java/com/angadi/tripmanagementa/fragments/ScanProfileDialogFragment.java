@@ -1,11 +1,9 @@
 package com.angadi.tripmanagementa.fragments;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
@@ -19,10 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
@@ -40,7 +38,6 @@ import com.google.zxing.common.BitMatrix;
 import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +48,7 @@ import retrofit2.Response;
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
-public class ScanResultDialogFragment extends DialogFragment {
+public class ScanProfileDialogFragment extends DialogFragment {
 
     public static final String TAG = "example_dialog";
 
@@ -59,13 +56,11 @@ public class ScanResultDialogFragment extends DialogFragment {
     RecyclerView recyclerView;
     EditText edt_search;
     View loading;
-    String title,qr_code_id,qr_code_type,token,qr_url,user_id;
-    private MessageDialogListener mListener;
+    String title, qr_code_id, qr_code_type, token, qr_url, user_id;
+    private ProfileDialogListener mListener;
     View view;
     @BindView(R.id.imageView)
     ImageView imageView;
-    @BindView(R.id.img_qr_code)
-    ImageView img_qr_code;
     @BindView(R.id.txt_name)
     TextView txt_name;
     @BindView(R.id.txt_cat)
@@ -78,37 +73,35 @@ public class ScanResultDialogFragment extends DialogFragment {
     TextView txt_website;
     @BindView(R.id.txt_address)
     TextView txt_address;
+
     double screenInches;
     BitMatrix result;
-    Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        setStyle(androidx.fragment.app.DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
     }
 
-    public static ScanResultDialogFragment newInstance(Context context,String title, String qr_code_id,String qr_code_type,String qr_url,String user_id, MessageDialogListener listener) {
-        ScanResultDialogFragment dialogFragment = new ScanResultDialogFragment();
-        dialogFragment.mContext=context;
-        dialogFragment.title=title;
-        dialogFragment.qr_code_id=qr_code_id;
-        dialogFragment.qr_code_type=qr_code_type;
-        dialogFragment.qr_url=qr_url;
-        dialogFragment.user_id=user_id;
-        dialogFragment.mListener=listener;
+    public static ScanProfileDialogFragment newInstance(String title, String qr_code_id, String qr_code_type, String qr_url, String user_id, ProfileDialogListener listener) {
+        ScanProfileDialogFragment dialogFragment = new ScanProfileDialogFragment();
+        dialogFragment.title = title;
+        dialogFragment.qr_code_id = qr_code_id;
+        dialogFragment.qr_code_type = qr_code_type;
+        dialogFragment.qr_url = qr_url;
+        dialogFragment.user_id = user_id;
+        dialogFragment.mListener = listener;
         return dialogFragment;
     }
-
 
 
     public interface DialogListener {
         void updateResult(View view, int position, String id, String name, Integer cost, Integer tax);
     }
 
-    public interface MessageDialogListener {
-        public void onDialogPositiveClick(androidx.fragment.app.DialogFragment dialog);
+    public interface ProfileDialogListener {
+        public void onProfilePositiveClick(DialogFragment dialog);
     }
 
 //    @Override
@@ -131,14 +124,15 @@ public class ScanResultDialogFragment extends DialogFragment {
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
-            MyProgressDialog.show(mContext,"Loading...");
+            MyProgressDialog.show(getActivity(), "Loading...");
+
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        view = inflater.inflate(R.layout.scan_dialog_fragment, container, false);
+        view = inflater.inflate(R.layout.scan_profile_fragment, container, false);
         ButterKnife.bind(this, view);
         toolbar = view.findViewById(R.id.toolbar);
 
@@ -152,12 +146,12 @@ public class ScanResultDialogFragment extends DialogFragment {
         toolbar.setTitle(title);
         toolbar.setTitleTextColor(Color.parseColor("#FFFFFF"));
         try {
-            token = Prefs.with(mContext).getString("token","");
-            Log.e("token",token);
-            Log.e("user_id",user_id);
-            Log.e("qr_code_id",qr_code_id);
-            Log.e("qr_code_type",qr_code_type);
-            Log.e("qr_url",qr_url);
+            token = Prefs.with(getActivity()).getString("token", "");
+            Log.e("token", token);
+            Log.e("user_id", user_id);
+            Log.e("qr_code_id", qr_code_id);
+            Log.e("qr_code_type", qr_code_type);
+            Log.e("qr_url", qr_url);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -170,72 +164,81 @@ public class ScanResultDialogFragment extends DialogFragment {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mListener != null) {
-                    mListener.onDialogPositiveClick(ScanResultDialogFragment.this);
+                if (mListener != null) {
+                    mListener.onProfilePositiveClick(ScanProfileDialogFragment.this);
                 }
                 dismiss();
             }
         });
 
-        getScanResult(qr_code_id);
+        getProfile(qr_code_id);
 
     }
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        if(mListener != null) {
-            mListener.onDialogPositiveClick(ScanResultDialogFragment.this);
+        if (mListener != null) {
+            mListener.onProfilePositiveClick(ScanProfileDialogFragment.this);
         }
         dialog.dismiss();
     }
 
-    private void getScanResult(String id){
-
+    private void getProfile(String qr_id) {
+//        String ps2 = "dGVjaFBhC3M=";
+        String val2 = null;
+        byte[] tmp2 = Base64.decode(qr_id, Base64.DEFAULT);
+        try {
+            val2 = new String(tmp2, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String token = Prefs.with(getActivity()).getString("token", "");
+        Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<QrScanResponse> responseCall = apiInterface.scanResult("true",id,token);
-        responseCall.enqueue(new Callback<QrScanResponse>() {
+        Call<ProfileResponse> responseCall = apiInterface.getScanProfile("true", token, val2);
+        responseCall.enqueue(new Callback<ProfileResponse>() {
             @Override
-            public void onResponse(Call<QrScanResponse> call, Response<QrScanResponse> response) {
-                Log.e("scan_res", new Gson().toJson(response));
+            public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                Log.e("profile_res", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
-                if (response.body().getStatus().equalsIgnoreCase("success")){
-                    String name = response.body().getQcaaName();
-                    String category = response.body().getQcaaCat();
-                    String subCat = response.body().getQcaaSubCat();
-                    String emailId = response.body().getQcaaEmailId();
-                    String phoneNo = response.body().getQcaaPhoneNo();
-                    String website = response.body().getQcaaWebsite();
-                    String place = response.body().getQcaaPlace();
-                    String logo = response.body().getQcaaProfileLogo();
-
-                    try {
-                        Picasso.get().load(Constants.BASE_URL+logo).into(imageView);
-                        txt_name.setText(name);
-                        txt_cat.setText(category+", "+subCat);
-                        txt_email.setText(emailId);
-                        txt_mobile.setText(phoneNo);
-                        txt_website.setText(website);
-                        txt_address.setText(place);
-                        //showQrCode(qr_url);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                         displayTexts(response);
+                    } else {
+                        Toast.makeText(getActivity(), response.body().getStatus(), Toast.LENGTH_SHORT).show();
                     }
-                }else {
-                     Toast.makeText(mContext, "Error while fetching data", Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
             @Override
-            public void onFailure(Call<QrScanResponse> call, Throwable t) {
-                Log.e("scan_res", ""+t);
-               MyProgressDialog.dismiss();
+            public void onFailure(Call<ProfileResponse> call, Throwable t) {
+                Log.e("profile_res", "" + t);
+                MyProgressDialog.dismiss();
             }
         });
     }
 
+    private void displayTexts(Response<ProfileResponse> response) {
+        assert response.body() != null;
+        txt_name.setText(response.body().getUraFname());
+        txt_email.setText(response.body().getUraBizEmail());
+        txt_address.setText(response.body().getUraAddress());
+        txt_website.setText(response.body().getUraWebsite());
+        txt_mobile.setText(response.body().getUraBizPhone());
 
 
+        Log.e("getUraImg","--->"+response.body().getUraImg());
+        if (response.body().getUraImg().equalsIgnoreCase("NULL")){
+            Picasso.get().load(R.drawable.planet_zoom).error(R.drawable.planet_zoom).into(imageView);
+        }
+        else {
+            Picasso.get().load(Constants.BASE_URL+response.body().getUraImg()).into(imageView);
 
+        }
+
+    }
 
 }

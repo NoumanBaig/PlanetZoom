@@ -55,6 +55,12 @@ public class ProfileResponse {
     @SerializedName("ura_instagram")
     @Expose
     private String uraInstagram;
+    @SerializedName("ura_code_id_secure")
+    @Expose
+    private String uraCodeIdSecure;
+    @SerializedName("ura_code_id_secure_link")
+    @Expose
+    private String uraCodeIdSecureLink;
     @SerializedName("status")
     @Expose
     private String status;
@@ -195,6 +201,22 @@ public class ProfileResponse {
         this.uraInstagram = uraInstagram;
     }
 
+    public String getUraCodeIdSecure() {
+        return uraCodeIdSecure;
+    }
+
+    public void setUraCodeIdSecure(String uraCodeIdSecure) {
+        this.uraCodeIdSecure = uraCodeIdSecure;
+    }
+
+    public String getUraCodeIdSecureLink() {
+        return uraCodeIdSecureLink;
+    }
+
+    public void setUraCodeIdSecureLink(String uraCodeIdSecureLink) {
+        this.uraCodeIdSecureLink = uraCodeIdSecureLink;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -202,5 +224,6 @@ public class ProfileResponse {
     public void setStatus(String status) {
         this.status = status;
     }
+
 
 }

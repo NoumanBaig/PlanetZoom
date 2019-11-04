@@ -30,6 +30,7 @@ import com.angadi.tripmanagementa.models.ShowMembersResult;
 import com.angadi.tripmanagementa.models.ShowPlacesResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.gson.Gson;
 
@@ -45,8 +46,8 @@ import retrofit2.Response;
 
 public class AddVolunteersActivity extends AppCompatActivity {
 
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
     String mem_id, event_id, volunteer_id, volunteer_name,place_id="";
     @BindView(R.id.btn_addPlace)
     Button btn_addPlace;
@@ -144,7 +145,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
 //    }
 
     private void addPlaces(String event_id, String place) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
         String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<AddPlacesResponse> call = apiInterface.addPlaces("true", token, event_id, place);
@@ -152,7 +153,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AddPlacesResponse> call, Response<AddPlacesResponse> response) {
                 Log.e("addPlaces", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     Toast.makeText(AddVolunteersActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
 //                    if (response.body().getMessage().equalsIgnoreCase("Place added!")){
@@ -166,13 +167,13 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<AddPlacesResponse> call, Throwable t) {
                 Log.e("addPlaces", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }
 
     private void getPlaces(String event_id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
         String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ShowPlacesResponse> call = apiInterface.showPlaces("true", event_id);
@@ -180,7 +181,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ShowPlacesResponse> call, Response<ShowPlacesResponse> response) {
                 Log.e("getPlaces", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     List<PlacesResult> resultList = response.body().getResults();
                     setPlacesAdapter(resultList);
@@ -192,7 +193,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ShowPlacesResponse> call, Throwable t) {
                 Log.e("getPlaces", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
     }
@@ -220,14 +221,14 @@ public class AddVolunteersActivity extends AppCompatActivity {
     }
 
     private void searchVolunteer(String login_id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<SearchVolunteerResponse> call = apiInterface.searchVolunteer("true", login_id);
         call.enqueue(new Callback<SearchVolunteerResponse>() {
             @Override
             public void onResponse(Call<SearchVolunteerResponse> call, Response<SearchVolunteerResponse> response) {
                 Log.e("searchVolunteer", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     volunteer_id = response.body().getUraId();
                     volunteer_name = response.body().getUraFname();
@@ -241,7 +242,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<SearchVolunteerResponse> call, Throwable t) {
                 Log.e("searchVolunteer", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
 
@@ -249,7 +250,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
 
 
     private void addVolunteer(String uid, String event_id, String about,String place_id,String mem_id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
         String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<AddVolunteerResponse> call = apiInterface.addVolunteer("true", token, uid, event_id, about,place_id,mem_id);
@@ -257,7 +258,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<AddVolunteerResponse> call, Response<AddVolunteerResponse> response) {
                 Log.e("addVolunteer", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     Toast.makeText(AddVolunteersActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     textView.setText("");
@@ -272,13 +273,13 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<AddVolunteerResponse> call, Throwable t) {
                 Log.e("addVolunteer", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }
 
     private void getVolunteers(String event_id,String mem_id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
         String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ShowMembersResponse> call = apiInterface.showMembers("true",token,event_id,mem_id);
@@ -286,7 +287,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ShowMembersResponse> call, Response<ShowMembersResponse> response) {
                 Log.e("getVolunteers", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
 //                    Toast.makeText(AddVolunteersActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     if (response.body().getCheckResponse().equalsIgnoreCase("VOLUNTEERS")){
@@ -302,7 +303,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<ShowMembersResponse> call, Throwable t) {
                 Log.e("getVolunteers", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
 

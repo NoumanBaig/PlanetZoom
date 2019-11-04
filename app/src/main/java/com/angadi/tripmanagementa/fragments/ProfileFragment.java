@@ -32,8 +32,18 @@ import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.ImageUtil;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.github.sumimakito.awesomeqr.AwesomeQrRenderer;
+import com.github.sumimakito.awesomeqr.RenderResult;
+import com.github.sumimakito.awesomeqr.option.RenderOption;
+import com.github.sumimakito.awesomeqr.option.color.Color;
 import com.google.gson.Gson;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -50,6 +60,9 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 public class ProfileFragment extends Fragment implements SettingsDialogFragment.MessageDialogListener {
 
@@ -83,10 +96,14 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     EditText edt_youtube;
     @BindView(R.id.edt_whatsapp)
     EditText edt_whatsapp;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
+    @BindView(R.id.img_qr_code)
+    ImageView img_qr_code;
     public static final int REQUEST_IMAGE = 100;
     String base64String;
+    double screenInches;
+    BitMatrix result;
 
     @Nullable
     @Override
@@ -100,18 +117,18 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     }
 
     private void getProfile() {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(getActivity(),"Loading...");
         String token = Prefs.with(getActivity()).getString("token", "");
         String uid = Prefs.with(getActivity()).getString("UID", "1234");
         Log.e("token", token);
-        Log.e("uid", uid);
+//        Log.e("uid", uid);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ProfileResponse> responseCall = apiInterface.getProfile("true", token);
         responseCall.enqueue(new Callback<ProfileResponse>() {
             @Override
             public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
                 Log.e("profile_res", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         displayTexts(response);
@@ -126,7 +143,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
             @Override
             public void onFailure(Call<ProfileResponse> call, Throwable t) {
                 Log.e("profile_res", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }
@@ -146,13 +163,17 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         edt_youtube.setText(response.body().getUraYoutube());
         edt_insta.setText(response.body().getUraInstagram());
 
+        Log.e("getUraImg","--->"+response.body().getUraImg());
         if (response.body().getUraImg().equalsIgnoreCase("NULL")){
-            Picasso.get().load(R.drawable.ic_account_circle).into(imageView);
-        }else {
+            Picasso.get().load(R.drawable.ic_account_circle).error(R.drawable.ic_account_circle).into(imageView);
+        }
+        else {
             Picasso.get().load(Constants.BASE_URL+response.body().getUraImg()).into(imageView);
 
         }
+        showQrCode(response.body().getUraCodeIdSecureLink());
     }
+
 
     @OnClick({R.id.btn_update,R.id.img_edit,R.id.img_settings})
     public void onClick(View view) {
@@ -211,12 +232,12 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_IMAGE_CAPTURE);
 
         // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
 
         // setting maximum bitmap width and height
-        intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, true);
+        intent.putExtra(ImagePickerActivity.INTENT_SET_BITMAP_MAX_WIDTH_HEIGHT, false);
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 1000);
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 1000);
 
@@ -228,7 +249,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_GALLERY_IMAGE);
 
         // setting aspect ratio
-        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, true);
+        intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
         startActivityForResult(intent, REQUEST_IMAGE);
@@ -287,7 +308,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
     private void editProfile(String fname, String lname, String about, String address, String company, String designation, String website,
                              String biz_phone, String biz_email, String facebook, String whatsapp, String linkedin, String youtube, String instagran, String photo) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(getActivity(),"Loading...");
         String token = Prefs.with(getActivity()).getString("token", "");
         Log.e("token", token);
 
@@ -298,7 +319,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
             @Override
             public void onResponse(Call<EditProfileResponse> call, Response<EditProfileResponse> response) {
                 Log.e("logout", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     getProfile();
@@ -310,7 +331,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
             @Override
             public void onFailure(Call<EditProfileResponse> call, Throwable t) {
                 Log.e("logout", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
 
@@ -321,5 +342,64 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
+    }
+
+
+    private void showQrCode(String str_qr_id){
+        try {
+            Bitmap bitmap = encodeAsBitmap(str_qr_id);
+            img_qr_code.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
+
+    Bitmap encodeAsBitmap(String list) throws WriterException {
+        Log.e("-----------------", String.valueOf(screenInches));
+
+        try {
+            Log.e("screenInches---->", String.valueOf(screenInches));
+            if (screenInches <= 5.2) {
+                Log.e("first", "first");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 600, 600, null);
+            } else if (screenInches >= 5.21 && screenInches <= 5.3) {
+                Log.e("second", "second");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+
+            } else if (screenInches >= 5.31 && screenInches <= 5.5) {
+                Log.e("second1", "second1");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+
+            } else if (screenInches >= 5.6 && screenInches <= 5.99) {
+                Log.e("third", "third");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+
+            } else if (screenInches >= 6.1 && screenInches <= 6.5) {
+                Log.e("Fourth", "Fourth");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 760, 760, null);
+
+            } else {
+                Log.e("else", "else");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+            }
+
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
+        return bitmap;
     }
 }

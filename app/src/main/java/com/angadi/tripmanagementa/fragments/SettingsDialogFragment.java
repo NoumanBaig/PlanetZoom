@@ -27,6 +27,7 @@ import com.angadi.tripmanagementa.models.LogoutResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.gson.Gson;
 
@@ -48,8 +49,8 @@ public class SettingsDialogFragment extends DialogFragment {
     View view;
     @BindView(R.id.event_switch)
     Switch event_switch;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -173,7 +174,7 @@ public class SettingsDialogFragment extends DialogFragment {
 
 
     private void setAdmin(String enable) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(getActivity(),"Loading...");
         String token = Prefs.with(getActivity()).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -183,7 +184,7 @@ public class SettingsDialogFragment extends DialogFragment {
             @Override
             public void onResponse(Call<AdminResponse> call, Response<AdminResponse> response) {
                 Log.e("setAdmin_res", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                        checkAdmin();
@@ -198,7 +199,7 @@ public class SettingsDialogFragment extends DialogFragment {
             @Override
             public void onFailure(Call<AdminResponse> call, Throwable t) {
                 Log.e("setAdmin_res", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
 
@@ -233,14 +234,14 @@ public class SettingsDialogFragment extends DialogFragment {
 
 
     private void logout() {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(getActivity(),"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<LogoutResponse> responseCall = apiInterface.logout(token);
         responseCall.enqueue(new Callback<LogoutResponse>() {
             @Override
             public void onResponse(Call<LogoutResponse> call, Response<LogoutResponse> response) {
                 Log.e("logout", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     Prefs.with(getActivity()).remove();
@@ -255,7 +256,7 @@ public class SettingsDialogFragment extends DialogFragment {
             @Override
             public void onFailure(Call<LogoutResponse> call, Throwable t) {
                 Log.e("logout", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+                MyProgressDialog.dismiss();
             }
         });
     }

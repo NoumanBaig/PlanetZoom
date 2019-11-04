@@ -8,7 +8,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-        multiDexEnabled true
+            multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -71,6 +71,8 @@ dependencies {
 
     // location places api
     implementation 'com.schibstedspain.android:leku:6.3.0'
+    // customized qr
+    implementation 'com.github.SumiMakito:AwesomeQRCode:1.2.0'
 }
 apply plugin: 'com.google.gms.google-services'
 com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

@@ -40,15 +40,15 @@ public class CountItemViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void render(String text, int color){
+    public void render(String qr_id,String qr_url, int color){
 //        textView.setText(text);
         containerView.setBackgroundColor(color);
-        showQrCode(text);
+        //showQrCode(text);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                context.startActivity(new Intent(context, ScanResultActivity.class).putExtra("qr_id",text));
+                context.startActivity(new Intent(context, ScanResultActivity.class).putExtra("qr_id",qr_id).putExtra("qr_url",qr_url));
             }
         });
     }

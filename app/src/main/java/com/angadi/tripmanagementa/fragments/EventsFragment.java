@@ -25,8 +25,8 @@ import retrofit2.Response;
 
 public class EventsFragment extends Fragment {
 
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
     @BindView(R.id.layout_both)
     LinearLayout layout_both;
     @BindView(R.id.layout_one)

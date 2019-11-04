@@ -16,6 +16,7 @@ import com.angadi.tripmanagementa.models.EventDetailsResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
@@ -41,8 +42,8 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
 
     double screenInches;
     BitMatrix result;
-    @BindView(R.id.loading_layout)
-    View loadingIndicator;
+//    @BindView(R.id.loading_layout)
+//    View loadingIndicator;
     //    @BindView(R.id.txt_name)
 //    TextView txt_name;
     @BindView(R.id.txt_desc)
@@ -87,7 +88,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
     }
 
     private void getTicketDetails(String event_id) {
-        loadingIndicator.setVisibility(View.VISIBLE);
+        MyProgressDialog.show(MyTicketDetailsActivity.this,"Loading...");
         String token = Prefs.with(MyTicketDetailsActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -97,7 +98,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<EventDetailsResponse> call, Response<EventDetailsResponse> response) {
                 Log.e("getTicketDetails", new Gson().toJson(response));
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
 
@@ -129,7 +130,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<EventDetailsResponse> call, Throwable t) {
                 Log.e("getTicketDetails", "" + t);
-                loadingIndicator.setVisibility(View.GONE);
+               MyProgressDialog.dismiss();
             }
         });
 
