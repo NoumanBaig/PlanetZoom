@@ -19,12 +19,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.adapters.EventTrackingAdapter;
+import com.angadi.tripmanagementa.models.EventTrackResponse;
 import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.models.ScanEventQrResponse;
+import com.angadi.tripmanagementa.models.TrackData;
+import com.angadi.tripmanagementa.models.TrackResult;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
@@ -35,9 +40,11 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.schibstedspain.leku.tracker.TrackEvents;
 import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -78,6 +85,8 @@ public class ScanEventDialogFragment extends DialogFragment {
     LinearLayout layout_ticket;
     @BindView(R.id.layout_animation)
     LinearLayout layout_animation;
+    @BindView(R.id.recyclerTracking)
+    RecyclerView recyclerTracking;
 
 
     @Override
@@ -207,6 +216,7 @@ public class ScanEventDialogFragment extends DialogFragment {
                     txt_location.setText(response.body().getPeaLocation());
                     txt_amount.setText(response.body().getPeaPrice());
                     Picasso.get().load(Constants.BASE_URL+response.body().getPea_ticket_selfi()).into(imageView);
+                    getTracking(user_id,scan_id);
                 }else {
                     layout_ticket.setVisibility(View.GONE);
                     layout_animation.setVisibility(View.VISIBLE);
@@ -222,62 +232,49 @@ public class ScanEventDialogFragment extends DialogFragment {
         });
     }
 
-    private void showQrCode(String str_qr_id){
+    private void getTracking(String user_id,String scan_id){
+        String user = null;
+        String scan = null;
+        byte[] tmp = Base64.decode(user_id, Base64.DEFAULT);
+        byte[] tmp2 = Base64.decode(scan_id, Base64.DEFAULT);
         try {
-            Bitmap bitmap = encodeAsBitmap(str_qr_id);
-           // img_qr_code.setImageBitmap(bitmap);
-        } catch (WriterException e) {
+            user = new String(tmp, "UTF-8");
+            scan = new String(tmp2, "UTF-8");
+            Log.e("user",""+user);
+            Log.e("scan",""+scan);
+        } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-    }
-
-    Bitmap encodeAsBitmap(String list) throws WriterException {
-        Log.e("-----------------", String.valueOf(screenInches));
-
-        try {
-            Log.e("screenInches---->", String.valueOf(screenInches));
-            if (screenInches <= 5.2) {
-                Log.e("first", "first");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 600, 600, null);
-            } else if (screenInches >= 5.21 && screenInches <= 5.3) {
-                Log.e("second", "second");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
-
-            } else if (screenInches >= 5.31 && screenInches <= 5.5) {
-                Log.e("second1", "second1");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
-
-            } else if (screenInches >= 5.6 && screenInches <= 5.99) {
-                Log.e("third", "third");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
-
-            } else if (screenInches >= 6.1 && screenInches <= 6.5) {
-                Log.e("Fourth", "Fourth");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 760, 760, null);
-
-            } else {
-                Log.e("else", "else");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+        MyProgressDialog.show(getActivity(),"Loading...");
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<EventTrackResponse> call = apiInterface.eventTracking("true",token,user,scan);
+        call.enqueue(new Callback<EventTrackResponse>() {
+            @Override
+            public void onResponse(Call<EventTrackResponse> call, Response<EventTrackResponse> response) {
+                Log.e("getTracking", new Gson().toJson(response));
+                MyProgressDialog.dismiss();
+                if (response.body().getStatus().equalsIgnoreCase("success")){
+                    List<TrackResult> trackResultList = response.body().getResults();
+                    List<TrackData> dataList = null;
+                    for (int i=0; i<trackResultList.size(); i++){
+                        dataList = trackResultList.get(i).getTrackData();
+                    }
+                    
+                    EventTrackingAdapter adapter = new EventTrackingAdapter(getActivity(),dataList);
+                    recyclerTracking.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recyclerTracking.setAdapter(adapter);
+                }else {
+                    Toast.makeText(getActivity(), ""+response.body().getStatus(), Toast.LENGTH_LONG).show();
+                }
             }
 
-        } catch (IllegalArgumentException iae) {
-            // Unsupported format
-            return null;
-        }
-
-        int w = result.getWidth();
-        int h = result.getHeight();
-        int[] pixels = new int[w * h];
-        for (int y = 0; y < h; y++) {
-            int offset = y * w;
-            for (int x = 0; x < w; x++) {
-                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            @Override
+            public void onFailure(Call<EventTrackResponse> call, Throwable t) {
+                Log.e("getTracking", ""+t);
+                MyProgressDialog.dismiss();
             }
-        }
+        });
 
-        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
-        return bitmap;
     }
 
 }

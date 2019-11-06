@@ -28,6 +28,12 @@ public class ShowMembersResult {
     @SerializedName("eavqa_map_place_id")
     @Expose
     private String eavqaMapPlaceId;
+    @SerializedName("eavqa_map_place_name")
+    @Expose
+    private String eavqaMapPlaceName;
+    @SerializedName("eavqa_users_type")
+    @Expose
+    private String eavqaUsersType;
     @SerializedName("eavqa_time")
     @Expose
     private String eavqaTime;
@@ -105,6 +111,22 @@ public class ShowMembersResult {
         this.eavqaMapPlaceId = eavqaMapPlaceId;
     }
 
+    public String getEavqaMapPlaceName() {
+        return eavqaMapPlaceName;
+    }
+
+    public void setEavqaMapPlaceName(String eavqaMapPlaceName) {
+        this.eavqaMapPlaceName = eavqaMapPlaceName;
+    }
+
+    public String getEavqaUsersType() {
+        return eavqaUsersType;
+    }
+
+    public void setEavqaUsersType(String eavqaUsersType) {
+        this.eavqaUsersType = eavqaUsersType;
+    }
+
     public String getEavqaTime() {
         return eavqaTime;
     }
@@ -136,5 +158,4 @@ public class ShowMembersResult {
     public void setEavqaActive(String eavqaActive) {
         this.eavqaActive = eavqaActive;
     }
-
 }

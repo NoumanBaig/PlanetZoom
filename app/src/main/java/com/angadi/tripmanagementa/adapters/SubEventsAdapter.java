@@ -58,11 +58,11 @@ public class SubEventsAdapter extends RecyclerView.Adapter<SubEventsAdapter.Cate
     @Override
     public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
         holder.textView.setText(resultList.get(position).getEsaaSubTitle());
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+        holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (clickListener != null) {
-                    clickListener.onClick(holder.linearLayout, position, resultList.get(position).getEsaaId(),
+                    clickListener.onClick(holder.cardview, position, resultList.get(position).getEsaaId(),
                             resultList.get(position).getEsaaSubTitle(),resultList.get(position).getEsaaDesc());
                 }
             }
@@ -88,7 +88,8 @@ public class SubEventsAdapter extends RecyclerView.Adapter<SubEventsAdapter.Cate
     public class CategoryHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
-        CardView linearLayout;
+        LinearLayout linearLayout;
+        CardView cardview;
 //        LinearLayout layout_view;
 //        ImageView img_delete;
 
@@ -97,6 +98,7 @@ public class SubEventsAdapter extends RecyclerView.Adapter<SubEventsAdapter.Cate
 //            checkBox = itemView.findViewById(R.id.checkbox);
             textView = itemView.findViewById(R.id.txt);
             linearLayout = itemView.findViewById(R.id.linear);
+            cardview = itemView.findViewById(R.id.cardview);
 //            layout_view = itemView.findViewById(R.id.layout_view);
 //            img_delete = itemView.findViewById(R.id.img_delete);
         }

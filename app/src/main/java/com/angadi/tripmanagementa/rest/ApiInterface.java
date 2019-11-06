@@ -7,6 +7,8 @@ import com.angadi.tripmanagementa.models.AddVolunteerResponse;
 import com.angadi.tripmanagementa.models.BuyTicketResponse;
 import com.angadi.tripmanagementa.models.CheckAdminResponse;
 import com.angadi.tripmanagementa.models.DeleteSubEventResponse;
+import com.angadi.tripmanagementa.models.EventTrackResponse;
+import com.angadi.tripmanagementa.models.ImageUploadResponse;
 import com.angadi.tripmanagementa.models.MyTicketsResponse;
 import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.models.AdminEventsResponse;
@@ -159,7 +161,9 @@ public interface ApiInterface {
                                         @Field("pea_time") String pea_time,
                                         @Field("pea_org") String pea_org,
                                         @Field("pea_report") String pea_report,
-                                        @Field("pea_logo") String pea_logo);
+                                        @Field("pea_logo") String pea_logo,
+                                        @Field("pea_contact_no") String pea_contact_no,
+                                        @Field("pea_emergency_no") String pea_emergency_no);
 
     @POST("events/add/")
     @FormUrlEncoded
@@ -177,7 +181,9 @@ public interface ApiInterface {
                                            @Field("pea_report") String pea_report,
                                            @Field("pea_logo") String pea_logo,
                                            @Field("pea_id") String pea_id,
-                                           @Field("pea_update") String pea_update);
+                                           @Field("pea_update") String pea_update,
+                                           @Field("pea_contact_no") String pea_contact_no,
+                                           @Field("pea_emergency_no") String pea_emergency_no);
 
     @POST("events/show_all_events/")
     @FormUrlEncoded
@@ -252,6 +258,18 @@ public interface ApiInterface {
                                             @Field("eavqa_map_place_id") String eavqa_map_place_id,
                                             @Field("eavqa_users_type") String eavqa_users_type);
 
+    @POST("events/add_volunteers/")
+    @FormUrlEncoded
+    Call<AddVolunteerResponse> updateVolunteer(@Field("add_volunteers") String show,
+                                            @Field("token") String token,
+                                            @Field("eavqa_uid") String event_id,
+                                            @Field("eavqa_event_id") String sub_event_id,
+                                            @Field("eavqa_about") String eavqa_about,
+                                            @Field("eavqa_map_place_id") String eavqa_map_place_id,
+                                            @Field("eavqa_users_type") String eavqa_users_type,
+                                               @Field("update_volunteers") String update
+                                               );
+
     @POST("events/searching_volunteers/")
     @FormUrlEncoded
     Call<SearchVolunteerResponse> searchVolunteer(@Field("searching_volunteers") String show,
@@ -311,6 +329,26 @@ public interface ApiInterface {
                                         @Field("token") String token,
                                           @Field("user_id") String user_id,
                                           @Field("scan_id") String scan_id);
+
+    @POST("EventsImage/upload/")
+    @FormUrlEncoded
+    Call<ImageUploadResponse> imageUpload(@Field("upload") String upload,
+                                          @Field("token") String token,
+                                          @Field("event_id") String event_id,
+                                          @Field("event_image") String event_image);
+
+    @POST("EventsImage/delete/")
+    @FormUrlEncoded
+    Call<ImageUploadResponse> imageDelete(@Field("delete") String upload,
+                                          @Field("token") String token,
+                                          @Field("event_id") String event_id,
+                                          @Field("event_image_id") String event_image_id);
+    @POST("mapping/track/")
+    @FormUrlEncoded
+    Call<EventTrackResponse> eventTracking(@Field("track") String track,
+                                           @Field("token") String token,
+                                           @Field("mtaa_uid") String mtaa_uid,
+                                           @Field("mtaa_event_id") String mtaa_event_id);
 //    @POST("logout/")
 //    @FormUrlEncoded
 //    Call<Logout> logout(@Field("token_id") String token);

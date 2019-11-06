@@ -265,24 +265,28 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 Log.e("callLogin_res", new Gson().toJson(response));
                 avi.smoothToHide();
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus().equalsIgnoreCase("success")) {
-                        if (response.body().getStatusLogin().equalsIgnoreCase("creating_new")) {
-                            layout_firstName.setVisibility(View.VISIBLE);
-                        } else {
-                            layout_firstName.setVisibility(View.GONE);
-                            str_otp = String.valueOf(response.body().getRand());
-                            str_fname = String.valueOf(response.body().getFname());
-                            String str_uid = String.valueOf(response.body().getUID());
-                            Prefs.with(LoginActivity.this).save("firstName",str_fname);
-                            Prefs.with(LoginActivity.this).save("str_uid",str_uid);
-                            toggle();
-                            pinView.setText(str_otp);
-                        }
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        if (response.body().getStatus().equalsIgnoreCase("success")) {
+                            if (response.body().getStatusLogin().equalsIgnoreCase("creating_new")) {
+                                layout_firstName.setVisibility(View.VISIBLE);
+                            } else {
+                                layout_firstName.setVisibility(View.GONE);
+                                str_otp = String.valueOf(response.body().getRand());
+                                str_fname = String.valueOf(response.body().getFname());
+                                String str_uid = String.valueOf(response.body().getUID());
+                                Prefs.with(LoginActivity.this).save("firstName",str_fname);
+                                Prefs.with(LoginActivity.this).save("str_uid",str_uid);
+                                toggle();
+                                pinView.setText(str_otp);
+                            }
 
-                    } else {
-                        Log.e("else", "----->");
+                        } else {
+                            Log.e("else", "----->");
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -304,14 +308,18 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
                 Log.e("callSignup_res", new Gson().toJson(response));
                 avi.smoothToHide();
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus().equalsIgnoreCase("success")) {
-                        str_otp = String.valueOf(response.body().getRand());
-                        toggle();
-                        pinView.setText(str_otp);
-                    } else {
-                        Log.e("else", "----->");
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        if (response.body().getStatus().equalsIgnoreCase("success")) {
+                            str_otp = String.valueOf(response.body().getRand());
+                            toggle();
+//                            pinView.setText(str_otp);
+                        } else {
+                            Log.e("else", "----->");
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -332,20 +340,24 @@ public class LoginActivity extends AppCompatActivity {
             public void onResponse(Call<VerifyOtp> call, Response<VerifyOtp> response) {
                 Log.e("verifyOtp_res", new Gson().toJson(response));
                 avi2.smoothToHide();
-                if (response.isSuccessful() && response.body() != null) {
-                    if (response.body().getStatus().equalsIgnoreCase("success")) {
-                        String token = response.body().getToken();
-                        String user_id = response.body().getUser_id();
-                        Prefs.with(LoginActivity.this).save("token",token);
-                        Prefs.with(LoginActivity.this).save("user_id",user_id);
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        if (response.body().getStatus().equalsIgnoreCase("success")) {
+                            String token = response.body().getToken();
+                            String user_id = response.body().getUser_id();
+                            Prefs.with(LoginActivity.this).save("token",token);
+                            Prefs.with(LoginActivity.this).save("user_id",user_id);
 
-                        WelcomeFragment welcomeFragment = new WelcomeFragment();
-                        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.add(R.id.container, welcomeFragment);
-                        fragmentTransaction.commit();
-                    } else {
-                        Log.e("else", "----->");
+                            WelcomeFragment welcomeFragment = new WelcomeFragment();
+                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                            fragmentTransaction.add(R.id.container, welcomeFragment);
+                            fragmentTransaction.commit();
+                        } else {
+                            Log.e("else", "----->");
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
 

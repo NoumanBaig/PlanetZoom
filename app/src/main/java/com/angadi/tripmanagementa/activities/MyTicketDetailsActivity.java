@@ -107,7 +107,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
 //                        txt_address.setText(response.body().getPeaLocation());
                         String formatedDate = parseDate(response.body().getPeaDate());
                         txt_date.setText(formatedDate);
-                        txt_time.setText(response.body().getPea_date_time());
+                        txt_time.setText(response.body().getPeaDateTime());
                         txt_venue.setText(response.body().getPeaVenue());
                         txt_amount.setText(response.body().getPeaPrice());
 

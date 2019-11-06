@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:weightSum="2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <View
+                    android:layout_width="2dp"
+                    android:background="@color/green"
+                    android:layout_gravity="center"
+                    android:layout_height="match_parent"/>
+
+                <ImageView
+                    android:background="@color/white"
+                    android:src="@drawable/ic_check_circle"
+                    android:layout_gravity="center"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"/>
+
+            </FrameLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:padding="15dp"
+            android:layout_height="wrap_content">
+
+            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                android:layout_width="match_parent"
+                android:id="@+id/txt"
+                android:gravity="center"
+                android:padding="8dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/green_background"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

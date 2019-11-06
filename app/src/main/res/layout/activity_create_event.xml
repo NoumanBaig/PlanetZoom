@@ -63,7 +63,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/event_name"
                     android:imeOptions="actionNext"
-                    android:inputType="textPersonName" />
+                    android:inputType="textCapWords" />
 
                 <com.angadi.tripmanagementa.utils.CustomFontEditText
                     android:id="@+id/edt_desc"
@@ -72,7 +72,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/event_desc"
                     android:imeOptions="actionNext"
-                    android:inputType="textPersonName" />
+                    android:inputType="textCapWords" />
 
                 <com.angadi.tripmanagementa.utils.CustomFontEditText
                     android:id="@+id/edt_organisation"
@@ -81,7 +81,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/event_org"
                     android:imeOptions="actionNext"
-                    android:inputType="textPersonName" />
+                    android:inputType="textCapWords" />
 
                 <com.angadi.tripmanagementa.utils.CustomFontEditText
                     android:id="@+id/edt_venue"
@@ -90,7 +90,7 @@
                     android:layout_marginBottom="10dp"
                     android:hint="@string/event_venue"
                     android:imeOptions="actionNext"
-                    android:inputType="textPersonName" />
+                    android:inputType="textCapWords" />
 
 
                 <LinearLayout
@@ -228,6 +228,24 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <com.angadi.tripmanagementa.utils.CustomFontEditText
+                    android:id="@+id/edt_contact"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:hint="@string/event_contact"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords" />
+
+                <com.angadi.tripmanagementa.utils.CustomFontEditText
+                    android:id="@+id/edt_emergency"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:hint="@string/event_emergency"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapWords" />
+
 
                 <com.angadi.tripmanagementa.utils.CustomFontButton
                     android:id="@+id/btn_create"
@@ -242,6 +260,84 @@
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 
+
+                <LinearLayout
+                    android:id="@+id/layout_images"
+                    android:layout_marginTop="20dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/upload_event_images"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:id="@+id/recyclerImages"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/layout_uploaded_images"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/uploaded_event_images"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="20dp"
+                        android:id="@+id/recyclerUploadedImages"/>
+                </LinearLayout>
+
+                <com.angadi.tripmanagementa.utils.CustomFontTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/upload_event_map"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/img_map"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:src="@drawable/photo" />
+
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:visibility="gone"

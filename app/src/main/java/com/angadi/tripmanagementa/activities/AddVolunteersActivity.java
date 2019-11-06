@@ -5,9 +5,14 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -63,6 +68,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
     TextView textView;
     @BindView(R.id.recyclerVolunteers)
     RecyclerView recyclerVolunteers;
+    RecyclerView recyclerView;
 //    @BindView(R.id.spinner)
 //    Spinner spinner;
 //    ArrayList<String> arr_ids,arr_spinner_items;
@@ -79,6 +85,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
         if (getIntent().getExtras() != null) {
             mem_id = getIntent().getStringExtra("mem_id");
             event_id = getIntent().getStringExtra("str_id");
+            assert event_id != null;
             Log.e("event_id", event_id);
             Log.e("mem_id", mem_id);
             String title = getIntent().getStringExtra("mem_title");
@@ -205,7 +212,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
 
         placesAdapter.setClickListener(new PlacesAdapter.PlacesClickListener() {
             @Override
-            public void onClick(View view, int position, String id) {
+            public void onClick(View view, int position, String id,String uid) {
                 place_id = id;
                 Log.e("place_id",place_id);
             }
@@ -231,6 +238,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
                 MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     volunteer_id = response.body().getUraId();
+                    Log.e("volunteer_id",volunteer_id);
                     volunteer_name = response.body().getUraFname();
                     textView.setVisibility(View.VISIBLE);
                     textView.setText(volunteer_name);
@@ -249,11 +257,11 @@ public class AddVolunteersActivity extends AppCompatActivity {
     }
 
 
-    private void addVolunteer(String uid, String event_id, String about,String place_id,String mem_id) {
+    private void addVolunteer(String uid, String event_id, String about,String places_id,String mem_id) {
         MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
         String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<AddVolunteerResponse> call = apiInterface.addVolunteer("true", token, uid, event_id, about,place_id,mem_id);
+        Call<AddVolunteerResponse> call = apiInterface.addVolunteer("true", token, uid, event_id, about,places_id,mem_id);
         call.enqueue(new Callback<AddVolunteerResponse>() {
             @Override
             public void onResponse(Call<AddVolunteerResponse> call, Response<AddVolunteerResponse> response) {
@@ -263,6 +271,7 @@ public class AddVolunteersActivity extends AppCompatActivity {
                     Toast.makeText(AddVolunteersActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     textView.setText("");
                     edt_emailMobile.setText("");
+                    place_id="";
                     textView.setVisibility(View.GONE);
                     getVolunteers(event_id,mem_id);
                 } else {
@@ -279,6 +288,8 @@ public class AddVolunteersActivity extends AppCompatActivity {
     }
 
     private void getVolunteers(String event_id,String mem_id) {
+        Log.e("event_id",event_id);
+        Log.e("mem_id",mem_id);
         MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
         String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -311,8 +322,128 @@ public class AddVolunteersActivity extends AppCompatActivity {
 
     private void setVolunteersAdapter(List<ShowMembersResult> resultList) {
         recyclerVolunteers.setLayoutManager(new LinearLayoutManager(this));
-        VolunteersAdapter placesAdapter = new VolunteersAdapter(this, resultList);
-        recyclerVolunteers.setAdapter(placesAdapter);
+        VolunteersAdapter volunteersAdapter = new VolunteersAdapter(this, resultList);
+        recyclerVolunteers.setAdapter(volunteersAdapter);
+
+
+        volunteersAdapter.setClickListener(new VolunteersAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position, String id,String volunteerName,String placeName,String placeID,String uId) {
+                Log.e("placeID",placeID);
+                Log.e("placeName",placeName);
+                Log.e("uId",uId);
+
+                showEditDialog(volunteerName,uId);
+            }
+        });
+
     }
+
+
+    private void showEditDialog(String volunteerName,String uid){
+        final Dialog alertDialog=new Dialog(AddVolunteersActivity.this,android.R.style.Theme_Material_Light_Dialog_NoActionBar);
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alertDialog.setContentView(R.layout.edit_volunteer_dialog);
+        Window window = alertDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.CENTER;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        TextView title=(TextView)alertDialog.findViewById(R.id.dialog_txt);
+        TextView txt_name=(TextView)alertDialog.findViewById(R.id.txt_name);
+        TextView ok=(TextView)alertDialog.findViewById(R.id.dialog_btn);
+        recyclerView = (RecyclerView)alertDialog.findViewById(R.id.recyclerView);
+        getPlacesEditVolunteer(event_id);
+        txt_name.setText("Volunteer Name: "+volunteerName);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+
+                if (place_id.equalsIgnoreCase("")){
+                    Toast.makeText(AddVolunteersActivity.this, "Please select place", Toast.LENGTH_SHORT).show();
+                }else {
+                    updateVolunteer(uid, event_id, "",place_id,mem_id);
+                }
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void getPlacesEditVolunteer(String event_id) {
+        MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
+        String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ShowPlacesResponse> call = apiInterface.showPlaces("true", event_id);
+        call.enqueue(new Callback<ShowPlacesResponse>() {
+            @Override
+            public void onResponse(Call<ShowPlacesResponse> call, Response<ShowPlacesResponse> response) {
+                Log.e("getPlacesEdit", new Gson().toJson(response));
+                MyProgressDialog.dismiss();
+                if (response.body().getStatus().equalsIgnoreCase("success")) {
+                    List<PlacesResult> resultList = response.body().getResults();
+                    setPlacesAdapterEdit(resultList);
+                } else {
+                    Toast.makeText(AddVolunteersActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ShowPlacesResponse> call, Throwable t) {
+                Log.e("getPlacesEdit", "" + t);
+                MyProgressDialog.dismiss();
+            }
+        });
+    }
+
+    private void setPlacesAdapterEdit(List<PlacesResult> resultList) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        PlacesAdapter placesAdapter = new PlacesAdapter(this, resultList);
+        recyclerView.setAdapter(placesAdapter);
+
+        placesAdapter.setClickListener(new PlacesAdapter.PlacesClickListener() {
+            @Override
+            public void onClick(View view, int position, String id, String uid) {
+                place_id = id;
+                Log.e("place_id",place_id);
+            }
+        });
+    }
+
+    private void updateVolunteer(String uid, String event_id, String about,String places_id,String mem_id) {
+        Log.e("uid-->",uid);
+        Log.e("event_id-->",event_id);
+        Log.e("places_id-->",places_id);
+        Log.e("mem_id-->",mem_id);
+        MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
+        String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<AddVolunteerResponse> call = apiInterface.updateVolunteer("true", token, uid, event_id, about,places_id,mem_id,"true");
+        call.enqueue(new Callback<AddVolunteerResponse>() {
+            @Override
+            public void onResponse(Call<AddVolunteerResponse> call, Response<AddVolunteerResponse> response) {
+                Log.e("updateVolunteer", new Gson().toJson(response));
+                MyProgressDialog.dismiss();
+                if (response.body().getStatus().equalsIgnoreCase("success")) {
+                    Toast.makeText(AddVolunteersActivity.this, "Volunteer Updated", Toast.LENGTH_SHORT).show();
+//                    textView.setText("");
+//                    edt_emailMobile.setText("");
+                    place_id="";
+//                    textView.setVisibility(View.GONE);
+                    getVolunteers(event_id,mem_id);
+                } else {
+                    Toast.makeText(AddVolunteersActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddVolunteerResponse> call, Throwable t) {
+                Log.e("updateVolunteer", "" + t);
+                MyProgressDialog.dismiss();
+            }
+        });
+    }
+
 
 }

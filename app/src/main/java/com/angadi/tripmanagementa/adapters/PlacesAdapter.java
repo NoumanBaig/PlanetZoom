@@ -32,7 +32,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
     }
 
     public interface PlacesClickListener {
-        void onClick(View view, int position, String id);
+        void onClick(View view, int position, String id,String uid);
     }
 
     public void setClickListener(PlacesClickListener placesClickListener) {
@@ -86,7 +86,7 @@ public class PlacesAdapter extends RecyclerView.Adapter<PlacesAdapter.MyViewHold
                 resultList.get(clickedPos).setSelected(cb.isChecked());
 
                 if (placesClickListener != null) {
-                    placesClickListener.onClick(holder.layout, position,resultList.get(position).getEtlaaId());
+                    placesClickListener.onClick(holder.layout, position,resultList.get(position).getEtlaaId(),resultList.get(position).getEtlaaUid());
                 }
             }
         });

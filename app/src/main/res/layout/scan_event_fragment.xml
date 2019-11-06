@@ -37,7 +37,6 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:id="@+id/layout_ticket"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -122,10 +121,8 @@
                         android:layout_height="wrap_content"
                         app:cardUseCompatPadding="true"
                         app:cardCornerRadius="10dp"
-                        android:layout_marginTop="10dp"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
-                        android:layout_marginBottom="10dp"
                         app:cardBackgroundColor="@color/background">
 
                         <LinearLayout
@@ -183,6 +180,28 @@
                             android:layout_height="wrap_content"/>
 
 
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/gray"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:text="Tracking"/>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/recyclerTracking"/>
                     </LinearLayout>
 
                 </LinearLayout>

@@ -3,6 +3,8 @@ package com.angadi.tripmanagementa.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class EventDetailsResponse {
     @SerializedName("pea_id")
     @Expose
@@ -34,19 +36,24 @@ public class EventDetailsResponse {
     @SerializedName("pea_date")
     @Expose
     private String peaDate;
+    @SerializedName("pea_date_time")
+    @Expose
+    private String peaDateTime;
     @SerializedName("pea_time")
     @Expose
     private String peaTime;
-    @SerializedName("pea_date_time")
-    @Expose
-    private String pea_date_time;
-
     @SerializedName("pea_report")
     @Expose
     private String peaReport;
     @SerializedName("pea_logo")
     @Expose
     private String peaLogo;
+    @SerializedName("pea_blue_print")
+    @Expose
+    private List<Object> peaBluePrint = null;
+    @SerializedName("pea_gallerys")
+    @Expose
+    private List<PeaGallery> peaGallerys = null;
     @SerializedName("pea_qr_code_id_secure")
     @Expose
     private String peaQrCodeIdSecure;
@@ -59,6 +66,12 @@ public class EventDetailsResponse {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("pea_contact_no")
+    @Expose
+    private String pea_contact_no;
+    @SerializedName("pea_emergency_no")
+    @Expose
+    private String pea_emergency_no;
 
     public String getPeaId() {
         return peaId;
@@ -140,20 +153,20 @@ public class EventDetailsResponse {
         this.peaDate = peaDate;
     }
 
+    public String getPeaDateTime() {
+        return peaDateTime;
+    }
+
+    public void setPeaDateTime(String peaDateTime) {
+        this.peaDateTime = peaDateTime;
+    }
+
     public String getPeaTime() {
         return peaTime;
     }
 
     public void setPeaTime(String peaTime) {
         this.peaTime = peaTime;
-    }
-
-    public String getPea_date_time() {
-        return pea_date_time;
-    }
-
-    public void setPea_date_time(String pea_date_time) {
-        this.pea_date_time = pea_date_time;
     }
 
     public String getPeaReport() {
@@ -170,6 +183,22 @@ public class EventDetailsResponse {
 
     public void setPeaLogo(String peaLogo) {
         this.peaLogo = peaLogo;
+    }
+
+    public List<Object> getPeaBluePrint() {
+        return peaBluePrint;
+    }
+
+    public void setPeaBluePrint(List<Object> peaBluePrint) {
+        this.peaBluePrint = peaBluePrint;
+    }
+
+    public List<PeaGallery> getPeaGallerys() {
+        return peaGallerys;
+    }
+
+    public void setPeaGallerys(List<PeaGallery> peaGallerys) {
+        this.peaGallerys = peaGallerys;
     }
 
     public String getPeaQrCodeIdSecure() {
@@ -202,6 +231,22 @@ public class EventDetailsResponse {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPea_contact_no() {
+        return pea_contact_no;
+    }
+
+    public void setPea_contact_no(String pea_contact_no) {
+        this.pea_contact_no = pea_contact_no;
+    }
+
+    public String getPea_emergency_no() {
+        return pea_emergency_no;
+    }
+
+    public void setPea_emergency_no(String pea_emergency_no) {
+        this.pea_emergency_no = pea_emergency_no;
     }
 
 }
