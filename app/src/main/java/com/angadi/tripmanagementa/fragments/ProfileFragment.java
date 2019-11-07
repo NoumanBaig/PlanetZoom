@@ -2,8 +2,18 @@ package com.angadi.tripmanagementa.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,10 +45,7 @@ import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.ImageUtil;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
-import com.github.sumimakito.awesomeqr.AwesomeQrRenderer;
-import com.github.sumimakito.awesomeqr.RenderResult;
-import com.github.sumimakito.awesomeqr.option.RenderOption;
-import com.github.sumimakito.awesomeqr.option.color.Color;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
@@ -49,9 +57,10 @@ import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import butterknife.BindView;
@@ -96,7 +105,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     EditText edt_youtube;
     @BindView(R.id.edt_whatsapp)
     EditText edt_whatsapp;
-//    @BindView(R.id.loading_layout)
+    //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
     @BindView(R.id.img_qr_code)
     ImageView img_qr_code;
@@ -104,6 +113,11 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     String base64String;
     double screenInches;
     BitMatrix result;
+    @BindView(R.id.layout_share)
+    LinearLayout layout_share;
+    @BindView(R.id.layout_save)
+    LinearLayout layout_save;
+    Bitmap bitmap, bitmapQrborder;
 
     @Nullable
     @Override
@@ -117,7 +131,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     }
 
     private void getProfile() {
-        MyProgressDialog.show(getActivity(),"Loading...");
+        MyProgressDialog.show(getActivity(), "Loading...");
         String token = Prefs.with(getActivity()).getString("token", "");
         String uid = Prefs.with(getActivity()).getString("UID", "1234");
         Log.e("token", token);
@@ -132,6 +146,8 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         displayTexts(response);
+
+
                     } else {
                         Toast.makeText(getActivity(), response.body().getStatus(), Toast.LENGTH_SHORT).show();
                     }
@@ -163,26 +179,30 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         edt_youtube.setText(response.body().getUraYoutube());
         edt_insta.setText(response.body().getUraInstagram());
 
-        Log.e("getUraImg","--->"+response.body().getUraImg());
-        if (response.body().getUraImg().equalsIgnoreCase("NULL")){
-            Picasso.get().load(R.drawable.ic_account_circle).error(R.drawable.ic_account_circle).into(imageView);
-        }
-        else {
-            Picasso.get().load(Constants.BASE_URL+response.body().getUraImg()).into(imageView);
+        Log.e("getUraImg", "--->" + response.body().getUraImg());
+        if (response.body().getUraImg().equalsIgnoreCase("NULL")) {
+            Glide.with(getActivity()).load(R.drawable.ic_account_circle).error(R.drawable.ic_account_circle).into(imageView);
+        } else {
+            Glide.with(getActivity()).load(Constants.BASE_URL + response.body().getUraImg()).into(imageView);
 
         }
+
+        String bitmap_name = response.body().getUraFname();
+        bitmapQrborder = writeTextOnDrawable(R.drawable.new_pro_frame, bitmap_name).getBitmap();
+
         showQrCode(response.body().getUraCodeIdSecureLink());
+
     }
 
 
-    @OnClick({R.id.btn_update,R.id.img_edit,R.id.img_settings})
+    @OnClick({R.id.btn_update, R.id.img_edit, R.id.img_settings, R.id.layout_share, R.id.layout_save})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_update:
-                editProfile(edt_name.getText().toString(),"",edt_about.getText().toString(),edt_address.getText().toString(),
-                        edt_company.getText().toString(),edt_designation.getText().toString(),edt_website.getText().toString(),edt_busi_phone.getText().toString(),
-                        "",edt_facebook.getText().toString(),edt_whatsapp.getText().toString(),edt_linkedin.getText().toString(),edt_youtube.getText().toString(),
-                        edt_insta.getText().toString(),base64String);
+                editProfile(edt_name.getText().toString(), "", edt_about.getText().toString(), edt_address.getText().toString(),
+                        edt_company.getText().toString(), edt_designation.getText().toString(), edt_website.getText().toString(), edt_busi_phone.getText().toString(),
+                        "", edt_facebook.getText().toString(), edt_whatsapp.getText().toString(), edt_linkedin.getText().toString(), edt_youtube.getText().toString(),
+                        edt_insta.getText().toString(), base64String);
                 break;
             case R.id.img_edit:
                 Dexter.withActivity(getActivity())
@@ -207,11 +227,19 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
                 break;
             case R.id.img_settings:
-                DialogFragment dialogFragment = SettingsDialogFragment.newInstance("Settings",this);
+                DialogFragment dialogFragment = SettingsDialogFragment.newInstance("Settings", this);
                 dialogFragment.show(getActivity().getSupportFragmentManager(), "scan_results");
+                break;
+            case R.id.layout_share:
+                shareQr();
+                break;
+            case R.id.layout_save:
+                saveQrToGallery();
                 break;
         }
     }
+
+
 
     private void showImagePickerOptions() {
         ImagePickerActivity.showImagePickerOptions(getActivity(), new ImagePickerActivity.PickerOptionListener() {
@@ -287,7 +315,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
                     Bitmap bitmapProfile = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
 
                     base64String = ImageUtil.convert(bitmapProfile);
-                    Log.e("base64String","base64String: " + base64String);
+                    Log.e("base64String", "base64String: " + base64String);
 //                    Bitmap convertBitmap = ImageUtil.convert(base64String);
 //                    Log.e(TAG, "convertBitmap: " + convertBitmap);
                     // loading profile image from local cache
@@ -302,19 +330,19 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
     private void loadProfile(String url) {
         Log.e("", "Image cache path: " + url);
-        Picasso.get().load(url).into(imageView);
+        Glide.with(getActivity()).load(url).into(imageView);
     }
 
 
     private void editProfile(String fname, String lname, String about, String address, String company, String designation, String website,
                              String biz_phone, String biz_email, String facebook, String whatsapp, String linkedin, String youtube, String instagran, String photo) {
-        MyProgressDialog.show(getActivity(),"Loading...");
+        MyProgressDialog.show(getActivity(), "Loading...");
         String token = Prefs.with(getActivity()).getString("token", "");
         Log.e("token", token);
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<EditProfileResponse> responseCall = apiInterface.editProfile("true",token,fname,lname,about,address,company,designation,website,
-                biz_phone,biz_email,facebook,whatsapp,linkedin,youtube,instagran,photo);
+        Call<EditProfileResponse> responseCall = apiInterface.editProfile("true", token, fname, lname, about, address, company, designation, website,
+                biz_phone, biz_email, facebook, whatsapp, linkedin, youtube, instagran, photo);
         responseCall.enqueue(new Callback<EditProfileResponse>() {
             @Override
             public void onResponse(Call<EditProfileResponse> call, Response<EditProfileResponse> response) {
@@ -338,17 +366,16 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     }
 
 
-
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
 
     }
 
 
-    private void showQrCode(String str_qr_id){
+    private void showQrCode(String str_qr_id) {
         try {
-            Bitmap bitmap = encodeAsBitmap(str_qr_id);
-            img_qr_code.setImageBitmap(bitmap);
+            bitmap = encodeAsBitmap(str_qr_id);
+            img_qr_code.setImageBitmap(mergeBitmaps(bitmap,bitmapQrborder));
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -361,26 +388,26 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
             Log.e("screenInches---->", String.valueOf(screenInches));
             if (screenInches <= 5.2) {
                 Log.e("first", "first");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 600, 600, null);
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1050, 1050, null);
             } else if (screenInches >= 5.21 && screenInches <= 5.3) {
                 Log.e("second", "second");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1050, 1050, null);
 
             } else if (screenInches >= 5.31 && screenInches <= 5.5) {
                 Log.e("second1", "second1");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1050, 1050, null);
 
             } else if (screenInches >= 5.6 && screenInches <= 5.99) {
                 Log.e("third", "third");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1300, 1300, null);
 
             } else if (screenInches >= 6.1 && screenInches <= 6.5) {
                 Log.e("Fourth", "Fourth");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 760, 760, null);
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1300, 1300, null);
 
             } else {
                 Log.e("else", "else");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1050, 1050, null);
             }
 
         } catch (IllegalArgumentException iae) {
@@ -402,4 +429,141 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
         return bitmap;
     }
+
+    private void saveQrToGallery() {
+        Dexter.withActivity(getActivity())
+                .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                            if (bitmap != null) {
+                                Log.e("Bitmapforboreder", String.valueOf(bitmapQrborder));
+                                String Filepath = getImageUri(getActivity(), mergeBitmaps(bitmap, bitmapQrborder)).getPath();
+                                if (Filepath != null) {
+                                    addImageToGallery(Filepath, getActivity());
+                                }
+
+                            }
+
+                        }
+
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            Log.e("Permission", "denied");
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+
+    }
+
+    private void shareQr(){
+        Dexter.withActivity(getActivity())
+                .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                            Bitmap bitmap_share = mergeBitmaps(bitmap,bitmapQrborder);
+                            shareQrCodeImage(bitmap_share);
+                        }
+
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            Log.e("Permission", "denied");
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+
+    }
+
+    private void shareQrCodeImage(Bitmap mBitmap){
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "PlanetZoom Profile");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        Uri uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                values);
+
+
+        OutputStream outstream;
+        try {
+            outstream = getActivity().getContentResolver().openOutputStream(uri);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outstream);
+            outstream.close();
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(share, "Share Profile"));
+    }
+
+    //To get Uri from Bitmap
+    private Uri getImageUri(Context context, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, null, null);
+        return Uri.parse(path);
+    }
+
+    //Adding generated QR into Gallery
+    public void addImageToGallery(final String filePath, final Context context) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+        values.put(MediaStore.MediaColumns.DATA, filePath);
+        context.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        Toast.makeText(getActivity(), "QR Code has been saved to Gallery", Toast.LENGTH_SHORT).show();
+    }
+
+    private BitmapDrawable writeTextOnDrawable(int drawableId, String text) {
+        Typeface montserrat_bold = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Bold.OTF");
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableId).copy(Bitmap.Config.ARGB_8888, true);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.BLACK);
+        paint.setTypeface(montserrat_bold);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(18 * getResources().getDisplayMetrics().density);
+        Rect textRect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), textRect);
+        Canvas canvas = new Canvas(bm);
+        canvas.drawText(text, 200, 80, paint);
+        return new BitmapDrawable(getResources(), bm);
+    }
+
+
+    public Bitmap mergeBitmaps(Bitmap overlay, Bitmap bitmap) {
+
+        int height = bitmap.getHeight();
+        int width = bitmap.getWidth();
+        Log.e("bitmap_height", "" + height);
+        Log.e("bitmap_width", "" + width);
+
+        Bitmap combined = Bitmap.createBitmap(width, height, bitmap.getConfig());
+        Canvas canvas = new Canvas(combined);
+        int canvasWidth = canvas.getWidth();
+        int canvasHeight = canvas.getHeight();
+
+        canvas.drawBitmap(bitmap, new Matrix(), null);
+
+        int centreX = (canvasWidth - overlay.getWidth()) / 2;
+        int centreY = (canvasHeight - overlay.getHeight()) / 2;
+        canvas.drawBitmap(overlay, centreX, centreY, null);
+
+        return combined;
+    }
+
 }

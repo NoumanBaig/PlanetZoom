@@ -13,8 +13,8 @@ import android.widget.ImageView;
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.PeaGallery;
 import com.angadi.tripmanagementa.utils.Constants;
+import com.bumptech.glide.Glide;
 import com.smarteist.autoimageslider.SliderViewAdapter;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class SliderAdapter extends
 //
 //        }else {
 //            String image_url = "http://3.83.243.193:3000/files/"+services.get(position).getImage();
-            Picasso.get().load(Constants.BASE_URL+galleryList.get(position).getEiaaImage()).into(viewHolder.imageViewBackground);
+        Glide.with(context).load(Constants.BASE_URL+galleryList.get(position).getEiaaImage()).into(viewHolder.imageViewBackground);
 //        }
 
 

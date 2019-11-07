@@ -36,6 +36,7 @@ import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.ImageUtil;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,7 +47,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.schibstedspain.leku.LocationPickerActivity;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
@@ -341,7 +341,7 @@ public class CreateQrTwoActivity extends AppCompatActivity {
 
     private void loadProfile(String url) {
         Log.e("", "Image cache path: " + url);
-        Picasso.get().load(url).into(img_logo);
+        Glide.with(CreateQrTwoActivity.this).load(url).into(img_logo);
     }
 
 

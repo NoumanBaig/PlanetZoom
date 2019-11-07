@@ -22,7 +22,7 @@ public class TicketViewTwo extends LinearLayout {
     private Bitmap bm;
     private Canvas cv;
     private Paint eraser;
-    private int holesBottomMargin = 200;
+    private int holesBottomMargin = 400;
     private int holeRadius = 40;
 
     public TicketViewTwo(Context context) {
@@ -67,22 +67,22 @@ public class TicketViewTwo extends LinearLayout {
         cv.drawColor(Color.WHITE);
 
         // drawing footer square contains the buy now button
-        Paint paint = new Paint();
-        paint.setARGB(255, 250, 250, 250);
-        paint.setStrokeWidth(0);
-        paint.setStyle(Paint.Style.FILL);
-        cv.drawRect(0, h, w, h - pxFromDp(getContext(), holesBottomMargin), paint);
+//        Paint paint = new Paint();
+//        paint.setARGB(255, 250, 250, 250);
+//        paint.setStrokeWidth(0);
+//        paint.setStyle(Paint.Style.FILL);
+//        cv.drawRect(0, h, w, h - pxFromDp(getContext(), holesBottomMargin), paint);
 
         // adding punching holes on the ticket by erasing them
         cv.drawCircle(0, 0, holeRadius, eraser); // top-left hole
-        cv.drawCircle(w / 2, 0, holeRadius, eraser); // top-middle hole
+//        cv.drawCircle(w / 2, 0, holeRadius, eraser); // top-middle hole
         cv.drawCircle(w, 0, holeRadius, eraser); // top-right
 
         cv.drawCircle(0, h, holeRadius, eraser); // bottom-left hole
         cv.drawCircle(w, h, holeRadius, eraser); // bottom-right
 
-        cv.drawCircle(0, h - pxFromDp(getContext(), holesBottomMargin), holeRadius, eraser); // bottom-left hole
-        cv.drawCircle(w, h - pxFromDp(getContext(), holesBottomMargin), holeRadius, eraser); // bottom right hole
+//        cv.drawCircle(0, h - pxFromDp(getContext(), holesBottomMargin), holeRadius, eraser); // bottom-left hole
+//        cv.drawCircle(w, h - pxFromDp(getContext(), holesBottomMargin), holeRadius, eraser); // bottom right hole
 
         // drawing the image
         canvas.drawBitmap(bm, 0, 0, null);
@@ -93,12 +93,12 @@ public class TicketViewTwo extends LinearLayout {
         mPath.quadTo(w - holeRadius, h - pxFromDp(getContext(), holesBottomMargin), w - holeRadius, h - pxFromDp(getContext(), holesBottomMargin));
 
         // dashed line
-        Paint dashed = new Paint();
-        dashed.setARGB(255, 200, 200, 200);
-        dashed.setStyle(Paint.Style.STROKE);
-        dashed.setStrokeWidth(2);
-        dashed.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
-        canvas.drawPath(mPath, dashed);
+//        Paint dashed = new Paint();
+//        dashed.setARGB(255, 200, 200, 200);
+//        dashed.setStyle(Paint.Style.STROKE);
+//        dashed.setStrokeWidth(2);
+//        dashed.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
+//        canvas.drawPath(mPath, dashed);
 
         super.onDraw(canvas);
     }

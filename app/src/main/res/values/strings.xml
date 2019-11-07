@@ -70,6 +70,8 @@
     <string name="added_members"><u>Added Members</u></string>
     <string name="name">Name</string>
     <string name="enter_places">Enter Places</string>
+    <string name="share">Share</string>
+    <string name="save">Save</string>
 
     <string name="transition">transit</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>

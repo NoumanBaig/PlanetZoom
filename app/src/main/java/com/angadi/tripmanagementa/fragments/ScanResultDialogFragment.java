@@ -32,12 +32,12 @@ import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
@@ -210,7 +210,7 @@ public class ScanResultDialogFragment extends DialogFragment {
                     String logo = response.body().getQcaaProfileLogo();
 
                     try {
-                        Picasso.get().load(Constants.BASE_URL+logo).into(imageView);
+                        Glide.with(getActivity()).load(Constants.BASE_URL+logo).into(imageView);
                         txt_name.setText(name);
                         txt_cat.setText(category+", "+subCat);
                         txt_email.setText(emailId);

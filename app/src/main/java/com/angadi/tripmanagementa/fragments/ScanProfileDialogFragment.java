@@ -30,12 +30,12 @@ import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
 
@@ -232,10 +232,10 @@ public class ScanProfileDialogFragment extends DialogFragment {
 
         Log.e("getUraImg","--->"+response.body().getUraImg());
         if (response.body().getUraImg().equalsIgnoreCase("NULL")){
-            Picasso.get().load(R.drawable.planet_zoom).error(R.drawable.planet_zoom).into(imageView);
+            Glide.with(getActivity()).load(R.drawable.planet_zoom).error(R.drawable.planet_zoom).into(imageView);
         }
         else {
-            Picasso.get().load(Constants.BASE_URL+response.body().getUraImg()).into(imageView);
+            Glide.with(getActivity()).load(Constants.BASE_URL+response.body().getUraImg()).into(imageView);
 
         }
 

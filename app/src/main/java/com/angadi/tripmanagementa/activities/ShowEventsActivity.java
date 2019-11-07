@@ -195,7 +195,7 @@ public class ShowEventsActivity extends AppCompatActivity {
         eventsAdapter.setClickListener(new EventsAdapter.EventClickListener() {
             @Override
             public void onClick(View view, int position, String id) {
-                startActivity(new Intent(ShowEventsActivity.this, EventDetailsActivity.class).putExtra("event_id", id));
+                startActivity(new Intent(ShowEventsActivity.this, EventDetailsActivity.class).putExtra("event_id", id).putExtra("encoded","no"));
             }
         });
     }

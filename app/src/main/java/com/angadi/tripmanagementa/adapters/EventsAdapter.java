@@ -15,7 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.utils.Constants;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -52,13 +53,13 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         holder.txt_title.setText(resultList.get(position).getPeaName());
         holder.txt_date.setText(resultList.get(position).getPeaDate());
         holder.txt_location.setText(resultList.get(position).getPeaVenue());
-        if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")) {
-            Picasso.get().load(R.drawable.organise_event)
-                    .into(holder.imageView);
-        } else {
-            Picasso.get().load(Constants.BASE_URL + resultList.get(position).getPea_logo()).into(holder.imageView);
-        }
-
+//        if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")) {
+//            Glide.with(mContext).load(R.drawable.organise_event)
+//                    .into(holder.imageView);
+//        } else {
+//            Glide.with(mContext).load(Constants.BASE_URL + resultList.get(position).getPea_logo()).into(holder.imageView);
+//        }
+        holder.imageView.setImageURI(Constants.BASE_URL + resultList.get(position).getPea_logo());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,7 +79,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView txt_title, txt_date, txt_location;
-        ImageView imageView;
+        SimpleDraweeView imageView;
         LinearLayout layout;
 
         public MyViewHolder(@NonNull View itemView) {

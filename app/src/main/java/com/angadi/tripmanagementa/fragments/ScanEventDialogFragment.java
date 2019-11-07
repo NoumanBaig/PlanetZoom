@@ -2,6 +2,7 @@ package com.angadi.tripmanagementa.fragments;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.activities.EventDetailsActivity;
 import com.angadi.tripmanagementa.adapters.EventTrackingAdapter;
 import com.angadi.tripmanagementa.models.EventTrackResponse;
 import com.angadi.tripmanagementa.models.ProfileResponse;
@@ -35,13 +37,13 @@ import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.schibstedspain.leku.tracker.TrackEvents;
-import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -215,12 +217,14 @@ public class ScanEventDialogFragment extends DialogFragment {
                     txt_venue.setText(response.body().getPeaVenue());
                     txt_location.setText(response.body().getPeaLocation());
                     txt_amount.setText(response.body().getPeaPrice());
-                    Picasso.get().load(Constants.BASE_URL+response.body().getPea_ticket_selfi()).into(imageView);
+                    Glide.with(getActivity()).load(Constants.BASE_URL+response.body().getPea_ticket_selfi()).into(imageView);
                     getTracking(user_id,scan_id);
                 }else {
                     layout_ticket.setVisibility(View.GONE);
-                    layout_animation.setVisibility(View.VISIBLE);
-                    Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_LONG).show();
+                    layout_animation.setVisibility(View.GONE);
+                    startActivity(new Intent(getActivity(), EventDetailsActivity.class).putExtra("event_id",scan_id).putExtra("encoded","yes"));
+                    dismiss();
+//                    Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
 

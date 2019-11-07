@@ -15,7 +15,8 @@ import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.models.MyTicketsResult;
 import com.angadi.tripmanagementa.utils.Constants;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -52,12 +53,12 @@ public class MyTicketsAdapter extends RecyclerView.Adapter<MyTicketsAdapter.MyVi
         holder.txt_title.setText(resultList.get(position).getPeaName());
         holder.txt_date.setText(resultList.get(position).getPeaDate());
         holder.txt_location.setText(resultList.get(position).getPeaVenue());
-        if (resultList.get(position).getPeaLogo().equalsIgnoreCase("NULL")) {
-            Picasso.get().load(R.drawable.explore_event)
-                    .into(holder.imageView);
-        } else {
-            Picasso.get().load(Constants.BASE_URL + resultList.get(position).getPeaLogo()).into(holder.imageView);
-        }
+//        if (resultList.get(position).getPeaLogo().equalsIgnoreCase("NULL")) {
+//            Glide.with(mContext).load(R.drawable.explore_event)
+//                    .into(holder.imageView);
+//        } else {
+            holder.imageView.setImageURI(Constants.BASE_URL + resultList.get(position).getPeaLogo());
+//        }
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,7 +79,7 @@ public class MyTicketsAdapter extends RecyclerView.Adapter<MyTicketsAdapter.MyVi
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView txt_title, txt_date, txt_location;
-        ImageView imageView;
+        SimpleDraweeView imageView;
         LinearLayout layout;
 
         public MyViewHolder(@NonNull View itemView) {

@@ -28,7 +28,6 @@ import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.gson.Gson;
 import com.google.zxing.common.BitMatrix;
-import com.squareup.picasso.Picasso;
 
 import java.io.UnsupportedEncodingException;
 

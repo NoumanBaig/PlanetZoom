@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -48,7 +49,13 @@ import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.ImageUtil;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -56,9 +63,9 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.smarteist.autoimageslider.IndicatorView.draw.controller.DrawController;
 import com.smarteist.autoimageslider.SliderView;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +77,9 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.graphics.Color.BLACK;
+import static android.graphics.Color.WHITE;
 
 public class EventDetailsActivity extends AppCompatActivity implements SubEventDetailsDialogFragment.DetailsDialogListener,SubEventDetailsDialogFragment.DialogListener{
 
@@ -88,12 +98,12 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     @BindView(R.id.txt_address)
     TextView txt_address;
     @BindView(R.id.img_logo)
-    ImageView img_logo;
+    SimpleDraweeView img_logo;
     @BindView(R.id.recyclerDates)
     RecyclerView recyclerDates;
     @BindView(R.id.recyclerSponsors)
     RecyclerView recyclerSponsors;
-    String event_id;
+    String event_id,encoded="no";
     public static final int REQUEST_IMAGE = 100;
     String base64String;
     @BindView(R.id.imageSlider)
@@ -112,6 +122,10 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     LinearLayout layout_chat;
     @BindView(R.id.layout_emergency)
     LinearLayout layout_emergency;
+    @BindView(R.id.img_qr_code)
+    ImageView img_qr_code;
+    double screenInches;
+    BitMatrix result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +140,24 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 
         if (getIntent().getExtras() != null) {
             event_id = getIntent().getStringExtra("event_id");
-            getEventDetails(event_id);
-            Log.e("event_id", "" + event_id);
+            encoded = getIntent().getStringExtra("encoded");
+            assert encoded != null;
+            if (encoded.equalsIgnoreCase("yes")){
+                String scan = null;
+                byte[] tmp = Base64.decode(event_id, Base64.DEFAULT);
+                try {
+                    scan = new String(tmp, "UTF-8");
+                    Log.e("scan",""+scan);
+                    getEventDetails(scan);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                getEventDetails(event_id);
+                Log.e("event_id", "" + event_id);
+            }
+
+
         }
 
     }
@@ -168,13 +198,10 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
                         str_contact = response.body().getPea_contact_no();
                         str_emergency = response.body().getPea_emergency_no();
 
+                        showQrCode(response.body().getPeaQrCodeIdSecureLink());
                         List<PeaGallery> galleryList = response.body().getPeaGallerys();
-                        if (response.body().getPeaLogo().equalsIgnoreCase("NULL")) {
-                            Picasso.get().load(R.drawable.planet_event)
-                                    .into(img_logo);
-                        } else {
-                            Picasso.get().load(Constants.BASE_URL + response.body().getPeaLogo()).into(img_logo);
-                        }
+
+                        img_logo.setImageURI(Constants.BASE_URL + response.body().getPeaLogo());
                         if (galleryList.size() != 0) {
                             sliderView.setVisibility(View.VISIBLE);
                             imageSlider(galleryList);
@@ -621,5 +648,63 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     @Override
     public void onProfilePositiveClick(DialogFragment dialog) {
 
+    }
+
+    private void showQrCode(String str_qr_id) {
+        try {
+            Bitmap bitmap = encodeAsBitmap(str_qr_id);
+            img_qr_code.setImageBitmap(bitmap);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
+
+    Bitmap encodeAsBitmap(String list) throws WriterException {
+        Log.e("-----------------", String.valueOf(screenInches));
+
+        try {
+            Log.e("screenInches---->", String.valueOf(screenInches));
+            if (screenInches <= 5.2) {
+                Log.e("first", "first");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 600, 600, null);
+            } else if (screenInches >= 5.21 && screenInches <= 5.3) {
+                Log.e("second", "second");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+
+            } else if (screenInches >= 5.31 && screenInches <= 5.5) {
+                Log.e("second1", "second1");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+
+            } else if (screenInches >= 5.6 && screenInches <= 5.99) {
+                Log.e("third", "third");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+
+            } else if (screenInches >= 6.1 && screenInches <= 6.5) {
+                Log.e("Fourth", "Fourth");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 760, 760, null);
+
+            } else {
+                Log.e("else", "else");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+            }
+
+        } catch (IllegalArgumentException iae) {
+            // Unsupported format
+            return null;
+        }
+
+        int w = result.getWidth();
+        int h = result.getHeight();
+        int[] pixels = new int[w * h];
+        for (int y = 0; y < h; y++) {
+            int offset = y * w;
+            for (int x = 0; x < w; x++) {
+                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+            }
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
+        return bitmap;
     }
 }

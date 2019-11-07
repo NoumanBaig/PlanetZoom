@@ -3,11 +3,22 @@ package com.angadi.tripmanagementa.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.Manifest;
+import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,16 +29,28 @@ import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.squareup.picasso.Picasso;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,7 +65,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
 
     double screenInches;
     BitMatrix result;
-//    @BindView(R.id.loading_layout)
+    //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
     //    @BindView(R.id.txt_name)
 //    TextView txt_name;
@@ -56,13 +79,14 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
     TextView txt_amount;
     @BindView(R.id.txt_venue)
     TextView txt_venue;
-    //    @BindView(R.id.txt_address)
-//    TextView txt_address;
+        @BindView(R.id.layout)
+        RelativeLayout view;
     @BindView(R.id.img)
-    ImageView imageView;
+    SimpleDraweeView imageView;
     @BindView(R.id.img_qr_code)
     ImageView img_qr_code;
-    String event_id;
+    String event_id,event_name,event_desc;
+    File imagePath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +112,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
     }
 
     private void getTicketDetails(String event_id) {
-        MyProgressDialog.show(MyTicketDetailsActivity.this,"Loading...");
+        MyProgressDialog.show(MyTicketDetailsActivity.this, "Loading...");
         String token = Prefs.with(MyTicketDetailsActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
@@ -98,24 +122,25 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<EventDetailsResponse> call, Response<EventDetailsResponse> response) {
                 Log.e("getTicketDetails", new Gson().toJson(response));
-               MyProgressDialog.dismiss();
+                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
 
 //                        txt_name.setText(response.body().getPeaName());
-                        txt_desc.setText(response.body().getPeaDesc());
+                        event_name = response.body().getPeaName();
+                        event_desc = response.body().getPeaDesc();
+                        txt_desc.setText(event_desc);
 //                        txt_address.setText(response.body().getPeaLocation());
                         String formatedDate = parseDate(response.body().getPeaDate());
-                        txt_date.setText(formatedDate);
-                        txt_time.setText(response.body().getPeaDateTime());
+                        txt_date.setText("Date: " + formatedDate);
+                        txt_time.setText("Time: " + response.body().getPeaDateTime());
                         txt_venue.setText(response.body().getPeaVenue());
                         txt_amount.setText(response.body().getPeaPrice());
 
                         if (response.body().getPeaLogo().equalsIgnoreCase("NULL")) {
-                            Picasso.get().load(R.drawable.organise_event)
-                                    .into(imageView);
+                            imageView.setImageResource(R.drawable.explore_event);
                         } else {
-                            Picasso.get().load(Constants.BASE_URL + response.body().getPeaLogo()).into(imageView);
+                            imageView.setImageURI(Uri.parse(Constants.BASE_URL + response.body().getPeaLogo()));
                         }
                         showQrCode(response.body().getPeaQrCodeIdSecureLink());
 
@@ -130,7 +155,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<EventDetailsResponse> call, Throwable t) {
                 Log.e("getTicketDetails", "" + t);
-               MyProgressDialog.dismiss();
+                MyProgressDialog.dismiss();
             }
         });
 
@@ -155,7 +180,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
         return str;
     }
 
-    private void showQrCode(String str_qr_id){
+    private void showQrCode(String str_qr_id) {
         try {
             Bitmap bitmap = encodeAsBitmap(str_qr_id);
             img_qr_code.setImageBitmap(bitmap);
@@ -213,4 +238,105 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
         return bitmap;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_ticket, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.share_ticket) {
+            //  startActivity(new Intent(HomeActivity.this,CreateQrActivity.class));
+            Dexter.withActivity(this)
+                    .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener(new MultiplePermissionsListener() {
+                        @Override
+                        public void onPermissionsChecked(MultiplePermissionsReport report) {
+                            if (report.areAllPermissionsGranted()) {
+                               takeSS(view);
+                            }
+
+                            if (report.isAnyPermissionPermanentlyDenied()) {
+                                Log.e("permission", "denied");
+                            }
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                            token.continuePermissionRequest();
+                        }
+                    }).check();
+
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void takeSS(View v){
+        Date now = new Date();
+        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
+
+        try {
+            // image naming and path  to include sd card  appending name you choose for file
+            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpeg";
+
+            // create bitmap screen capture
+            v.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(v.getDrawingCache());
+            v.setDrawingCacheEnabled(false);
+
+            File imageFile = new File(mPath);
+
+            FileOutputStream outputStream = new FileOutputStream(imageFile);
+            int quality = 100;
+            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
+            outputStream.flush();
+            outputStream.close();
+
+            //setting screenshot in imageview
+            String filePath = imageFile.getPath();
+
+            Bitmap ssbitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath());
+            //ivpl.setImageBitmap(ssbitmap);
+            //sharePath = filePath;
+            share(ssbitmap);
+
+        } catch (Throwable e) {
+            // Several error may come out with file handling or DOM
+            e.printStackTrace();
+        }
+    }
+    private void share(Bitmap mBitmap){
+
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("image/jpeg");
+
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.TITLE, "PlanetZoom Event");
+        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+        Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                values);
+
+
+        OutputStream outstream;
+        try {
+            outstream = getContentResolver().openOutputStream(uri);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outstream);
+            outstream.close();
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+
+        share.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(share, "Share Ticket"));
+    }
 }

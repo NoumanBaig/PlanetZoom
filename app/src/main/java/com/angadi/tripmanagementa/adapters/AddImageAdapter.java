@@ -9,9 +9,10 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.activities.CreateEventActivity;
 import com.angadi.tripmanagementa.models.PeaGallery;
 import com.angadi.tripmanagementa.utils.Constants;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +94,7 @@ public class AddImageAdapter extends RecyclerView.Adapter<AddImageAdapter.ImageH
             }
         }else {
             holder.closeImageIv.setVisibility(View.GONE);
-            Picasso.get().load(Constants.BASE_URL+galleryList.get(position).getEiaaImage()).into(holder.addImageIv);
-
+            Glide.with(context).load(Constants.BASE_URL+galleryList.get(position).getEiaaImage()).into(holder.addImageIv);
         }
 
     }

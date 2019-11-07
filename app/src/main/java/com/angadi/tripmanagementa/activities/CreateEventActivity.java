@@ -52,6 +52,7 @@ import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.ImageUtil;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -62,7 +63,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.schibstedspain.leku.LocationPickerActivity;
-import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -486,12 +486,12 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void loadProfile(String url) {
         Log.e("", "Image cache path: " + url);
-        Picasso.get().load(url).into(img_logo);
+        Glide.with(CreateEventActivity.this).load(url).into(img_logo);
     }
 
     private void loadProfileMap(String url) {
         Log.e("", "Image cache path: " + url);
-        Picasso.get().load(url).into(img_map);
+        Glide.with(CreateEventActivity.this).load(url).into(img_map);
     }
 
 
@@ -691,11 +691,10 @@ public class CreateEventActivity extends AppCompatActivity {
                         edt_organisation.setText(response.body().getPeaOrg());
 //                        if (!response.body().getPeaLogo().equalsIgnoreCase("") || response.body().getPeaLogo() != null){
                         if (response.body().getPeaLogo().equalsIgnoreCase("NULL")) {
-                            Picasso.get().load(R.drawable.organise_event)
-                                    .into(img_logo);
+                            Glide.with(CreateEventActivity.this).load(R.drawable.organise_event).into(img_logo);
                         } else {
                             Log.e("getPeaLogo", ""+response.body().getPeaLogo());
-                            Picasso.get().load(Constants.BASE_URL+response.body().getPeaLogo()).into(img_logo);
+                            Glide.with(CreateEventActivity.this).load(Constants.BASE_URL+response.body().getPeaLogo()).into(img_logo);
                         }
                         List<PeaGallery> galleryList = response.body().getPeaGallerys();
                         setImagesAdapterJustShow(galleryList);

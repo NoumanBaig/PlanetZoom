@@ -33,11 +33,11 @@ import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.itparsa.circlenavigation.CircleItem;
 import com.itparsa.circlenavigation.CircleNavigationView;
 import com.itparsa.circlenavigation.CircleOnClickListener;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -69,7 +69,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mCircleNavigationView.addCircleItem(new CircleItem("Events", R.drawable.event));
         mCircleNavigationView.addCircleItem(new CircleItem("Dashboard", R.drawable.dashboard));
         mCircleNavigationView.addCircleItem(new CircleItem("Profile", R.drawable.user));
-        Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
+        Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
         HomeFragment homeFragment = new HomeFragment();
         loadFragment(homeFragment);
         //checking whether user is a organiser or not
@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mCircleNavigationView.setCircleOnClickListener(new CircleOnClickListener() {
             @Override
             public void onCentreButtonClick() {
-                Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
+                Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
                 HomeFragment homeFragment = new HomeFragment();
                 loadFragment(homeFragment);
 //                Toast.makeText(HomeActivity.this, "Center Item Click", Toast.LENGTH_SHORT).show();
@@ -91,24 +91,24 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
 //
                if (itemIndex==0){
                    Log.e("Zero","---->");
-                   Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
+                   Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
                    OffersFragment zeroFragment = new OffersFragment();
                    loadFragment(zeroFragment);
                }else if (itemIndex==1){
                    Log.e("One","---->");
-                   Picasso.get().load(R.drawable.planet_event).into(img_toolbar);
+                   Glide.with(HomeActivity.this).load(R.drawable.planet_event).into(img_toolbar);
                    EventsFragment oneFragment = new EventsFragment();
                    loadFragment(oneFragment);
                }
                else if (itemIndex==2){
                    Log.e("Two","---->");
-                   Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
+                   Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
                    DashboardFragment zeroFragment = new DashboardFragment();
                    loadFragment(zeroFragment);
                }
                else if (itemIndex==3){
                    Log.e("Three","---->");
-                   Picasso.get().load(R.drawable.planet_zoom_white).into(img_toolbar);
+                   Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
                    ProfileFragment zeroFragment = new ProfileFragment();
                    loadFragment(zeroFragment);
                }

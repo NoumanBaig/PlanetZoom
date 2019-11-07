@@ -20,7 +20,7 @@ import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.activities.CreateQrActivity;
 import com.angadi.tripmanagementa.models.Result;
 import com.angadi.tripmanagementa.utils.Constants;
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -52,7 +52,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
         holder.textView.setText(resultList.get(position).getCaaName());
-        Picasso.get().load(Constants.BASE_URL+resultList.get(position).getCaaImg()).into(holder.imageView);
+        Glide.with(mContext).load(Constants.BASE_URL+resultList.get(position).getCaaImg()).into(holder.imageView);
         Log.e("Image--->",""+Constants.BASE_URL+resultList.get(position).getCaaImg());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
