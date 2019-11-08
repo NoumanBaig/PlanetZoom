@@ -12,6 +12,7 @@ import androidx.transition.Slide;
 import androidx.transition.Transition;
 import androidx.transition.TransitionManager;
 
+import android.Manifest;
 import android.animation.LayoutTransition;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -51,9 +52,16 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.w3c.dom.Text;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,15 +119,39 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
+        getCameraPermission();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             ((ViewGroup) findViewById(R.id.container)).getLayoutTransition()
                     .enableTransitionType(LayoutTransition.CHANGING);
-        }
+//        }
         getDeviceToken();
         str_device_token = "hdkajskajsajkajsksjasajksaksjakjsdhhdhd";
 
         // avi.smoothToShow();
+
+    }
+
+    private void getCameraPermission(){
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.CAMERA)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                            Log.e("permission","granted");
+                        }
+
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            Log.e("permission","denied");
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
 
     }
 

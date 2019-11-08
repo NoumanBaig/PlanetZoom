@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.fragments.HomeFragment;
 import com.angadi.tripmanagementa.fragments.EventsFragment;
+import com.angadi.tripmanagementa.fragments.HomeFragmentNewQR;
 import com.angadi.tripmanagementa.fragments.ProfileFragment;
 import com.angadi.tripmanagementa.fragments.DashboardFragment;
 import com.angadi.tripmanagementa.fragments.OffersFragment;
@@ -70,7 +71,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mCircleNavigationView.addCircleItem(new CircleItem("Dashboard", R.drawable.dashboard));
         mCircleNavigationView.addCircleItem(new CircleItem("Profile", R.drawable.user));
         Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-        HomeFragment homeFragment = new HomeFragment();
+        HomeFragmentNewQR homeFragment = new HomeFragmentNewQR();
         loadFragment(homeFragment);
         //checking whether user is a organiser or not
         checkAdmin();
@@ -78,7 +79,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
             @Override
             public void onCentreButtonClick() {
                 Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-                HomeFragment homeFragment = new HomeFragment();
+                HomeFragmentNewQR homeFragment = new HomeFragmentNewQR();
                 loadFragment(homeFragment);
 //                Toast.makeText(HomeActivity.this, "Center Item Click", Toast.LENGTH_SHORT).show();
 //                mCircleNavigationView.showBadgeAtIndex(2, 80, getResources().getColor(R.color.colorAccent)
