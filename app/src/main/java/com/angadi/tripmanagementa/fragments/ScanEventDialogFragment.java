@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,6 +83,8 @@ public class ScanEventDialogFragment extends DialogFragment {
     TextView txt_location;
     @BindView(R.id.txt_amount)
     TextView txt_amount;
+    @BindView(R.id.progress)
+    ProgressBar progressBar;
 
     @BindView(R.id.layout_ticket)
     LinearLayout layout_ticket;
@@ -139,7 +142,7 @@ public class ScanEventDialogFragment extends DialogFragment {
             int height = ViewGroup.LayoutParams.MATCH_PARENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
-            MyProgressDialog.show(getActivity(), "Loading...");
+//            MyProgressDialog.show(getActivity(), "Loading...");
 
         }
     }
@@ -150,7 +153,7 @@ public class ScanEventDialogFragment extends DialogFragment {
         view = inflater.inflate(R.layout.scan_event_fragment, container, false);
         ButterKnife.bind(this, view);
         toolbar = view.findViewById(R.id.toolbar);
-
+        progressBar.setVisibility(View.VISIBLE);
         return view;
     }
 
@@ -201,14 +204,14 @@ public class ScanEventDialogFragment extends DialogFragment {
 
 
     private void getScanEventResult(String user_id,String scan_id){
-        MyProgressDialog.show(getActivity(),"Loading...");
+//        MyProgressDialog.show(getActivity(),"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ScanEventQrResponse> call = apiInterface.scanEventQr("true",token,user_id,scan_id);
         call.enqueue(new Callback<ScanEventQrResponse>() {
             @Override
             public void onResponse(Call<ScanEventQrResponse> call, Response<ScanEventQrResponse> response) {
                 Log.e("getScanEventResult", new Gson().toJson(response));
-                MyProgressDialog.dismiss();
+                progressBar.setVisibility(View.GONE);
                 if (response.body().getStatus().equalsIgnoreCase("success")){
                     layout_ticket.setVisibility(View.VISIBLE);
                     layout_animation.setVisibility(View.GONE);
@@ -231,7 +234,7 @@ public class ScanEventDialogFragment extends DialogFragment {
             @Override
             public void onFailure(Call<ScanEventQrResponse> call, Throwable t) {
                 Log.e("getScanEventExp", ""+t);
-               MyProgressDialog.dismiss();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -249,14 +252,15 @@ public class ScanEventDialogFragment extends DialogFragment {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        MyProgressDialog.show(getActivity(),"Loading...");
+//        MyProgressDialog.show(getActivity(),"Loading...");
+        progressBar.setVisibility(View.VISIBLE);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<EventTrackResponse> call = apiInterface.eventTracking("true",token,user,scan);
         call.enqueue(new Callback<EventTrackResponse>() {
             @Override
             public void onResponse(Call<EventTrackResponse> call, Response<EventTrackResponse> response) {
                 Log.e("getTracking", new Gson().toJson(response));
-                MyProgressDialog.dismiss();
+                progressBar.setVisibility(View.GONE);
                 if (response.body().getStatus().equalsIgnoreCase("success")){
                     List<TrackResult> trackResultList = response.body().getResults();
                     List<TrackData> dataList = null;
@@ -275,7 +279,7 @@ public class ScanEventDialogFragment extends DialogFragment {
             @Override
             public void onFailure(Call<EventTrackResponse> call, Throwable t) {
                 Log.e("getTracking", ""+t);
-                MyProgressDialog.dismiss();
+                progressBar.setVisibility(View.GONE);
             }
         });
 

@@ -4,45 +4,56 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
-
-    <com.kroegerama.kaiteki.bcode.views.BarcodeView
-        android:id="@+id/bcode"
-        android:layout_marginTop="?attr/actionBarSize"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:resultPointColor="#09E85E"
-        app:resultPointSize="12dp"
-        app:showResultPoints="true" />
+        android:layout_height="match_parent">
+<!--    <com.kroegerama.kaiteki.bcode.views.BarcodeView-->
+<!--        android:id="@+id/bcode"-->
+<!--        android:layout_marginTop="?attr/actionBarSize"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        app:resultPointColor="#09E85E"-->
+<!--        app:resultPointSize="12dp"-->
+<!--        app:showResultPoints="true" />-->
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_flash_on"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/ic_flash_on"
+            app:fabSize="mini"
+            android:visibility="gone"
+            android:layout_gravity="bottom|center"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_flash_off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/ic_flash_off"
+            app:fabSize="mini"
+            android:layout_gravity="bottom|center"/>
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_flash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_flash_on"
-        app:fabSize="mini"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fab_gallery"
-        app:layout_constraintVertical_bias="1.0"
-        android:layout_marginRight="20dp" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_gallery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/ic_gallery"
+            app:fabSize="mini"
+            android:visibility="gone"
+            android:layout_gravity="bottom"
+            android:layout_marginStart="20dp" />
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_gallery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_gallery"
-        android:visibility="gone"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="20dp" />
+    </FrameLayout>
+
+
+
+
 
 
 

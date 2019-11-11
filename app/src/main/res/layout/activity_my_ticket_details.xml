@@ -4,15 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
+    android:background="@color/demo_day_green"
     android:orientation="vertical"
     android:id="@+id/layout"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.MyTicketDetailsActivity">
 
-    <include
+<!--    <include-->
+<!--        android:id="@+id/tool"-->
+<!--        layout="@layout/toolbar_two"/>-->
+    <RelativeLayout
         android:id="@+id/tool"
-        layout="@layout/toolbar_two"/>
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:elevation="5dp"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/demo_day_orange"
+                app:popupTheme="@style/AppTheme.PopupOverlay" >
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+    </RelativeLayout>
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_below="@+id/tool"
@@ -26,6 +51,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginBottom="40dp"
+        android:layout_marginTop="20dp"
         android:paddingBottom="40dp"
         android:background="@android:color/transparent"
         android:orientation="vertical">
@@ -43,21 +69,24 @@
                     android:layout_height="wrap_content"
                     android:padding="10dp"
                     android:id="@+id/txt_id"
+                    android:gravity="center"
                     android:textColor="@color/black"
                     android:textStyle="bold"/>
 
                 <ImageView
-                    android:layout_width="match_parent"
+                    android:layout_width="200dp"
                     android:layout_marginRight="40dp"
                     android:layout_marginLeft="40dp"
                     android:textColor="@color/white"
                     android:textStyle="bold"
+                    android:layout_gravity="center"
                     android:id="@+id/img_qr_code"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="200dp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/straight_dash_line"/>
 
                 <com.facebook.drawee.view.SimpleDraweeView
@@ -208,6 +237,7 @@
                     android:weightSum="2"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,9 +14,12 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.angadi.tripmanagementa.R;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.zxing.Result;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class HomeFragment extends Fragment implements ZXingScannerView.ResultHandler,
@@ -26,6 +30,10 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
     private static final String FLASH_STATE = "FLASH_STATE";
     private ZXingScannerView mScannerView;
     private boolean mFlash;
+    @BindView(R.id.fab_flash)
+    FloatingActionButton fab_flash;
+    @BindView(R.id.txt_live)
+    TextView txt_live;
 
     @Nullable
     @Override
@@ -37,6 +45,8 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         mScannerView = new ZXingScannerView(getActivity());
         contentFrame.addView(mScannerView);
         mScannerView.setBorderColor(getActivity().getResources().getColor(R.color.colorAccent));
+        txt_live.setText(getResources().getString(R.string.live_msg));
+        txt_live.setSelected(true);
 
         return view;
     }
@@ -47,11 +57,21 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         mScannerView.setResultHandler(this);
         // You can optionally set aspect ratio tolerance level
         // that is used in calculating the optimal Camera preview size
-        // mScannerView.setAspectTolerance(0.2f);
         mScannerView.startCamera();
+      //  mScannerView.setFlash(mFlash);
+
+
+    }
+
+    @OnClick(R.id.fab_flash)
+    void onFlashClick(){
+        mFlash = !mFlash;
         mScannerView.setFlash(mFlash);
-
-
+        if (mFlash){
+            fab_flash.setImageResource(R.drawable.ic_flash_on);
+        }else {
+            fab_flash.setImageResource(R.drawable.ic_flash_off);
+        }
     }
 
     @Override

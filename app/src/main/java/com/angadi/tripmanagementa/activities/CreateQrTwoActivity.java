@@ -368,11 +368,13 @@ public class CreateQrTwoActivity extends AppCompatActivity {
                 MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
                     Toast.makeText(CreateQrTwoActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(CreateQrTwoActivity.this,CreateQrThreeActivity.class);
-                    intent.putExtra("qr_id",response.body().getQrCodeId());
+                    Intent intent = new Intent(CreateQrTwoActivity.this,ScanResultActivity.class);
+                    intent.putExtra("qr_id",response.body().getQrCodeIdSecure());
+                    intent.putExtra("qr_url",response.body().getQrCodeIdSecureLink());
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     Log.e("getQrCodeId",""+response.body().getQrCodeId());
+                    Log.e("getQrCodeIdSecure",""+response.body().getQrCodeIdSecureLink());
                 }else {
                     Toast.makeText(CreateQrTwoActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }

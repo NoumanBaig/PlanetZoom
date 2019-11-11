@@ -6,7 +6,7 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="red">#FF0000</color>
-    <color name="green">#00BF00</color>
+    <color name="green">#8cc63f</color>
     <color name="dark_green">#3D8A68</color>
     <color name="background">#F1F1F3</color>
     <color name="gray">#E7E7E7</color>
@@ -18,4 +18,7 @@
     <color name="start_color">#C029B2</color>
     <color name="end_color">#AC10D7</color>
     <color name="button_color">#282328</color>
+    <color name="demo_day_green">#8cc63f</color>
+    <color name="demo_day_gray">#2d2d2d</color>
+    <color name="demo_day_orange">#f57f20 </color>
 </resources>

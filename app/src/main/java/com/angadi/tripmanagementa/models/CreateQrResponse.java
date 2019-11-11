@@ -7,9 +7,15 @@ public class CreateQrResponse {
     @SerializedName("message")
     @Expose
     private String message;
-    @SerializedName("qr_code_id_secure_link")
+    @SerializedName("qr_code_id")
     @Expose
     private String qrCodeId;
+    @SerializedName("qr_code_id_secure")
+    @Expose
+    private String qrCodeIdSecure;
+    @SerializedName("qr_code_id_secure_link")
+    @Expose
+    private String qrCodeIdSecureLink;
     @SerializedName("status")
     @Expose
     private String status;
@@ -28,6 +34,22 @@ public class CreateQrResponse {
 
     public void setQrCodeId(String qrCodeId) {
         this.qrCodeId = qrCodeId;
+    }
+
+    public String getQrCodeIdSecure() {
+        return qrCodeIdSecure;
+    }
+
+    public void setQrCodeIdSecure(String qrCodeIdSecure) {
+        this.qrCodeIdSecure = qrCodeIdSecure;
+    }
+
+    public String getQrCodeIdSecureLink() {
+        return qrCodeIdSecureLink;
+    }
+
+    public void setQrCodeIdSecureLink(String qrCodeIdSecureLink) {
+        this.qrCodeIdSecureLink = qrCodeIdSecureLink;
     }
 
     public String getStatus() {

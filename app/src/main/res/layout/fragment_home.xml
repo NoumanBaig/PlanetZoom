@@ -1,57 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
+
     <FrameLayout
         android:id="@+id/content_frame"
-        android:layout_marginTop="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="40dp">
+
+        <!--        <FrameLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_margin="10dp"-->
+        <!--            android:background="@drawable/edittext_background_three"-->
+        <!--            android:orientation="vertical"-->
+        <!--            android:padding="10dp">-->
+
+        <!--        </FrameLayout>-->
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_flash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="80dp"
+            android:src="@drawable/ic_flash_off"
+            app:fabSize="mini" />
+
 
     </FrameLayout>
 
+    <com.angadi.tripmanagementa.utils.CustomFontTextView
+        android:id="@+id/txt_live"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="70dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/edittext_background_three"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:padding="10dp"
+        android:scrollHorizontally="true"
+        android:singleLine="true"
+        android:text="Live text details appear here.... bla bla bla bla bla bla bla bla bla bka"
+        android:textColor="@color/colorAccent"
+        android:textSize="12sp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--<ImageView-->
-        <!--android:id="@+id/flash"-->
-        <!--android:layout_width="50dp"-->
-        <!--android:layout_height="50dp"-->
-        <!--android:layout_marginStart="4dp"-->
-        <!--android:layout_marginLeft="4dp"-->
-        <!--android:layout_marginTop="340dp"-->
-        <!--android:padding="5dp"-->
-        <!--android:src="@drawable/ic_arrow_back"-->
-        <!--app:layout_constraintStart_toStartOf="parent"-->
-        <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_flash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="80dp"
-        android:src="@drawable/ic_flash_on"
-        app:fabSize="mini"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fab_gallery"
-        app:layout_constraintVertical_bias="1.0"
-        android:layout_marginRight="20dp" />
-
+    <!--android:id="@+id/flash"-->
+    <!--android:layout_width="50dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:layout_marginStart="4dp"-->
+    <!--android:layout_marginLeft="4dp"-->
+    <!--android:layout_marginTop="340dp"-->
+    <!--android:padding="5dp"-->
+    <!--android:src="@drawable/ic_arrow_back"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_gallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="80dp"
         android:src="@drawable/ic_gallery"
+        android:visibility="gone"
         app:fabSize="mini"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="20dp" />
-
-
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

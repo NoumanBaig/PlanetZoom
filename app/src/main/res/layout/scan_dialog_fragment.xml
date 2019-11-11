@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -10,12 +11,30 @@
         android:layout_height="wrap_content"
         app:elevation="0dp">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:contentInsetStartWithNavigation="0dp"
-            app:navigationIcon="@drawable/ic_arrow_back" />
+            android:layout_height="match_parent">
+
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:contentInsetStartWithNavigation="0dp"
+                app:navigationIcon="@drawable/ic_arrow_back">
+
+
+            </androidx.appcompat.widget.Toolbar>
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="10dp"
+                android:progressTint="@color/black" />
+        </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -35,33 +54,35 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/imageView"
-                    android:scaleType="fitXY"
                     android:layout_width="match_parent"
-                    android:layout_height="200dp" />
+                    android:layout_height="200dp"
+                    android:layout_gravity="center"
+                    fresco:failureImage="@drawable/ic_placeholder"
+                    fresco:placeholderImage="@drawable/ic_placeholder" />
 
                 <LinearLayout
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
                     android:weightSum="5">
 
                     <LinearLayout
+                        android:id="@+id/layout_fav"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/linear_fav"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -79,24 +100,24 @@
                             android:text="Favorites"
                             android:textAllCaps="true"
                             android:textColor="@color/black"
-                            android:textSize="12sp"
+                            android:textSize="10sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/layout_like"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/linear_like"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -114,24 +135,24 @@
                             android:text="Likes"
                             android:textAllCaps="true"
                             android:textColor="@color/black"
-                            android:textSize="12sp"
+                            android:textSize="10sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/layout_dislike"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/linear_dislike"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -149,25 +170,25 @@
                             android:text="Dis like"
                             android:textAllCaps="true"
                             android:textColor="@color/black"
-                            android:textSize="12sp"
+                            android:textSize="10sp"
                             android:textStyle="bold" />
 
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/layout_share"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/linear_share"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -185,24 +206,24 @@
                             android:text="Share"
                             android:textAllCaps="true"
                             android:textColor="@color/black"
-                            android:textSize="12sp"
+                            android:textSize="10sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/layout_ratings"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:foreground="?attr/selectableItemBackground"
                         android:gravity="center"
                         android:orientation="vertical">
 
                         <LinearLayout
-                            android:id="@+id/linear_ratings"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:background="@drawable/round_background"
-                            android:foreground="?attr/selectableItemBackground"
                             android:gravity="center"
                             android:orientation="vertical">
 
@@ -223,7 +244,7 @@
                             android:text="Ratings"
                             android:textAllCaps="true"
                             android:textColor="@color/black"
-                            android:textSize="12sp"
+                            android:textSize="10sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -232,260 +253,338 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingLeft="20dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="20dp"
+                    android:paddingBottom="10dp">
 
                     <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:id="@+id/txt_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Name"
-                        android:id="@+id/txt_name"
                         android:textColor="@color/black"
                         android:textSize="16sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:id="@+id/txt_cat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="--"
+                        android:layout_marginBottom="8dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
-                        android:layout_marginBottom="8dp"
-                        android:id="@+id/txt_cat"/>
+                        android:text="--" />
 
                     <LinearLayout
-                        android:weightSum="2"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:gravity="center_vertical"
+                        android:id="@+id/layout_mobile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="0dp"
-                            android:gravity="center"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.4">
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:weightSum="2">
 
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_phone"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.6">
-
-                            <com.angadi.tripmanagementa.utils.CustomFontTextView
-                                android:layout_width="match_parent"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:text="--"
-                                android:id="@+id/txt_mobile"/>
+                                android:layout_weight="0.4"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_phone" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.6">
+
+                                <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                    android:id="@+id/txt_mobile"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="@color/black" />
+
+                            </LinearLayout>
+
 
                         </LinearLayout>
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gray"/>
-
                     <LinearLayout
-                        android:weightSum="2"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:gravity="center_vertical"
+                        android:id="@+id/layout_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="0dp"
-                            android:gravity="center"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.4">
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:weightSum="2">
 
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_email"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.6">
-
-                            <com.angadi.tripmanagementa.utils.CustomFontTextView
-                                android:layout_width="match_parent"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:text="--"
-                                android:id="@+id/txt_email"/>
+                                android:layout_weight="0.4"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_email" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.6">
+
+                                <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                    android:id="@+id/txt_email"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="@color/black" />
+
+                            </LinearLayout>
+
 
                         </LinearLayout>
 
-
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gray"/>
                     <LinearLayout
-                        android:weightSum="2"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:gravity="center_vertical"
+                        android:id="@+id/layout_website"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="0dp"
-                            android:gravity="center"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.4">
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:weightSum="2">
 
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_public"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.6">
-
-                            <com.angadi.tripmanagementa.utils.CustomFontTextView
-                                android:layout_width="match_parent"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:text="--"
-                                android:id="@+id/txt_website"/>
+                                android:layout_weight="0.4"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_public" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.6">
+
+                                <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                    android:id="@+id/txt_website"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="@color/black" />
+
+                            </LinearLayout>
+
 
                         </LinearLayout>
 
-
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gray"/>
                     <LinearLayout
-                        android:weightSum="2"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:gravity="center_vertical"
+                        android:id="@+id/layout_location"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:foreground="?attr/selectableItemBackground"
+                        android:orientation="vertical">
 
                         <LinearLayout
-                            android:layout_width="0dp"
-                            android:gravity="center"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.4">
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingTop="10dp"
+                            android:paddingBottom="10dp"
+                            android:weightSum="2">
 
-                            <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_place"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1.6">
-
-                            <com.angadi.tripmanagementa.utils.CustomFontTextView
-                                android:layout_width="match_parent"
+                            <LinearLayout
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:textColor="@color/black"
-                                android:text="--"
-                                android:id="@+id/txt_address"/>
+                                android:layout_weight="0.4"
+                                android:gravity="center">
+
+                                <ImageView
+                                    android:layout_width="30dp"
+                                    android:layout_height="30dp"
+                                    android:src="@drawable/ic_place" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.6">
+
+                                <com.angadi.tripmanagementa.utils.CustomFontTextView
+                                    android:id="@+id/txt_address"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="--"
+                                    android:textColor="@color/black" />
+
+                            </LinearLayout>
+
 
                         </LinearLayout>
 
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
 
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gray"/>
 
                     <com.angadi.tripmanagementa.utils.CustomFontButton
+                        android:id="@+id/btn_reach_us"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/black_background"
                         android:layout_marginTop="30dp"
                         android:layout_marginBottom="30dp"
+                        android:background="@drawable/black_background"
                         android:text="Reach Us"
-                        android:textColor="@color/white"
-                        android:id="@+id/btn_reach_us"/>
+                        android:textColor="@color/white" />
 
 
                     <LinearLayout
-                        android:weightSum="3"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:weightSum="3">
 
                         <LinearLayout
+                            android:id="@+id/layout_whatsApp"
                             android:layout_width="0dp"
-                            android:gravity="center"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center">
 
                             <ImageView
                                 android:id="@+id/img_whatsApp"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:src="@drawable/whatsapp"/>
+                                android:src="@drawable/whatsapp" />
 
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/layout_facebook"
                             android:layout_width="0dp"
-                            android:gravity="center"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center">
+
                             <ImageView
                                 android:id="@+id/img_facebook"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:src="@drawable/facebook"/>
+                                android:src="@drawable/facebook" />
 
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/layout_youtube"
                             android:layout_width="0dp"
-                            android:gravity="center"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1">
+                            android:layout_weight="1"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center">
+
                             <ImageView
                                 android:id="@+id/img_youtube"
                                 android:layout_width="50dp"
                                 android:layout_height="50dp"
-                                android:src="@drawable/youtube"/>
+                                android:src="@drawable/youtube" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_instagram"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/img_instagram"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:src="@drawable/insta" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layout_linkedIn"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:foreground="?attr/selectableItemBackground"
+                            android:gravity="center"
+                            android:visibility="gone">
+
+                            <ImageView
+                                android:id="@+id/img_linkedIn"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                android:src="@drawable/linkedin" />
 
                         </LinearLayout>
 
@@ -493,12 +592,12 @@
                     </LinearLayout>
 
                     <ImageView
-                        android:layout_gravity="center"
                         android:id="@+id/img_qr_code"
-                        android:layout_marginTop="30dp"
-                        android:layout_marginBottom="30dp"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="30dp"
+                        android:layout_marginBottom="30dp" />
 
 
                 </LinearLayout>

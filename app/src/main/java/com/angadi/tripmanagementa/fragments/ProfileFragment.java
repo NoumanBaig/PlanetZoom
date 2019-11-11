@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,6 +96,8 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     EditText edt_website;
     @BindView(R.id.edt_busi_phone)
     EditText edt_busi_phone;
+    @BindView(R.id.edt_email)
+    EditText edt_email;
     @BindView(R.id.edt_insta)
     EditText edt_insta;
     @BindView(R.id.edt_facebook)
@@ -126,9 +129,23 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         ButterKnife.bind(this, view);
 
 
+        getScreenResolution();
         getProfile();
         return view;
     }
+
+    private void getScreenResolution(){
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        double wi = (double) width / (double) dm.xdpi;
+        double hi = (double) height / (double) dm.ydpi;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        screenInches = Math.sqrt(x + y);
+    }
+
 
     private void getProfile() {
         MyProgressDialog.show(getActivity(), "Loading...");
@@ -173,6 +190,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         edt_designation.setText(response.body().getUraDesignation());
         edt_website.setText(response.body().getUraWebsite());
         edt_busi_phone.setText(response.body().getUraBizPhone());
+        edt_email.setText(response.body().getUraBizEmail());
         edt_facebook.setText(response.body().getUraFacebook());
         edt_whatsapp.setText(response.body().getUraWhatsapp());
         edt_linkedin.setText(response.body().getUraLinkedin());
@@ -201,7 +219,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
             case R.id.btn_update:
                 editProfile(edt_name.getText().toString(), "", edt_about.getText().toString(), edt_address.getText().toString(),
                         edt_company.getText().toString(), edt_designation.getText().toString(), edt_website.getText().toString(), edt_busi_phone.getText().toString(),
-                        "", edt_facebook.getText().toString(), edt_whatsapp.getText().toString(), edt_linkedin.getText().toString(), edt_youtube.getText().toString(),
+                        edt_email.getText().toString(), edt_facebook.getText().toString(), edt_whatsapp.getText().toString(), edt_linkedin.getText().toString(), edt_youtube.getText().toString(),
                         edt_insta.getText().toString(), base64String);
                 break;
             case R.id.img_edit:
@@ -386,30 +404,47 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
-            if (screenInches <= 5.2) {
-                Log.e("first", "first");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1050, 1050, null);
-            } else if (screenInches >= 5.21 && screenInches <= 5.3) {
-                Log.e("second", "second");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1050, 1050, null);
+//            if (screenInches <= 5.2) {
+//                Log.e("first", "first");
+//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+//            } else if (screenInches >= 5.21 && screenInches <= 5.3) {
+//                Log.e("second", "second");
+//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 900, 900, null);
+//
+//            } else if (screenInches >= 5.31 && screenInches <= 5.5) {
+//                Log.e("second1", "second1");
+//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 900, 900, null);
+//
+//            } else if (screenInches >= 5.6 && screenInches <= 5.99) {
+//                Log.e("third", "third");
+//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
+//
+//            } else if (screenInches >= 6.1 && screenInches <= 6.5) {
+//                Log.e("Fourth", "Fourth");
+//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
+//
+//            } else {
+//                Log.e("else", "else");
+//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+//            }
 
-            } else if (screenInches >= 5.31 && screenInches <= 5.5) {
-                Log.e("second1", "second1");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1050, 1050, null);
-
-            } else if (screenInches >= 5.6 && screenInches <= 5.99) {
-                Log.e("third", "third");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1300, 1300, null);
-
-            } else if (screenInches >= 6.1 && screenInches <= 6.5) {
-                Log.e("Fourth", "Fourth");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1300, 1300, null);
-
-            } else {
-                Log.e("else", "else");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1050, 1050, null);
+            if(screenInches > 5.0 && screenInches < 5.5){
+                Log.e("first", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+            }else if(screenInches > 5.5 && screenInches < 6.0){
+                Log.e("second", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
+            }else if (screenInches > 6.0){
+                Log.e("third", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1200, 1200, null);
+            }else if(screenInches < 5.0 && screenInches > 4.0){
+                Log.e("fourth", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 700, 700, null);
             }
-
+            else {
+                Log.e("else", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+            }
         } catch (IllegalArgumentException iae) {
             // Unsupported format
             return null;

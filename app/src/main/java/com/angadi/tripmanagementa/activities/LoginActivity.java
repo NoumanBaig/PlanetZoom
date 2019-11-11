@@ -188,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.img_close:
                 toggle();
                 // resetting time when close
-                time = 10;
+                time = 60;
                 break;
             case R.id.txt_resend:
                 setTimer();
@@ -268,9 +268,9 @@ public class LoginActivity extends AppCompatActivity {
     private void setTimer() {
         layout_loading.setVisibility(View.VISIBLE);
         layout_resend.setVisibility(View.GONE);
-        time = 10;
+        time = 60;
         TextView textTimer = (TextView) findViewById(R.id.txt_timer);
-        new CountDownTimer(10000, 1000) {
+        new CountDownTimer(60000, 1000) {
             public void onTick(long millisUntilFinished) {
                 textTimer.setText("0:" + checkDigit(time));
                 time--;

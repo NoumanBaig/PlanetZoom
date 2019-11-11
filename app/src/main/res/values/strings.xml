@@ -74,6 +74,7 @@
     <string name="save">Save</string>
 
     <string name="transition">transit</string>
+    <string name="live_msg">This is a demo live message which is going to be shared in the event and other things</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 
 

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.angadi.tripmanagementa"
-        minSdkVersion 21
+        minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -78,8 +78,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
     implementation 'com.facebook.fresco:fresco:2.0.0'
     implementation 'androidx.legacy:legacy-support-core-utils:1.0.0'
-    implementation 'com.kroegerama:barcode-kaiteki:1.1.1'
-
 }
 apply plugin: 'com.google.gms.google-services'
 com.google.gms.googleservices.GoogleServicesPlugin.config.disableVersionCheck = true

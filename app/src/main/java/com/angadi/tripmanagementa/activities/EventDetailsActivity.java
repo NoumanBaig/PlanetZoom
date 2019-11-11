@@ -14,12 +14,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Base64;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -126,6 +135,7 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     ImageView img_qr_code;
     double screenInches;
     BitMatrix result;
+    Bitmap bitmap, bitmapQrborder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,8 +169,22 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 
 
         }
+        getScreenResolution();
 
     }
+
+    private void getScreenResolution(){
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        int width = dm.widthPixels;
+        int height = dm.heightPixels;
+        double wi = (double) width / (double) dm.xdpi;
+        double hi = (double) height / (double) dm.ydpi;
+        double x = Math.pow(wi, 2);
+        double y = Math.pow(hi, 2);
+        screenInches = Math.sqrt(x + y);
+    }
+
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -197,7 +221,8 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
                         str_location = response.body().getPeaLocation();
                         str_contact = response.body().getPea_contact_no();
                         str_emergency = response.body().getPea_emergency_no();
-
+                        String bitmap_name = response.body().getPeaName()+" EVENT";
+                        bitmapQrborder = writeTextOnDrawable(R.drawable.new_pro_frame, bitmap_name).getBitmap();
                         showQrCode(response.body().getPeaQrCodeIdSecureLink());
                         List<PeaGallery> galleryList = response.body().getPeaGallerys();
 
@@ -652,8 +677,8 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 
     private void showQrCode(String str_qr_id) {
         try {
-            Bitmap bitmap = encodeAsBitmap(str_qr_id);
-            img_qr_code.setImageBitmap(bitmap);
+            bitmap = encodeAsBitmap(str_qr_id);
+            img_qr_code.setImageBitmap(mergeBitmaps(bitmap,bitmapQrborder));
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -664,28 +689,22 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
-            if (screenInches <= 5.2) {
-                Log.e("first", "first");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 600, 600, null);
-            } else if (screenInches >= 5.21 && screenInches <= 5.3) {
-                Log.e("second", "second");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
-
-            } else if (screenInches >= 5.31 && screenInches <= 5.5) {
-                Log.e("second1", "second1");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
-
-            } else if (screenInches >= 5.6 && screenInches <= 5.99) {
-                Log.e("third", "third");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
-
-            } else if (screenInches >= 6.1 && screenInches <= 6.5) {
-                Log.e("Fourth", "Fourth");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 760, 760, null);
-
-            } else {
-                Log.e("else", "else");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 360, 360, null);
+            if(screenInches > 5.0 && screenInches < 5.5){
+                Log.e("first", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+            }else if(screenInches > 5.5 && screenInches < 6.0){
+                Log.e("second", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
+            }else if (screenInches > 6.0){
+                Log.e("third", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1200, 1200, null);
+            }else if(screenInches < 5.0 && screenInches > 4.0){
+                Log.e("fourth", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 700, 700, null);
+            }
+            else {
+                Log.e("else", "--->");
+                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
             }
 
         } catch (IllegalArgumentException iae) {
@@ -706,5 +725,44 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
         bitmap.setPixels(pixels, 0, w, 0, 0, w, h);
         return bitmap;
+    }
+
+    private BitmapDrawable writeTextOnDrawable(int drawableId, String text) {
+        Typeface montserrat_bold = Typeface.createFromAsset(getAssets(), "fonts/Bold.OTF");
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(), drawableId).copy(Bitmap.Config.ARGB_8888, true);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.BLACK);
+        paint.setTypeface(montserrat_bold);
+        paint.setTextAlign(Paint.Align.LEFT);
+        paint.setTextSize(18 * getResources().getDisplayMetrics().density);
+        Rect textRect = new Rect();
+        paint.getTextBounds(text, 0, text.length(), textRect);
+        Canvas canvas = new Canvas(bm);
+        canvas.drawText(text, 200, 80, paint);
+        return new BitmapDrawable(getResources(), bm);
+    }
+
+
+    public Bitmap mergeBitmaps(Bitmap overlay, Bitmap bitmap) {
+
+        int height = bitmap.getHeight();
+        int width = bitmap.getWidth();
+        Log.e("bitmap_height", "" + height);
+        Log.e("bitmap_width", "" + width);
+
+        Bitmap combined = Bitmap.createBitmap(width, height, bitmap.getConfig());
+        Canvas canvas = new Canvas(combined);
+        int canvasWidth = canvas.getWidth();
+        int canvasHeight = canvas.getHeight();
+
+        canvas.drawBitmap(bitmap, new Matrix(), null);
+
+        int centreX = (canvasWidth - overlay.getWidth()) / 2;
+        int centreY = (canvasHeight - overlay.getHeight()) / 2;
+        canvas.drawBitmap(overlay, centreX, centreY, null);
+
+        return combined;
     }
 }
