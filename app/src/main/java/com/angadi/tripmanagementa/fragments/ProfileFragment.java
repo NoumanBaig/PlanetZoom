@@ -404,30 +404,6 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
-//            if (screenInches <= 5.2) {
-//                Log.e("first", "first");
-//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
-//            } else if (screenInches >= 5.21 && screenInches <= 5.3) {
-//                Log.e("second", "second");
-//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 900, 900, null);
-//
-//            } else if (screenInches >= 5.31 && screenInches <= 5.5) {
-//                Log.e("second1", "second1");
-//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 900, 900, null);
-//
-//            } else if (screenInches >= 5.6 && screenInches <= 5.99) {
-//                Log.e("third", "third");
-//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
-//
-//            } else if (screenInches >= 6.1 && screenInches <= 6.5) {
-//                Log.e("Fourth", "Fourth");
-//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
-//
-//            } else {
-//                Log.e("else", "else");
-//                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
-//            }
-
             if(screenInches > 5.0 && screenInches < 5.5){
                 Log.e("first", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);

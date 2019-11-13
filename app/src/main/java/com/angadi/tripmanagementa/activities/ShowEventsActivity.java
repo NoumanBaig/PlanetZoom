@@ -51,6 +51,8 @@ public class ShowEventsActivity extends AppCompatActivity {
     FrameLayout layout_create;
     @BindView(R.id.layout_all)
     FrameLayout layout_all;
+    @BindView(R.id.layout_not_found)
+    LinearLayout layout_not_found;
 //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
 
@@ -138,8 +140,15 @@ public class ShowEventsActivity extends AppCompatActivity {
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         List<AllEventsResult> resultList = response.body().getResults();
-                        setAdapter(resultList);
+                        if (resultList.size()>0){
+                            setAdapter(resultList);
+                            layout_not_found.setVisibility(View.GONE);
+                        }else {
+                            layout_not_found.setVisibility(View.VISIBLE);
+                        }
+
                     } else {
+                        layout_not_found.setVisibility(View.VISIBLE);
                         Toast.makeText(ShowEventsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
@@ -151,6 +160,7 @@ public class ShowEventsActivity extends AppCompatActivity {
             public void onFailure(Call<AllEventsResponse> call, Throwable t) {
                 Log.e("getAllEvents", "" + t);
                 MyProgressDialog.dismiss();
+                layout_not_found.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -169,9 +179,14 @@ public class ShowEventsActivity extends AppCompatActivity {
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         List<AdminEventResult> resultList = response.body().getResults();
-                        setAdminAdapter(resultList);
-
+                        if (resultList.size()>0){
+                            setAdminAdapter(resultList);
+                            layout_not_found.setVisibility(View.GONE);
+                        }else {
+                            layout_not_found.setVisibility(View.VISIBLE);
+                        }
                     } else {
+                        layout_not_found.setVisibility(View.VISIBLE);
                         Toast.makeText(ShowEventsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
@@ -183,6 +198,7 @@ public class ShowEventsActivity extends AppCompatActivity {
             public void onFailure(Call<AdminEventsResponse> call, Throwable t) {
                 Log.e("getAdminEvents", "" + t);
                 MyProgressDialog.dismiss();
+                layout_not_found.setVisibility(View.VISIBLE);
             }
         });
 

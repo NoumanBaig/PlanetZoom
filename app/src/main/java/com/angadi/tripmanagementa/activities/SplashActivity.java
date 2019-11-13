@@ -7,12 +7,16 @@ import androidx.core.util.Pair;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.utils.NetworkInformation;
 import com.angadi.tripmanagementa.utils.Prefs;
 
 import butterknife.BindView;
@@ -20,8 +24,10 @@ import butterknife.ButterKnife;
 
 public class SplashActivity extends AppCompatActivity {
 
-//    @BindView(R.id.img_logo)
-//    ImageView img_logo;
+    @BindView(R.id.img_logo)
+    ImageView img_logo;
+    @BindView(R.id.no_internet)
+    LinearLayout no_internet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +36,15 @@ public class SplashActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
-        runTimer();
+        if (NetworkInformation.isConnected(SplashActivity.this)){
+            no_internet.setVisibility(View.GONE);
+            img_logo.setVisibility(View.VISIBLE);
+            runTimer();
+        }else {
+            no_internet.setVisibility(View.VISIBLE);
+            img_logo.setVisibility(View.GONE);
+        }
+
     }
 
     private void runTimer() {
@@ -38,9 +52,11 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (Prefs.with(SplashActivity.this).getString("login","").equalsIgnoreCase("true")) {
+                    Log.e("--->","prefs true");
                     startActivity(new Intent(SplashActivity.this, HomeActivity.class));
                     finish();
                 } else {
+                    Log.e("--->","prefs false");
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                     finish();
                 }

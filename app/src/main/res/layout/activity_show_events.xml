@@ -93,10 +93,29 @@
 
     </RelativeLayout>
 
-    <FrameLayout
-        android:id="@+id/content_frame"
+    <LinearLayout
+        android:id="@+id/layout_not_found"
+        android:gravity="center"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <com.airbnb.lottie.LottieAnimationView
+            app:lottie_rawRes="@raw/not_found"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="true"
+            android:layout_width="match_parent"
+            android:layout_height="200dp" />
+
+        <com.angadi.tripmanagementa.utils.CustomFontTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No Events Found"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+    </LinearLayout>
+
 
     <LinearLayout
         android:visibility="gone"
@@ -131,13 +150,5 @@
 
 
     </LinearLayout>
-        <include
-            android:id="@+id/loading_layout"
-            layout="@layout/loading_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone"
-            tools:visibility="visible" />
 
-    </FrameLayout>
 </LinearLayout>

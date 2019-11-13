@@ -45,6 +45,7 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.schibstedspain.leku.tracker.TrackEvents;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
@@ -84,12 +85,15 @@ public class ScanEventDialogFragment extends DialogFragment {
     @BindView(R.id.txt_amount)
     TextView txt_amount;
     @BindView(R.id.progress)
-    ProgressBar progressBar;
-
-    @BindView(R.id.layout_ticket)
-    LinearLayout layout_ticket;
-    @BindView(R.id.layout_animation)
-    LinearLayout layout_animation;
+    AVLoadingIndicatorView progressBar;
+    @BindView(R.id.layout_main)
+    LinearLayout layout_main;
+    @BindView(R.id.layout_loading)
+    LinearLayout layout_loading;
+//    @BindView(R.id.layout_ticket)
+//    LinearLayout layout_ticket;
+//    @BindView(R.id.layout_animation)
+//    LinearLayout layout_animation;
     @BindView(R.id.recyclerTracking)
     RecyclerView recyclerTracking;
 
@@ -154,6 +158,8 @@ public class ScanEventDialogFragment extends DialogFragment {
         ButterKnife.bind(this, view);
         toolbar = view.findViewById(R.id.toolbar);
         progressBar.setVisibility(View.VISIBLE);
+        layout_loading.setVisibility(View.VISIBLE);
+        layout_main.setVisibility(View.GONE);
         return view;
     }
 
@@ -213,8 +219,10 @@ public class ScanEventDialogFragment extends DialogFragment {
                 Log.e("getScanEventResult", new Gson().toJson(response));
                 progressBar.setVisibility(View.GONE);
                 if (response.body().getStatus().equalsIgnoreCase("success")){
-                    layout_ticket.setVisibility(View.VISIBLE);
-                    layout_animation.setVisibility(View.GONE);
+                    layout_loading.setVisibility(View.GONE);
+                    layout_main.setVisibility(View.VISIBLE);
+//                    layout_ticket.setVisibility(View.VISIBLE);
+//                    layout_animation.setVisibility(View.GONE);
                     txt_name.setText(response.body().getPeaName());
                     txt_date.setText(response.body().getPeaDate());
                     txt_venue.setText(response.body().getPeaVenue());
@@ -223,8 +231,8 @@ public class ScanEventDialogFragment extends DialogFragment {
                     Glide.with(getActivity()).load(Constants.BASE_URL+response.body().getPea_ticket_selfi()).into(imageView);
                     getTracking(user_id,scan_id);
                 }else {
-                    layout_ticket.setVisibility(View.GONE);
-                    layout_animation.setVisibility(View.GONE);
+//                    layout_ticket.setVisibility(View.GONE);
+//                    layout_animation.setVisibility(View.GONE);
                     startActivity(new Intent(getActivity(), EventDetailsActivity.class).putExtra("event_id",scan_id).putExtra("encoded","yes"));
                     dismiss();
 //                    Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_LONG).show();

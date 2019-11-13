@@ -10,6 +10,10 @@ import com.angadi.tripmanagementa.models.DeleteSubEventResponse;
 import com.angadi.tripmanagementa.models.EventTrackResponse;
 import com.angadi.tripmanagementa.models.ImageUploadResponse;
 import com.angadi.tripmanagementa.models.MyTicketsResponse;
+import com.angadi.tripmanagementa.models.ProfileDislikeResponse;
+import com.angadi.tripmanagementa.models.ProfileFavResponse;
+import com.angadi.tripmanagementa.models.ProfileLikeResponse;
+import com.angadi.tripmanagementa.models.ProfileRatingResponse;
 import com.angadi.tripmanagementa.models.ProfileResponse;
 import com.angadi.tripmanagementa.models.AdminEventsResponse;
 import com.angadi.tripmanagementa.models.AdminResponse;
@@ -23,6 +27,7 @@ import com.angadi.tripmanagementa.models.EventDetailsResponse;
 import com.angadi.tripmanagementa.models.LoginResponse;
 import com.angadi.tripmanagementa.models.LogoutResponse;
 import com.angadi.tripmanagementa.models.MembersResponse;
+import com.angadi.tripmanagementa.models.ProfileStatusResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.models.RegisterResponse;
 import com.angadi.tripmanagementa.models.ScanEventQrResponse;
@@ -349,7 +354,71 @@ public interface ApiInterface {
                                            @Field("token") String token,
                                            @Field("mtaa_uid") String mtaa_uid,
                                            @Field("mtaa_event_id") String mtaa_event_id);
-//    @POST("logout/")
-//    @FormUrlEncoded
-//    Call<Logout> logout(@Field("token_id") String token);
+
+    @POST("profile/fav/")
+    @FormUrlEncoded
+    Call<ProfileFavResponse> profileFav(@Field("fav") String fav,
+                                        @Field("token") String token,
+                                        @Field("pro_id") String pro_id,
+                                        @Field("pro_type") String pro_type);
+
+    @POST("profile/like/")
+    @FormUrlEncoded
+    Call<ProfileLikeResponse> profileLike(@Field("like") String like,
+                                          @Field("token") String token,
+                                          @Field("pro_id") String pro_id,
+                                          @Field("pro_type") String pro_type);
+
+    @POST("profile/dislike/")
+    @FormUrlEncoded
+    Call<ProfileDislikeResponse> profileDisLike(@Field("dislike") String dislike,
+                                                @Field("token") String token,
+                                                @Field("pro_id") String pro_id,
+                                                @Field("pro_type") String pro_type);
+
+    @POST("profile/profile_status/")
+    @FormUrlEncoded
+    Call<ProfileStatusResponse> profileStatus(@Field("profile_status") String dislike,
+                                              @Field("token") String token,
+                                              @Field("pro_id") String pro_id);
+
+    @POST("profile/rate/")
+    @FormUrlEncoded
+    Call<ProfileRatingResponse> profileRating(@Field("rate") String rate,
+                                              @Field("token") String token,
+                                              @Field("pro_id") String pro_id,
+                                              @Field("pro_rate") String pro_rate);
+    @POST("qrcode/fav/")
+    @FormUrlEncoded
+    Call<ProfileFavResponse> qrCodeFav(@Field("fav") String fav,
+                                        @Field("token") String token,
+                                        @Field("pro_id") String pro_id,
+                                        @Field("pro_type") String pro_type);
+
+    @POST("qrcode/like/")
+    @FormUrlEncoded
+    Call<ProfileLikeResponse> qrCodeLike(@Field("like") String like,
+                                          @Field("token") String token,
+                                          @Field("pro_id") String pro_id,
+                                          @Field("pro_type") String pro_type);
+
+    @POST("qrcode/dislike/")
+    @FormUrlEncoded
+    Call<ProfileDislikeResponse> qrCodeDisLike(@Field("dislike") String dislike,
+                                                @Field("token") String token,
+                                                @Field("pro_id") String pro_id,
+                                                @Field("pro_type") String pro_type);
+
+    @POST("qrcode/profile_status/")
+    @FormUrlEncoded
+    Call<ProfileStatusResponse> qrCodeStatus(@Field("profile_status") String dislike,
+                                              @Field("token") String token,
+                                              @Field("pro_id") String pro_id);
+
+    @POST("qrcode/rate/")
+    @FormUrlEncoded
+    Call<ProfileRatingResponse> qrCodeRating(@Field("rate") String rate,
+                                              @Field("token") String token,
+                                              @Field("pro_id") String pro_id,
+                                              @Field("pro_rate") String pro_rate);
 }

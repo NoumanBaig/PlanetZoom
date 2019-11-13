@@ -21,6 +21,7 @@ import com.angadi.tripmanagementa.activities.CreateQrActivity;
 import com.angadi.tripmanagementa.models.Result;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @Override
     public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
         holder.textView.setText(resultList.get(position).getCaaName());
-        Glide.with(mContext).load(Constants.BASE_URL+resultList.get(position).getCaaImg()).into(holder.imageView);
+        holder.imageView.setImageURI(Constants.BASE_URL+resultList.get(position).getCaaImg());
         Log.e("Image--->",""+Constants.BASE_URL+resultList.get(position).getCaaImg());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +74,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     public class CategoryHolder extends RecyclerView.ViewHolder{
 
-        ImageView imageView;
+        SimpleDraweeView imageView;
         TextView textView;
         CardView cardView;
 

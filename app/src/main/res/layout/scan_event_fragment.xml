@@ -26,14 +26,23 @@
 
             </androidx.appcompat.widget.Toolbar>
 
-            <ProgressBar
+<!--            <ProgressBar-->
+<!--                android:id="@+id/progress"-->
+<!--                style="?android:attr/progressBarStyleSmall"-->
+<!--                android:layout_width="40dp"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:layout_gravity="right|center_vertical"-->
+<!--                android:layout_marginRight="10dp"-->
+<!--                android:progressTint="@color/demo_day_green" />-->
+            <com.wang.avi.AVLoadingIndicatorView
                 android:id="@+id/progress"
-                style="?android:attr/progressBarStyleSmall"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="10dp"
-                android:progressTint="@color/demo_day_green" />
+                app:indicatorColor="@color/demo_day_green"
+                app:indicatorName="BallClipRotatePulseIndicator"/>
+
         </FrameLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -43,6 +52,20 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
+            android:visibility="gone"
+            android:id="@+id/layout_loading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading"/>
+
+        </LinearLayout>
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -51,12 +74,12 @@
 
             <LinearLayout
                 android:padding="20dp"
+                android:id="@+id/layout_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/layout_ticket"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -225,24 +248,24 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:visibility="gone"
-                    android:id="@+id/layout_animation"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:orientation="vertical">
+<!--                <LinearLayout-->
+<!--                    android:visibility="gone"-->
+<!--                    android:id="@+id/layout_animation"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:gravity="center"-->
+<!--                    android:orientation="vertical">-->
 
-                    <com.airbnb.lottie.LottieAnimationView
-                        app:lottie_rawRes="@raw/error"
-                        app:lottie_loop="true"
-                        app:lottie_autoPlay="true"
-                        android:layout_gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+<!--                    <com.airbnb.lottie.LottieAnimationView-->
+<!--                        app:lottie_rawRes="@raw/error"-->
+<!--                        app:lottie_loop="true"-->
+<!--                        app:lottie_autoPlay="true"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content" />-->
 
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

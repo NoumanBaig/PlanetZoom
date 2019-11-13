@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,6 +40,8 @@ public class DashboardFragment extends Fragment {
 
     @BindView(R.id.recyclerDashboard)
     RecyclerView recyclerView;
+    @BindView(R.id.layout_not_found)
+    LinearLayout layout_not_found;
 //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
     CountSectionAdapter adapter;
@@ -72,14 +75,24 @@ public class DashboardFragment extends Fragment {
 
                         List<DashboardResult> resultList = response.body().getResults();
 
-                        adapter = new CountSectionAdapter(getActivity(),resultList);
-                        recyclerView.setAdapter(adapter);
+                        if (resultList.size()>0){
+                            layout_not_found.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                            adapter = new CountSectionAdapter(getActivity(),resultList);
+                            recyclerView.setAdapter(adapter);
 
-                        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
-                        SectionedSpanSizeLookup lookup = new SectionedSpanSizeLookup(adapter, layoutManager);
-                        layoutManager.setSpanSizeLookup(lookup);
-                        recyclerView.setLayoutManager(layoutManager);
+                            GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+                            SectionedSpanSizeLookup lookup = new SectionedSpanSizeLookup(adapter, layoutManager);
+                            layoutManager.setSpanSizeLookup(lookup);
+                            recyclerView.setLayoutManager(layoutManager);
+                        }else {
+                            layout_not_found.setVisibility(View.VISIBLE);
+                            recyclerView.setVisibility(View.GONE);
+                        }
+
                     }else {
+                        layout_not_found.setVisibility(View.VISIBLE);
+                        recyclerView.setVisibility(View.GONE);
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
@@ -91,6 +104,8 @@ public class DashboardFragment extends Fragment {
             public void onFailure(Call<DashboardResponse> call, Throwable t) {
                 Log.e("dashboard_res", ""+t);
                MyProgressDialog.dismiss();
+                layout_not_found.setVisibility(View.VISIBLE);
+                recyclerView.setVisibility(View.GONE);
             }
         });
     }

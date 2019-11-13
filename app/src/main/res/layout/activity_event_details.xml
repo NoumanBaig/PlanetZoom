@@ -64,7 +64,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
-                            android:padding="5dp"
+                            android:scaleType="fitCenter"
                             fresco:failureImage="@drawable/ic_placeholder"
                             fresco:placeholderImage="@drawable/ic_placeholder" />
 
@@ -119,17 +119,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
                     app:sliderAutoCycleDirection="back_and_forth"
-                    app:sliderAutoCycleEnabled="true"
-                    app:sliderCircularHandlerEnabled="true"
                     app:sliderIndicatorGravity="center_horizontal|bottom"
                     app:sliderIndicatorMargin="15dp"
                     app:sliderIndicatorOrientation="horizontal"
                     app:sliderIndicatorPadding="3dp"
                     app:sliderIndicatorRadius="2dp"
                     app:sliderIndicatorSelectedColor="@color/colorAccent"
-                    app:sliderIndicatorUnselectedColor="@color/black"
-                    app:sliderScrollTimeInSec="4"
-                    app:sliderStartAutoCycle="true" />
+                    app:sliderIndicatorUnselectedColor="@color/black" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -156,6 +152,7 @@
                         android:gravity="center"
                         android:paddingTop="12dp"
                         android:paddingBottom="12dp"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -173,7 +170,8 @@
                         android:paddingRight="10dp"
                         android:text="@string/event_desc"
                         android:textSize="10sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:visibility="gone" />
 
                     <com.angadi.tripmanagementa.utils.CustomFontTextView
                         android:id="@+id/txt_desc"
@@ -182,6 +180,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:background="@color/background"
+                        android:gravity="center"
                         android:padding="5dp"
                         android:textColor="@color/black" />
 
@@ -194,7 +193,42 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
+                        android:orientation="vertical">
+
+
+                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="@string/event_dates"
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/gray" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerDates"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/gray" />
+
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -227,8 +261,8 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:visibility="gone"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:visibility="gone">
 
                             <com.angadi.tripmanagementa.utils.CustomFontTextView
                                 android:layout_width="match_parent"
@@ -348,62 +382,28 @@
 
                     </LinearLayout>
 
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_margin="10dp"
-                        android:background="@color/gray" />
                 </LinearLayout>
+
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/gray" />
+
 
                     <com.angadi.tripmanagementa.utils.CustomFontTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
-                        android:text="@string/event_dates"
+                        android:text="@string/sponsors"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:textStyle="bold" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gray" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerDates"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/gray" />
-
-
-                    <!--                        <com.angadi.tripmanagementa.utils.CustomFontTextView-->
-                    <!--                            android:layout_width="match_parent"-->
-                    <!--                            android:layout_height="wrap_content"-->
-                    <!--                            android:padding="10dp"-->
-                    <!--                            android:text="@string/sponsors"-->
-                    <!--                            android:textColor="@color/black"-->
-                    <!--                            android:textSize="16sp"-->
-                    <!--                            android:textStyle="bold" />-->
 
                     <!--                        <View-->
                     <!--                            android:layout_width="match_parent"-->
@@ -413,9 +413,7 @@
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerSponsors"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="10dp" />
+                        android:layout_height="wrap_content" />
 
 
                 </LinearLayout>
@@ -678,10 +676,10 @@
                     android:layout_width="200dp"
                     android:layout_height="200dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="40dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginRight="40dp"
+                    android:layout_marginBottom="10dp"
                     android:textColor="@color/white"
                     android:textStyle="bold" />
 

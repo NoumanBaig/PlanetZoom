@@ -14,20 +14,27 @@ import androidx.transition.TransitionManager;
 
 import android.Manifest;
 import android.animation.LayoutTransition;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -106,9 +113,12 @@ public class LoginActivity extends AppCompatActivity {
     AVLoadingIndicatorView avi2;
     boolean show;
     int time;
-    String str_otp,str_device_token,str_fname;
+    String str_otp,str_device_token,str_fname,username;
     @BindView(R.id.pinView)
     PinView pinView;
+    @BindView(R.id.layout_terms)
+    LinearLayout layout_terms;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +139,26 @@ public class LoginActivity extends AppCompatActivity {
         str_device_token = "hdkajskajsajkajsksjasajksaksjakjsdhhdhd";
 
         // avi.smoothToShow();
+        pinView.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length()>=4){
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(container.getWindowToken(), 0);
+                    verifyOtpCall(username,pinView.getText().toString(),str_device_token);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
     }
 
@@ -192,6 +222,7 @@ public class LoginActivity extends AppCompatActivity {
                 break;
             case R.id.txt_resend:
                 setTimer();
+                resendOtp(username);
                 break;
             case R.id.btn_verify:
                 onVerify();
@@ -204,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onNext() {
-        String username = edt_mobile.getText().toString();
+        username = edt_mobile.getText().toString();
 
         if (!TextUtils.isEmpty(username)) {
             if (username.length() >= 10 && isValidMobile(username)) {
@@ -236,7 +267,7 @@ public class LoginActivity extends AppCompatActivity {
         if (OTP.equalsIgnoreCase("")) {
             Toast.makeText(this, "Please enter OTP", Toast.LENGTH_SHORT).show();
         } else {
-            verifyOtpCall(edt_mobile.getText().toString(),OTP,str_device_token);
+            verifyOtpCall(username,OTP,str_device_token);
 //            pinView.setLineColor(getResources().getColor(R.color.red));
 //            textView.setText("Incorrect OTP");
 //            textView.setTextColor(getResources().getColor(R.color.red));
@@ -257,9 +288,11 @@ public class LoginActivity extends AppCompatActivity {
         if (redLayout.getVisibility() == View.VISIBLE) {
             redLayout.setVisibility(View.GONE);
             img_close.setVisibility(View.GONE);
+            layout_terms.setVisibility(View.VISIBLE);
         } else {
             redLayout.setVisibility(View.VISIBLE);
             img_close.setVisibility(View.VISIBLE);
+            layout_terms.setVisibility(View.GONE);
             setTimer();
         }
 
@@ -310,7 +343,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Prefs.with(LoginActivity.this).save("firstName",str_fname);
                                 Prefs.with(LoginActivity.this).save("str_uid",str_uid);
                                 toggle();
-                                pinView.setText(str_otp);
+                               // pinView.setText(str_otp);
                             }
 
                         } else {
@@ -329,6 +362,51 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void resendOtp(String username) {
+        avi.smoothToShow();
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<LoginResponse> loginResponseCall = apiInterface.login(username);
+        loginResponseCall.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                Log.e("callLogin_res", new Gson().toJson(response));
+                avi.smoothToHide();
+                try {
+                    if (response.isSuccessful() && response.body() != null) {
+                        if (response.body().getStatus().equalsIgnoreCase("success")) {
+                            if (!response.body().getStatusLogin().equalsIgnoreCase("creating_new")) {
+//                                layout_firstName.setVisibility(View.VISIBLE);
+                                Toast.makeText(LoginActivity.this, "Resent OTP", Toast.LENGTH_SHORT).show();
+                            }
+//                            else {
+//                                layout_firstName.setVisibility(View.GONE);
+//                                str_otp = String.valueOf(response.body().getRand());
+//                                str_fname = String.valueOf(response.body().getFname());
+//                                String str_uid = String.valueOf(response.body().getUID());
+//                                Prefs.with(LoginActivity.this).save("firstName",str_fname);
+//                                Prefs.with(LoginActivity.this).save("str_uid",str_uid);
+//                                toggle();
+                                // pinView.setText(str_otp);
+//                            }
+
+                        } else {
+                            Log.e("else", "----->");
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Log.e("login_failure", "" + t);
+                avi.smoothToHide();
+            }
+        });
+    }
+
 
     private void callSignup(String firstName, String username) {
         avi.smoothToShow();
@@ -382,10 +460,11 @@ public class LoginActivity extends AppCompatActivity {
 
                             WelcomeFragment welcomeFragment = new WelcomeFragment();
                             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.add(R.id.container, welcomeFragment);
+                            fragmentTransaction.replace(R.id.container, welcomeFragment);
                             fragmentTransaction.commit();
                         } else {
                             Log.e("else", "----->");
+                            Toast.makeText(LoginActivity.this, "Invalid OTP", Toast.LENGTH_SHORT).show();
                         }
                     }
                 } catch (Exception e) {

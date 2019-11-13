@@ -40,6 +40,7 @@ import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.adapters.DaysAdapter;
 import com.angadi.tripmanagementa.adapters.MembersAdapter;
 import com.angadi.tripmanagementa.adapters.SliderAdapter;
+import com.angadi.tripmanagementa.adapters.SponsorsAdapter;
 import com.angadi.tripmanagementa.adapters.SubEventsAdapter;
 import com.angadi.tripmanagementa.fragments.ScanEventDialogFragment;
 import com.angadi.tripmanagementa.fragments.SubEventDetailsDialogFragment;
@@ -345,7 +346,7 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
         recyclerDates.setLayoutManager(new LinearLayoutManager(this));
         SubEventsAdapter subEventsAdapter = new SubEventsAdapter(this, resultList);
         recyclerDates.setAdapter(subEventsAdapter);
-        getMembers();
+        setSponsorsAdapter();
         subEventsAdapter.setClickListener(new SubEventsAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position, String id, String title, String desc) {
@@ -366,7 +367,7 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 //                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
                     List<MembersResult> membersResultList = response.body().getResults();
-                    setMembersAdapter(membersResultList);
+                   // setMembersAdapter(membersResultList);
                 } else {
                     Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -380,17 +381,19 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
         });
     }
 
-    private void setMembersAdapter(List<MembersResult> membersResultList) {
-        recyclerSponsors.setLayoutManager(new LinearLayoutManager(this));
-        MembersAdapter adapter = new MembersAdapter(this, membersResultList);
+    private void setSponsorsAdapter() {
+        recyclerSponsors.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        SponsorsAdapter adapter = new SponsorsAdapter(EventDetailsActivity.this);
         recyclerSponsors.setAdapter(adapter);
-
-        adapter.setClickListener(new MembersAdapter.ClickListener() {
-            @Override
-            public void onClick(View view, int position, String id, String title) {
-                Log.e("title---->", "" + title);
-            }
-        });
+//        MembersAdapter adapter = new MembersAdapter(this, membersResultList);
+//        recyclerSponsors.setAdapter(adapter);
+//
+//        adapter.setClickListener(new MembersAdapter.ClickListener() {
+//            @Override
+//            public void onClick(View view, int position, String id, String title) {
+//                Log.e("title---->", "" + title);
+//            }
+//        });
     }
 
     private void checkTicket() {

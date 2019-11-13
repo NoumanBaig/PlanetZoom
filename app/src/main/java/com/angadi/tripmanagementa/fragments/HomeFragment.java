@@ -44,6 +44,7 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         ViewGroup contentFrame = (ViewGroup) view.findViewById(R.id.content_frame);
         mScannerView = new ZXingScannerView(getActivity());
         contentFrame.addView(mScannerView);
+        mScannerView.setFocusable(true);
         mScannerView.setBorderColor(getActivity().getResources().getColor(R.color.colorAccent));
         txt_live.setText(getResources().getString(R.string.live_msg));
         txt_live.setSelected(true);
@@ -103,7 +104,7 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
                 Log.e("qr_type ", "" + qr_type);
                 Log.e("qr_user_id ", "" + qr_user_id);
 
-                showResultDialog(new_qr_id, qr_type, String.valueOf(data), qr_user_id);
+                showResultDialog(new_qr_id, qr_type, String.valueOf(rawResult), qr_user_id);
 
 
             }

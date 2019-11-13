@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="?attr/actionBarSize"
-    android:background="@color/white"
+    android:background="@drawable/explore_event"
     android:orientation="vertical"
     android:paddingBottom="40dp">
 
@@ -25,16 +25,15 @@
           android:layout_height="0dp"
           android:layout_weight="1"
           android:gravity="center"
-          android:id="@+id/layout_organise"
-          android:foreground="?attr/selectableItemBackground"
-          android:background="@drawable/organise_event"
           android:orientation="vertical">
 
           <com.angadi.tripmanagementa.utils.CustomFontTextView
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:gravity="center"
-              android:padding="10dp"
+              android:id="@+id/layout_organise"
+              android:foreground="?attr/selectableItemBackground"
+              android:padding="15dp"
               android:textColor="@color/white"
               android:background="@color/transparent"
               android:textSize="18sp"
@@ -53,17 +52,16 @@
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:layout_weight="1"
-          android:id="@+id/layout_explore"
-          android:foreground="?attr/selectableItemBackground"
           android:gravity="center"
-          android:background="@drawable/explore_event"
           android:orientation="vertical">
 
           <com.angadi.tripmanagementa.utils.CustomFontTextView
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
+              android:layout_height="wrap_content"
               android:gravity="center"
-              android:padding="10dp"
+              android:padding="15dp"
+              android:id="@+id/layout_explore"
+              android:foreground="?attr/selectableItemBackground"
               android:textColor="@color/white"
               android:background="@color/transparent"
               android:textSize="18sp"
@@ -78,6 +76,7 @@
 
         <LinearLayout
             android:id="@+id/layout_one"
+            android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -86,18 +85,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:id="@+id/layout_explorer"
-                android:foreground="?attr/selectableItemBackground"
                 android:gravity="center"
                 android:background="@drawable/explore_event"
                 android:orientation="vertical">
 
                 <com.angadi.tripmanagementa.utils.CustomFontTextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:padding="10dp"
-                    android:textColor="@color/yellow"
+                    android:padding="15dp"
+                    android:layout_marginBottom="100dp"
+                    android:id="@+id/layout_explorer"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:textColor="@color/white"
                     android:background="@color/transparent"
                     android:textSize="18sp"
                     android:textStyle="bold"

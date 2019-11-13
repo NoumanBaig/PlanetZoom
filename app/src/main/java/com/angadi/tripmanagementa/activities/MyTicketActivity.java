@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
@@ -34,6 +35,8 @@ public class MyTicketActivity extends AppCompatActivity {
 
     @BindView(R.id.recyclerViewTickets)
     RecyclerView recyclerView;
+    @BindView(R.id.layout_not_found)
+    LinearLayout layout_not_found;
 //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
 
@@ -70,10 +73,16 @@ public class MyTicketActivity extends AppCompatActivity {
                 Log.e("getTickets",new Gson().toJson(response));
                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
-
                     List<MyTicketsResult> resultList = response.body().getResults();
-                    setAdapter(resultList);
+                    if (resultList.size()>0){
+                        setAdapter(resultList);
+                        layout_not_found.setVisibility(View.GONE);
+                    }else {
+                        layout_not_found.setVisibility(View.VISIBLE);
+                    }
+
                 }else {
+                    layout_not_found.setVisibility(View.VISIBLE);
                     Toast.makeText(MyTicketActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -82,6 +91,7 @@ public class MyTicketActivity extends AppCompatActivity {
             public void onFailure(Call<MyTicketsResponse> call, Throwable t) {
                 Log.e("getTickets",""+t);
                MyProgressDialog.dismiss();
+                layout_not_found.setVisibility(View.VISIBLE);
             }
         });
 

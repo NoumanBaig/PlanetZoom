@@ -13,7 +13,7 @@
         android:layout_height="200dp"
         app:lottie_autoPlay="true"
         app:lottie_fileName="world_animate.json"
-        app:lottie_loop="true" />
+        app:lottie_loop="false" />
 
     <com.angadi.tripmanagementa.utils.CustomFontTextView
         android:id="@+id/txt"
@@ -26,7 +26,7 @@
         android:text="@string/welcome_to"
         android:padding="10dp"
         android:textAllCaps="true"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="@dimen/textlarge"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
@@ -46,7 +46,7 @@
         android:text="@string/scan_to_connect"
         android:textAllCaps="true"
         android:textStyle="italic"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="@dimen/textmed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -59,6 +59,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="40dp"
         android:layout_marginBottom="20dp"
+        android:visibility="gone"
         android:background="@drawable/black_background"
         android:foreground="?attr/selectableItemBackground"
         android:text="@string/get_started"

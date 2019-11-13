@@ -48,9 +48,10 @@
         android:padding="10dp"
         android:scrollHorizontally="true"
         android:singleLine="true"
+        android:textStyle="bold"
+        android:textSize="@dimen/textmed"
         android:text="Live text details appear here.... bla bla bla bla bla bla bla bla bla bka"
-        android:textColor="@color/colorAccent"
-        android:textSize="12sp"
+        android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!--<ImageView-->

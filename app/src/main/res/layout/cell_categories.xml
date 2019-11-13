@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,11 +15,19 @@
         android:layout_width="match_parent"
         android:layout_height="180dp">
 
-        <ImageView
+<!--        <ImageView-->
+<!--            android:id="@+id/img"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent" />-->
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/img"
             android:scaleType="fitXY"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            fresco:failureImage="@drawable/ic_placeholder"
+            fresco:placeholderImage="@drawable/ic_placeholder" />
+
 
     </FrameLayout>
 

@@ -20,6 +20,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.models.ProfileStatusResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
@@ -50,6 +52,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
@@ -64,6 +67,7 @@ import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
 public class ScanResultActivity extends AppCompatActivity {
+
 
     @BindView(R.id.imageView)
     SimpleDraweeView imageView;
@@ -81,9 +85,20 @@ public class ScanResultActivity extends AppCompatActivity {
     TextView txt_website;
     @BindView(R.id.txt_address)
     TextView txt_address;
+    @BindView(R.id.txt_fav)
+    TextView txt_fav;
+    @BindView(R.id.txt_like)
+    TextView txt_like;
+    @BindView(R.id.txt_dislike)
+    TextView txt_dislike;
+    @BindView(R.id.txt_ratings)
+    TextView txt_ratings;
+    @BindView(R.id.txt_ratings_avg)
+    TextView txt_ratings_avg;
     double screenInches;
     BitMatrix result;
-    private String str_location,str_mobile,str_email,str_website,str_whatsApp,str_facebook,str_youtube,str_instagram,str_linkedin;
+    private String str_location,str_mobile,str_email,str_website,str_whatsApp,str_facebook,str_youtube,
+            str_instagram,str_linkedin,str_name;
     @BindView(R.id.layout_shareQR)
     LinearLayout layout_shareQR;
     @BindView(R.id.layout_save)
@@ -100,6 +115,7 @@ public class ScanResultActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Qr Code Details");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         if (getIntent().getExtras() != null){
             String string = getIntent().getStringExtra("qr_id");
             String string_url = getIntent().getStringExtra("qr_url");
@@ -142,8 +158,7 @@ public class ScanResultActivity extends AppCompatActivity {
                 Log.e("scan_res", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")){
-
-                    displayTexts(response,qr_url);
+                    displayTexts(response,qr_url,id);
                 }else {
                     Toast.makeText(ScanResultActivity.this, "Error while fetching data", Toast.LENGTH_SHORT).show();
                 }
@@ -157,7 +172,7 @@ public class ScanResultActivity extends AppCompatActivity {
         });
     }
 
-    private void displayTexts(Response<QrScanResponse> response,String url) {
+    private void displayTexts(Response<QrScanResponse> response,String url,String id) {
         assert response.body() != null;
 
         if (!response.body().getQcaaName().equalsIgnoreCase("")) {
@@ -195,16 +210,79 @@ public class ScanResultActivity extends AppCompatActivity {
         str_facebook = response.body().getQcaaSocialFacebook();
         str_youtube = response.body().getQcaaSocialYoutube();
 //        str_linkedin = response.body().getUraLinkedin();
+        str_name = response.body().getQcaaName();
 
         String bitmap_name = response.body().getQcaaName()+" BIZ QR";
         bitmapQrborder = writeTextOnDrawable(R.drawable.new_pro_frame, bitmap_name).getBitmap();
 
         showQrCode(url);
+        decodeId(id);
     }
+
+    private void decodeId(String id){
+        Log.e("id---->",id);
+        byte[] tmp = Base64.decode(id, Base64.DEFAULT);
+        try {
+           String str_profile_id = new String(tmp, "UTF-8");
+            Log.e("str_profile_id",""+str_profile_id);
+            getStatus(str_profile_id);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    private void getStatus(String pro_id) {
+        MyProgressDialog.show(ScanResultActivity.this,"Loading...");
+        String token = Prefs.with(ScanResultActivity.this).getString("token","");
+        Log.e("token",token);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ProfileStatusResponse> call = apiInterface.qrCodeStatus("true", token, pro_id);
+        call.enqueue(new Callback<ProfileStatusResponse>() {
+            @Override
+            public void onResponse(Call<ProfileStatusResponse> call, Response<ProfileStatusResponse> response) {
+                Log.e("getStatus", new Gson().toJson(response));
+                MyProgressDialog.dismiss();
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        setFavsAndRatings(response);
+                    } else {
+                        Toast.makeText(ScanResultActivity.this, response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProfileStatusResponse> call, Throwable t) {
+                Log.e("getStatus", "" + t);
+                MyProgressDialog.dismiss();
+            }
+        });
+
+    }
+
+    private void setFavsAndRatings(Response<ProfileStatusResponse> response) {
+        assert response.body() != null;
+
+        txt_like.setText(response.body().getLikeCnt() + " Likes");
+        txt_dislike.setText(response.body().getDislikeCnt() + " Dislikes");
+        txt_fav.setText(response.body().getFavCnt() + " Favorites");
+        txt_ratings.setText(response.body().getRateCnt() + " Ratings");
+        if (response.body().getRateAvg().equalsIgnoreCase("")){
+            txt_ratings_avg.setText("0");
+        }else {
+            txt_ratings_avg.setText(response.body().getRateAvg());
+        }
+
+    }
+
 
     @OnClick({R.id.layout_fav, R.id.layout_like, R.id.layout_dislike, R.id.layout_share, R.id.layout_ratings, R.id.layout_mobile,
             R.id.layout_email, R.id.layout_website, R.id.layout_location, R.id.layout_whatsApp, R.id.layout_facebook, R.id.layout_youtube,
-            R.id.layout_instagram, R.id.layout_linkedIn,R.id.layout_shareQR,R.id.layout_save})
+            R.id.layout_instagram, R.id.layout_linkedIn,R.id.layout_shareQR,R.id.layout_save,R.id.btn_reach_us})
     public void onLayoutClick(View view) {
         switch (view.getId()) {
             case R.id.layout_fav:
@@ -255,6 +333,13 @@ public class ScanResultActivity extends AppCompatActivity {
                 break;
             case R.id.layout_save:
                 saveQrToGallery();
+                break;
+            case R.id.btn_reach_us:
+                if (!str_email.equalsIgnoreCase("")){
+                    sendReachUsMail(str_email,str_name);
+                }else {
+                    Toast.makeText(ScanResultActivity.this, "Email not found", Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 break;
@@ -530,4 +615,17 @@ public class ScanResultActivity extends AppCompatActivity {
 
         return combined;
     }
+
+    private void sendReachUsMail(String str_email,String fName){
+        String[] recipients = str_email.split(",");
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_EMAIL, recipients);
+        intent.putExtra(Intent.EXTRA_SUBJECT, fName);
+        intent.putExtra(Intent.EXTRA_TEXT, "Tried to reach you");
+
+        intent.setType("message/rfc822");
+        startActivity(Intent.createChooser(intent, "Choose an email client"));
+    }
+
 }
