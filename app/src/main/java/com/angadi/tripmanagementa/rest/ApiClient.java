@@ -1,19 +1,16 @@
 package com.angadi.tripmanagementa.rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
 
 public class ApiClient {
 
 //    public static final String BASE_URL = "http://192.168.0.104/Angadi/Jobstreamers/";
 //        private static final String BASE_URL = "http://192.168.0.109/Angadi/PlanetZoomApp/";
+//        private static final String BASE_URL = "https://test.planetzoom.app/";
         private static final String BASE_URL = "https://planetzoom.app/";
     private static Retrofit retrofit = null;
 

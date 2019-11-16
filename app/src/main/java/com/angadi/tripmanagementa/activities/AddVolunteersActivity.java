@@ -86,8 +86,8 @@ public class AddVolunteersActivity extends AppCompatActivity {
             mem_id = getIntent().getStringExtra("mem_id");
             event_id = getIntent().getStringExtra("str_id");
             assert event_id != null;
-            Log.e("event_id", event_id);
-            Log.e("mem_id", mem_id);
+//            Log.e("event_id", event_id);
+//            Log.e("mem_id", mem_id);
             String title = getIntent().getStringExtra("mem_title");
             getSupportActionBar().setTitle("Add " + title);
             getPlaces(event_id);
@@ -288,8 +288,8 @@ public class AddVolunteersActivity extends AppCompatActivity {
     }
 
     private void getVolunteers(String event_id,String mem_id) {
-        Log.e("event_id",event_id);
-        Log.e("mem_id",mem_id);
+//        Log.e("event_id",event_id);
+//        Log.e("mem_id",mem_id);
         MyProgressDialog.show(AddVolunteersActivity.this,"Loading...");
         String token = Prefs.with(AddVolunteersActivity.this).getString("token", "");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);

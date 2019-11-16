@@ -41,12 +41,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.activities.EventDetailsActivity;
+import com.angadi.tripmanagementa.adapters.GalleryAdapter;
 import com.angadi.tripmanagementa.models.ProfileDislikeResponse;
 import com.angadi.tripmanagementa.models.ProfileFavResponse;
+import com.angadi.tripmanagementa.models.ProfileGallery;
 import com.angadi.tripmanagementa.models.ProfileLikeResponse;
 import com.angadi.tripmanagementa.models.ProfileRatingResponse;
 import com.angadi.tripmanagementa.models.ProfileResponse;
@@ -139,6 +142,8 @@ public class ScanProfileDialogFragment extends DialogFragment {
     BitMatrix result;
     boolean mLike, mDislike, mFavorite;
     Bitmap bitmap, bitmapQrborder;
+    @BindView(R.id.recyclerViewGallery)
+    RecyclerView recyclerViewGallery;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -256,6 +261,7 @@ public class ScanProfileDialogFragment extends DialogFragment {
         byte[] tmp2 = Base64.decode(qr_id, Base64.DEFAULT);
         try {
             val2 = new String(tmp2, "UTF-8");
+            Log.e("val2",val2);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -324,6 +330,12 @@ public class ScanProfileDialogFragment extends DialogFragment {
         str_profile_id = response.body().getUraId();
         str_qr_code_id = response.body().getUraCodeIdSecureLink();
         str_name = response.body().getUraFname();
+
+        List<ProfileGallery> galleryList = response.body().getUraGallerys();
+        recyclerViewGallery.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        GalleryAdapter galleryAdapter = new GalleryAdapter(getActivity(), galleryList,"scan");
+        recyclerViewGallery.setAdapter(galleryAdapter);
+
         getStatus(str_profile_id);
     }
 
@@ -492,8 +504,7 @@ public class ScanProfileDialogFragment extends DialogFragment {
     }
 
     private void openUri(String uri) {
-//        String uri = WebsiteFromList;
-        if (uri != "") {
+        if (!uri.equals("")) {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + uri));
             startActivity(intent);
         }

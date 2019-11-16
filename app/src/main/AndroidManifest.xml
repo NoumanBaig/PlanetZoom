@@ -14,10 +14,15 @@
     <uses-permission android:name="android.permission.FLASHLIGHT" />
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.front" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
-
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="false" />
     <uses-feature
         android:name="android.hardware.location.network"
         android:required="false" />
@@ -27,17 +32,24 @@
 
     <application
         android:name=".utils.MyApplication"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        android:allowBackup="false"
         tools:replace="android:allowBackup">
-        <activity android:name=".activities.AddVolunteersActivity"></activity>
-        <activity android:name=".activities.MyTicketDetailsActivity" />
-        <activity android:name=".activities.MyTicketActivity" />
+        <activity android:name=".activities.InfluencersActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.WelcomeActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.AddVolunteersActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.MyTicketDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.MyTicketActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.AddMembersActivity"
             android:screenOrientation="portrait" />
@@ -70,22 +82,22 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.HomeActivity"
-            android:screenOrientation="portrait" >
-        <intent-filter android:autoVerify="true">
-            <action android:name="android.intent.action.VIEW" />
+            android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
 
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
-            <data
-                android:host="product"
-                android:pathPrefix="/view"
-                android:scheme="planetzoom" />
-        </intent-filter>
+                <data
+                    android:host="product"
+                    android:pathPrefix="/view"
+                    android:scheme="planetzoom" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".activities.LoginActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.SplashActivity"
             android:screenOrientation="portrait">
@@ -97,7 +109,8 @@
         </activity>
         <activity
             android:name=".activities.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 

@@ -70,9 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:hint="@string/event_desc"
-                    android:imeOptions="actionNext"
-                    android:inputType="textCapWords" />
+                    android:hint="@string/event_desc"/>
 
                 <com.angadi.tripmanagementa.utils.CustomFontEditText
                     android:id="@+id/edt_organisation"
@@ -134,7 +132,7 @@
                         android:layout_weight="1"
                         android:orientation="horizontal">
 
-                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        <com.angadi.tripmanagementa.utils.CustomFontEditText
                             android:id="@+id/txt_date"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -144,7 +142,7 @@
                             android:layout_marginBottom="10dp"
                             android:background="@drawable/location_text_background"
                             android:gravity="center"
-                            android:hint="@string/date"
+                            android:hint="Date"
                             android:padding="10dp"
                             android:textColor="@color/black" />
 
@@ -157,7 +155,7 @@
                         android:layout_weight="1"
                         android:orientation="horizontal">
 
-                        <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        <com.angadi.tripmanagementa.utils.CustomFontEditText
                             android:id="@+id/txt_time"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -167,7 +165,68 @@
                             android:layout_marginBottom="10dp"
                             android:background="@drawable/location_text_background"
                             android:gravity="center"
-                            android:hint="@string/time"
+                            android:hint="Time"
+                            android:padding="10dp"
+                            android:textColor="@color/black" />
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <com.angadi.tripmanagementa.utils.CustomFontEditText
+                            android:id="@+id/txt_to_date"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@drawable/location_text_background"
+                            android:gravity="center"
+                            android:hint="To Date"
+                            android:inputType="datetime"
+                            android:imeOptions="actionDone"
+                            android:padding="10dp"
+                            android:textColor="@color/black" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <com.angadi.tripmanagementa.utils.CustomFontEditText
+                            android:id="@+id/txt_to_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:inputType="datetime"
+                            android:imeOptions="actionDone"
+                            android:background="@drawable/location_text_background"
+                            android:gravity="center"
+                            android:hint="To Time"
                             android:padding="10dp"
                             android:textColor="@color/black" />
 
@@ -284,6 +343,20 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="20dp"
                         android:id="@+id/recyclerImages"/>
+
+                    <com.angadi.tripmanagementa.utils.CustomFontButton
+                        android:id="@+id/btn_choose"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:visibility="gone"
+                        android:layout_marginBottom="10dp"
+                        android:background="@drawable/button_background"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:text="@string/choose_file"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -315,6 +388,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/upload_event_map"
+                    android:visibility="gone"
                     android:textColor="@color/colorAccent"
                     android:textSize="12sp"
                     android:textStyle="bold" />
@@ -324,6 +398,7 @@
                     android:layout_height="200dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginTop="10dp"
+                    android:visibility="gone"
                     android:layout_marginRight="20dp"
                     android:layout_marginBottom="20dp"
                     android:gravity="center">

@@ -538,6 +538,28 @@
                         android:text="Reach Us"
                         android:textColor="@color/white" />
 
+                    <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gallery"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/textsmall"
+                        android:textColor="@color/colorAccent"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewGallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"/>
+
+                    <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Social Media Links"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="5dp"
+                        android:textSize="@dimen/textsmall"
+                        android:textColor="@color/colorAccent"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -33,13 +33,17 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.activities.ImagePickerActivity;
-import com.angadi.tripmanagementa.activities.LoginActivity;
+import com.angadi.tripmanagementa.adapters.GalleryAdapter;
+import com.angadi.tripmanagementa.models.DeleteGallery;
 import com.angadi.tripmanagementa.models.EditProfileResponse;
-import com.angadi.tripmanagementa.models.LogoutResponse;
+import com.angadi.tripmanagementa.models.ProfileGallery;
 import com.angadi.tripmanagementa.models.ProfileResponse;
+import com.angadi.tripmanagementa.models.UploadGallery;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
@@ -52,7 +56,6 @@ import com.google.zxing.BarcodeFormat;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -62,6 +65,7 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -113,7 +117,8 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     @BindView(R.id.img_qr_code)
     ImageView img_qr_code;
     public static final int REQUEST_IMAGE = 100;
-    String base64String;
+    public static final int REQUEST_IMAGE_GALLERY = 101;
+    private String base64String, base64StringImages, profile_id;
     double screenInches;
     BitMatrix result;
     @BindView(R.id.layout_share)
@@ -121,6 +126,10 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     @BindView(R.id.layout_save)
     LinearLayout layout_save;
     Bitmap bitmap, bitmapQrborder;
+    @BindView(R.id.recyclerViewGallery)
+    RecyclerView recyclerViewGallery;
+    ArrayList<Bitmap> arrayList_images = new ArrayList<>();
+
 
     @Nullable
     @Override
@@ -134,7 +143,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         return view;
     }
 
-    private void getScreenResolution(){
+    private void getScreenResolution() {
         DisplayMetrics dm = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
@@ -163,8 +172,6 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         displayTexts(response);
-
-
                     } else {
                         Toast.makeText(getActivity(), response.body().getStatus(), Toast.LENGTH_SHORT).show();
                     }
@@ -204,16 +211,17 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
             Glide.with(getActivity()).load(Constants.BASE_URL + response.body().getUraImg()).into(imageView);
 
         }
-
+        profile_id = response.body().getUraId();
         String bitmap_name = response.body().getUraFname();
         bitmapQrborder = writeTextOnDrawable(R.drawable.new_pro_frame, bitmap_name).getBitmap();
 
         showQrCode(response.body().getUraCodeIdSecureLink());
+        getProfileGallery(profile_id);
 
     }
 
 
-    @OnClick({R.id.btn_update, R.id.img_edit, R.id.img_settings, R.id.layout_share, R.id.layout_save})
+    @OnClick({R.id.btn_update, R.id.img_edit, R.id.img_settings, R.id.layout_share, R.id.layout_save, R.id.btn_choose})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_update:
@@ -229,7 +237,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
                             @Override
                             public void onPermissionsChecked(MultiplePermissionsReport report) {
                                 if (report.areAllPermissionsGranted()) {
-                                    showImagePickerOptions();
+                                    showImagePickerOptions(1);
                                 }
 
                                 if (report.isAnyPermissionPermanentlyDenied()) {
@@ -254,26 +262,155 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
             case R.id.layout_save:
                 saveQrToGallery();
                 break;
+            case R.id.btn_choose:
+                Dexter.withActivity(getActivity())
+                        .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .withListener(new MultiplePermissionsListener() {
+                            @Override
+                            public void onPermissionsChecked(MultiplePermissionsReport report) {
+                                if (report.areAllPermissionsGranted()) {
+                                    showImagePickerOptions(2);
+                                }
+
+                                if (report.isAnyPermissionPermanentlyDenied()) {
+                                    showSettingsDialog();
+                                }
+                            }
+
+                            @Override
+                            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                                token.continuePermissionRequest();
+                            }
+                        }).check();
+                break;
         }
     }
 
 
-
-    private void showImagePickerOptions() {
-        ImagePickerActivity.showImagePickerOptions(getActivity(), new ImagePickerActivity.PickerOptionListener() {
+    private void uploadGallery(String profile_id, String image) {
+        MyProgressDialog.show(getActivity(), "Loading...");
+        String token = Prefs.with(getActivity()).getString("token", "");
+        Log.e("token", token);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<UploadGallery> responseCall = apiInterface.uploadProfileGallery("true", token, profile_id, image);
+        responseCall.enqueue(new Callback<UploadGallery>() {
             @Override
-            public void onTakeCameraSelected() {
-                launchCameraIntent();
+            public void onResponse(Call<UploadGallery> call, Response<UploadGallery> response) {
+                Log.e("uploadGallery", new Gson().toJson(response));
+                MyProgressDialog.dismiss();
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        getProfileGallery(profile_id);
+                    } else {
+                        Toast.makeText(getActivity(), response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
-            public void onChooseGallerySelected() {
-                launchGalleryIntent();
+            public void onFailure(Call<UploadGallery> call, Throwable t) {
+                Log.e("uploadGallery", "" + t);
+                MyProgressDialog.dismiss();
             }
         });
     }
 
-    private void launchCameraIntent() {
+
+    private void getProfileGallery(String profile_id) {
+//        MyProgressDialog.show(getActivity(), "Loading...");
+        String token = Prefs.with(getActivity()).getString("token", "");
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<ProfileResponse> responseCall = apiInterface.getProfileGallery("true", token, profile_id);
+        responseCall.enqueue(new Callback<ProfileResponse>() {
+            @Override
+            public void onResponse(Call<ProfileResponse> call, Response<ProfileResponse> response) {
+                Log.e("getProfileGallery", new Gson().toJson(response));
+//                MyProgressDialog.dismiss();
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        List<ProfileGallery> galleryList = response.body().getUraGallerys();
+                        Log.e("galleryList", new Gson().toJson(galleryList));
+                        setGalleryAdapter(galleryList);
+                    } else {
+                        Toast.makeText(getActivity(), response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ProfileResponse> call, Throwable t) {
+                Log.e("getProfileGallery", "" + t);
+//                MyProgressDialog.dismiss();
+            }
+        });
+    }
+
+    private void setGalleryAdapter(List<ProfileGallery> galleryList) {
+        recyclerViewGallery.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        GalleryAdapter galleryAdapter = new GalleryAdapter(getActivity(), galleryList,"profile");
+        recyclerViewGallery.setAdapter(galleryAdapter);
+
+       galleryAdapter.setDeleteListener(new GalleryAdapter.DeleteListener() {
+           @Override
+           public void onDelete(View view, int position, String img_id) {
+               Log.e("img_id",img_id);
+               deleteGallery(profile_id,img_id);
+           }
+       });
+    }
+
+    private void deleteGallery(String profile_id, String image_id) {
+        MyProgressDialog.show(getActivity(), "Loading...");
+        String token = Prefs.with(getActivity()).getString("token", "");
+        Log.e("token", token);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<DeleteGallery> responseCall = apiInterface.deleteProfileGallery("true", token, profile_id, image_id);
+        responseCall.enqueue(new Callback<DeleteGallery>() {
+            @Override
+            public void onResponse(Call<DeleteGallery> call, Response<DeleteGallery> response) {
+                Log.e("deleteGallery", new Gson().toJson(response));
+                MyProgressDialog.dismiss();
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        getProfileGallery(profile_id);
+                    } else {
+                        Toast.makeText(getActivity(), response.body().getStatus(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DeleteGallery> call, Throwable t) {
+                Log.e("deleteGallery", "" + t);
+                MyProgressDialog.dismiss();
+            }
+        });
+    }
+
+
+    private void showImagePickerOptions(int num) {
+        ImagePickerActivity.showImagePickerOptions(getActivity(), new ImagePickerActivity.PickerOptionListener() {
+            @Override
+            public void onTakeCameraSelected() {
+                launchCameraIntent(num);
+            }
+
+            @Override
+            public void onChooseGallerySelected() {
+                launchGalleryIntent(num);
+            }
+        });
+    }
+
+    private void launchCameraIntent(int num) {
         Intent intent = new Intent(getActivity(), ImagePickerActivity.class);
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_IMAGE_CAPTURE);
 
@@ -287,10 +424,15 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 1000);
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 1000);
 
-        startActivityForResult(intent, REQUEST_IMAGE);
+        if (num == 1) {
+            startActivityForResult(intent, REQUEST_IMAGE);
+        } else {
+            startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
+        }
+
     }
 
-    private void launchGalleryIntent() {
+    private void launchGalleryIntent(int num) {
         Intent intent = new Intent(getActivity(), ImagePickerActivity.class);
         intent.putExtra(ImagePickerActivity.INTENT_IMAGE_PICKER_OPTION, ImagePickerActivity.REQUEST_GALLERY_IMAGE);
 
@@ -298,7 +440,11 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
         intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
-        startActivityForResult(intent, REQUEST_IMAGE);
+        if (num == 1) {
+            startActivityForResult(intent, REQUEST_IMAGE);
+        } else {
+            startActivityForResult(intent, REQUEST_IMAGE_GALLERY);
+        }
     }
 
     private void showSettingsDialog() {
@@ -343,6 +489,22 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
                 }
             }
         }
+
+        if (requestCode == REQUEST_IMAGE_GALLERY) {
+            if (resultCode == Activity.RESULT_OK) {
+                Uri uri = data.getParcelableExtra("path");
+                try {
+                    // You can update this bitmap to your server
+                    Bitmap bitmapProfile = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                    base64StringImages = ImageUtil.convert(bitmapProfile);
+                    Log.e("base64StringImages", "" + base64StringImages);
+                    uploadGallery(profile_id, base64StringImages);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
 
     }
 
@@ -393,7 +555,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
     private void showQrCode(String str_qr_id) {
         try {
             bitmap = encodeAsBitmap(str_qr_id);
-            img_qr_code.setImageBitmap(mergeBitmaps(bitmap,bitmapQrborder));
+            img_qr_code.setImageBitmap(mergeBitmaps(bitmap, bitmapQrborder));
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -404,20 +566,19 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
-            if(screenInches > 5.0 && screenInches < 5.5){
+            if (screenInches > 5.0 && screenInches < 5.5) {
                 Log.e("first", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
-            }else if(screenInches > 5.5 && screenInches < 6.0){
+            } else if (screenInches > 5.5 && screenInches < 6.0) {
                 Log.e("second", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
-            }else if (screenInches > 6.0){
+            } else if (screenInches > 6.0) {
                 Log.e("third", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1200, 1200, null);
-            }else if(screenInches < 5.0 && screenInches > 4.0){
+            } else if (screenInches < 5.0 && screenInches > 4.0) {
                 Log.e("fourth", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 700, 700, null);
-            }
-            else {
+            } else {
                 Log.e("else", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
             }
@@ -472,14 +633,14 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
     }
 
-    private void shareQr(){
+    private void shareQr() {
         Dexter.withActivity(getActivity())
                 .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
-                            Bitmap bitmap_share = mergeBitmaps(bitmap,bitmapQrborder);
+                            Bitmap bitmap_share = mergeBitmaps(bitmap, bitmapQrborder);
                             shareQrCodeImage(bitmap_share);
                         }
 
@@ -496,7 +657,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
     }
 
-    private void shareQrCodeImage(Bitmap mBitmap){
+    private void shareQrCodeImage(Bitmap mBitmap) {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
 

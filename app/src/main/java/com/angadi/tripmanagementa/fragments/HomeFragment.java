@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,13 +15,25 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.activities.CreateEventActivity;
+import com.angadi.tripmanagementa.models.AddUpdateResponse;
+import com.angadi.tripmanagementa.models.GetUpdateResponse;
+import com.angadi.tripmanagementa.rest.ApiClient;
+import com.angadi.tripmanagementa.rest.ApiInterface;
+import com.angadi.tripmanagementa.utils.Constants;
+import com.angadi.tripmanagementa.utils.MyProgressDialog;
+import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
 import com.google.zxing.Result;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements ZXingScannerView.ResultHandler,
         ScanResultDialogFragment.MessageDialogListener,ScanEventDialogFragment.EventDialogListener,ScanProfileDialogFragment.ProfileDialogListener {
@@ -46,9 +59,13 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         contentFrame.addView(mScannerView);
         mScannerView.setFocusable(true);
         mScannerView.setBorderColor(getActivity().getResources().getColor(R.color.colorAccent));
-        txt_live.setText(getResources().getString(R.string.live_msg));
-        txt_live.setSelected(true);
 
+        String event_id = Prefs.with(getActivity()).getString("live_message", "");
+        if (!event_id.equalsIgnoreCase("")){
+            getLiveEvent(event_id);
+        }else {
+            txt_live.setVisibility(View.GONE);
+        }
         return view;
     }
 
@@ -60,8 +77,6 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         // that is used in calculating the optimal Camera preview size
         mScannerView.startCamera();
       //  mScannerView.setFlash(mFlash);
-
-
     }
 
     @OnClick(R.id.fab_flash)
@@ -95,7 +110,23 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
             if (data != null) {
     //            rawResult: https://planetzoom.app/qr/MTQ=?qr_type=profile
                 String new_qr_id = String.valueOf(rawResult);
-                new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 20);
+                if (Constants.BASE_URL.equalsIgnoreCase("https://test.planetzoom.app/")){
+                    Log.e("dev","---->");
+                    Log.e("result_length",""+new_qr_id.length());
+                    if (new_qr_id.length()<=46){
+                        Toast.makeText(getActivity(), "Invalid QR", Toast.LENGTH_SHORT).show();
+                    }else {
+                        new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 25);
+                    }
+                }else {
+                    Log.e("pro","---->");
+                    Log.e("result_length",""+new_qr_id.length());
+                    if (new_qr_id.length()>=46){
+                        Toast.makeText(getActivity(), "Invalid QR", Toast.LENGTH_SHORT).show();
+                    }else {
+                        new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 20);
+                    }
+                }
                 new_qr_id = new_qr_id.substring(0, new_qr_id.indexOf("?"));
                 Log.e("new_qr_id", new_qr_id);
 
@@ -105,7 +136,6 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
                 Log.e("qr_user_id ", "" + qr_user_id);
 
                 showResultDialog(new_qr_id, qr_type, String.valueOf(rawResult), qr_user_id);
-
 
             }
         } catch (Exception e) {
@@ -174,4 +204,41 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //    public void onDialogPositiveClick(DialogFragment dialog) {
 //        mScannerView.resumeCameraPreview(this);
 //    }
+
+
+    private void getLiveEvent(String event_id) {
+//        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+        String token = Prefs.with(getActivity()).getString("token", "");
+        Log.e("token", token);
+        Log.e("event_id", event_id);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<GetUpdateResponse> call = apiInterface.getEventLiveUpdate("true",token,event_id);
+        call.enqueue(new Callback<GetUpdateResponse>() {
+            @Override
+            public void onResponse(Call<GetUpdateResponse> call, Response<GetUpdateResponse> response) {
+                Log.e("getLiveEvent", new Gson().toJson(response));
+//                MyProgressDialog.dismiss();
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        Log.e("success","live----->");
+                        txt_live.setVisibility(View.VISIBLE);
+                        txt_live.setText(response.body().getLiveMsg());
+                        txt_live.setSelected(true);
+                    } else {
+                        txt_live.setVisibility(View.GONE);
+                        Log.e("failure","live----->");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<GetUpdateResponse> call, Throwable t) {
+                Log.e("getLiveEvent", "" + t);
+//                MyProgressDialog.dismiss();
+            }
+        });
+    }
+
 }

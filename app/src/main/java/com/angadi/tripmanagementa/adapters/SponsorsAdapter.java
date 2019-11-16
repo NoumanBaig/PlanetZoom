@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.ShowMembersResult;
+import com.angadi.tripmanagementa.models.Website;
+import com.angadi.tripmanagementa.utils.Constants;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
@@ -20,13 +22,13 @@ import java.util.List;
 public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.MyViewHolder> {
 
     Context mContext;
-    List<ShowMembersResult> resultList;
+    List<Website> websiteList;
     ClickListener clickListener;
 
-    public SponsorsAdapter(Context context) {
+    public SponsorsAdapter(Context context,List<Website> websiteList) {
         super();
         this.mContext = context;
-//        this.resultList = resultList;
+        this.websiteList = websiteList;
     }
 
     public interface ClickListener {
@@ -47,22 +49,22 @@ public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.MyView
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-//      holder.layout.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (clickListener != null) {
-//                    clickListener.onClick(view, position,resultList.get(position).getEavqaId());
-//                }
-//            }
-//        });
+      holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (clickListener != null) {
+                    clickListener.onClick(view, position,websiteList.get(position).getWeb());
+                }
+            }
+        });
 
-        holder.imageView.setImageResource(R.drawable.planet_zoom);
+        holder.imageView.setImageURI(Constants.BASE_URL+websiteList.get(position).getImage());
 
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return websiteList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

@@ -35,34 +35,34 @@ public class WelcomeFragment extends Fragment {
         textView.setText("Hi, "+ Prefs.with(getActivity()).getString("firstName",""));
         Prefs.with(getActivity()).save("login","true");
 
-        animationView.addAnimatorListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                startActivity(new Intent(getActivity(), HomeActivity.class));
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
+//        animationView.addAnimatorListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animator) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animator) {
+//                startActivity(new Intent(getActivity(), HomeActivity.class));
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animator) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animator) {
+//
+//            }
+//        });
 
         return view;
     }
 
-//    @OnClick(R.id.btn_getStarted)
-//    public void onClick(View view){
-//        startActivity(new Intent(getActivity(), HomeActivity.class));
-//
-//    }
+    @OnClick(R.id.btn_getStarted)
+    public void onClick(View view){
+        startActivity(new Intent(getActivity(), HomeActivity.class));
+
+    }
 }

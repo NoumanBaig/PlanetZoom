@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -45,12 +47,18 @@ public class SubEventDetailsDialogFragment extends DialogFragment {
     RecyclerView recyclerView;
     EditText edt_search;
     View loading;
-    String title, desc, qr_code_type, token, qr_url, user_id;
+    String title, desc, qr_code_type, token, qr_url, user_id,demo;
     private DetailsDialogListener mListener;
     View view;
-
+    int position;
     @BindView(R.id.txt)
     TextView textView;
+    @BindView(R.id.layout_desc)
+    NestedScrollView layout_desc;
+    @BindView(R.id.layout_image)
+    LinearLayout layout_image;
+    @BindView(R.id.img)
+            ImageView imageView;
 
     double screenInches;
     BitMatrix result;
@@ -62,10 +70,12 @@ public class SubEventDetailsDialogFragment extends DialogFragment {
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullScreenDialog);
     }
 
-    public static SubEventDetailsDialogFragment newInstance(String title, String desc, DetailsDialogListener listener) {
+    public static SubEventDetailsDialogFragment newInstance(String title, String desc, String demo,Integer position,DetailsDialogListener listener) {
         SubEventDetailsDialogFragment dialogFragment = new SubEventDetailsDialogFragment();
         dialogFragment.title = title;
         dialogFragment.desc = desc;
+        dialogFragment.demo = demo;
+        dialogFragment.position = position;
         dialogFragment.mListener = listener;
         return dialogFragment;
     }
@@ -124,7 +134,24 @@ public class SubEventDetailsDialogFragment extends DialogFragment {
         try {
             token = Prefs.with(getActivity()).getString("token", "");
             Log.e("token", token);
-            textView.setText(""+desc);
+            Log.e("title", title);
+            Log.e("demo", demo);
+            Log.e("position", ""+position);
+            if (demo.equalsIgnoreCase("DEMO DAY 2019")){
+               layout_image.setVisibility(View.VISIBLE);
+               layout_desc.setVisibility(View.GONE);
+               if (position==0){
+                   imageView.setImageResource(R.drawable.demo_day_one);
+               }else {
+                   imageView.setImageResource(R.drawable.demo_day_two);
+               }
+
+            }else {
+                layout_image.setVisibility(View.GONE);
+                layout_desc.setVisibility(View.VISIBLE);
+                textView.setText(""+desc);
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -21,7 +21,7 @@ public class ImageUtil {
     public static String convert(Bitmap bitmap)
     {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 15, stream);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, stream);
         byte[] byteFormat = stream.toByteArray();
         // get the base 64 string
 

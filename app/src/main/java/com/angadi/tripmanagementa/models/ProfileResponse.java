@@ -3,6 +3,8 @@ package com.angadi.tripmanagementa.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class ProfileResponse {
     @SerializedName("ura_id")
     @Expose
@@ -61,6 +63,9 @@ public class ProfileResponse {
     @SerializedName("ura_code_id_secure_link")
     @Expose
     private String uraCodeIdSecureLink;
+    @SerializedName("ura_gallerys")
+    @Expose
+    private List<ProfileGallery> uraGallerys = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -215,6 +220,14 @@ public class ProfileResponse {
 
     public void setUraCodeIdSecureLink(String uraCodeIdSecureLink) {
         this.uraCodeIdSecureLink = uraCodeIdSecureLink;
+    }
+
+    public List<ProfileGallery> getUraGallerys() {
+        return uraGallerys;
+    }
+
+    public void setUraGallerys(List<ProfileGallery> uraGallerys) {
+        this.uraGallerys = uraGallerys;
     }
 
     public String getStatus() {

@@ -42,7 +42,7 @@ public class DashboardFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.layout_not_found)
     LinearLayout layout_not_found;
-//    @BindView(R.id.loading_layout)
+    //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
     CountSectionAdapter adapter;
 
@@ -52,45 +52,39 @@ public class DashboardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
         ButterKnife.bind(this, view);
 
-       // setupRecycler();
+        // setupRecycler();
         getDashboardQrCodes();
 
         return view;
     }
 
 
-    private void getDashboardQrCodes(){
-        MyProgressDialog.show(getActivity(),"Loading...");
-        String token = Prefs.with(getActivity()).getString("token","");
-        Log.e("token",token);
+    private void getDashboardQrCodes() {
+        MyProgressDialog.show(getActivity(), "Loading...");
+        String token = Prefs.with(getActivity()).getString("token", "");
+        Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<DashboardResponse> responseCall = apiInterface.dashboard("true",token);
+        Call<DashboardResponse> responseCall = apiInterface.dashboard("true", token);
         responseCall.enqueue(new Callback<DashboardResponse>() {
             @Override
             public void onResponse(Call<DashboardResponse> call, Response<DashboardResponse> response) {
                 Log.e("dashboard_res", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
                 try {
-                    if (response.body().getStatus().equalsIgnoreCase("success")){
-
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        layout_not_found.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
                         List<DashboardResult> resultList = response.body().getResults();
 
-                        if (resultList.size()>0){
-                            layout_not_found.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                            adapter = new CountSectionAdapter(getActivity(),resultList);
-                            recyclerView.setAdapter(adapter);
+                        adapter = new CountSectionAdapter(getActivity(), resultList);
+                        recyclerView.setAdapter(adapter);
 
-                            GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
-                            SectionedSpanSizeLookup lookup = new SectionedSpanSizeLookup(adapter, layoutManager);
-                            layoutManager.setSpanSizeLookup(lookup);
-                            recyclerView.setLayoutManager(layoutManager);
-                        }else {
-                            layout_not_found.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                        }
+                        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+                        SectionedSpanSizeLookup lookup = new SectionedSpanSizeLookup(adapter, layoutManager);
+                        layoutManager.setSpanSizeLookup(lookup);
+                        recyclerView.setLayoutManager(layoutManager);
 
-                    }else {
+                    } else {
                         layout_not_found.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
                         Toast.makeText(getActivity(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -102,8 +96,8 @@ public class DashboardFragment extends Fragment {
 
             @Override
             public void onFailure(Call<DashboardResponse> call, Throwable t) {
-                Log.e("dashboard_res", ""+t);
-               MyProgressDialog.dismiss();
+                Log.e("dashboard_res", "" + t);
+                MyProgressDialog.dismiss();
                 layout_not_found.setVisibility(View.VISIBLE);
                 recyclerView.setVisibility(View.GONE);
             }

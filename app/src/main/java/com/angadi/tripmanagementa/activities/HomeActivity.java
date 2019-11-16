@@ -239,7 +239,6 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
             @Override
             public void onFailure(Call<CheckAdminResponse> call, Throwable t) {
                 Log.e("checkAdmin", "" + t);
-
             }
         });
     }

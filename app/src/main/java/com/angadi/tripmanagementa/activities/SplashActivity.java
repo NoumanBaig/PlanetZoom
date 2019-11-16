@@ -5,6 +5,8 @@ import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.util.Pair;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -13,9 +15,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.NetworkInformation;
 import com.angadi.tripmanagementa.utils.Prefs;
 
@@ -28,6 +32,8 @@ public class SplashActivity extends AppCompatActivity {
     ImageView img_logo;
     @BindView(R.id.no_internet)
     LinearLayout no_internet;
+    @BindView(R.id.txt)
+    TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,7 @@ public class SplashActivity extends AppCompatActivity {
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
         ButterKnife.bind(this);
+        showVersion();
         if (NetworkInformation.isConnected(SplashActivity.this)){
             no_internet.setVisibility(View.GONE);
             img_logo.setVisibility(View.VISIBLE);
@@ -70,4 +77,17 @@ public class SplashActivity extends AppCompatActivity {
         }, 2000);
     }
 
+    private void showVersion(){
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            if (Constants.BASE_URL.equalsIgnoreCase("https://test.planetzoom.app/")){
+                textView.setText("Version: dev");
+            }else {
+                textView.setText("Version: "+version);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

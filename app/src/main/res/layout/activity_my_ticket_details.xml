@@ -56,8 +56,6 @@
         android:background="@android:color/transparent"
         android:orientation="vertical">
 
-
-
             <LinearLayout
                 android:padding="10dp"
                 android:layout_width="match_parent"
@@ -91,12 +89,13 @@
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/img"
-                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    fresco:actualImageScaleType="fitCenter"
+                    fresco:viewAspectRatio="1.33"
                     android:layout_marginTop="10dp"
-                    android:scaleType="centerInside"
-                    android:layout_width="120dp"
                     fresco:placeholderImage="@drawable/ic_placeholder"
-                    android:layout_height="120dp"/>
+                    fresco:failureImage="@drawable/ic_placeholder"
+                    android:layout_height="wrap_content"/>
 
 <!--                <ImageView-->
 <!--                    android:id="@+id/img"-->
@@ -177,6 +176,7 @@
                     android:weightSum="2"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -206,6 +206,7 @@
                 <LinearLayout
                     android:weightSum="2"
                     android:paddingLeft="10dp"
+                    android:visibility="gone"
                     android:paddingRight="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

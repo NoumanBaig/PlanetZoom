@@ -3,12 +3,16 @@ package com.angadi.tripmanagementa.rest;
 
 import com.angadi.tripmanagementa.models.AddMembersResponse;
 import com.angadi.tripmanagementa.models.AddPlacesResponse;
+import com.angadi.tripmanagementa.models.AddUpdateResponse;
 import com.angadi.tripmanagementa.models.AddVolunteerResponse;
 import com.angadi.tripmanagementa.models.BuyTicketResponse;
 import com.angadi.tripmanagementa.models.CheckAdminResponse;
+import com.angadi.tripmanagementa.models.DeleteGallery;
 import com.angadi.tripmanagementa.models.DeleteSubEventResponse;
 import com.angadi.tripmanagementa.models.EventTrackResponse;
+import com.angadi.tripmanagementa.models.GetUpdateResponse;
 import com.angadi.tripmanagementa.models.ImageUploadResponse;
+import com.angadi.tripmanagementa.models.InfluencersResponse;
 import com.angadi.tripmanagementa.models.MyTicketsResponse;
 import com.angadi.tripmanagementa.models.ProfileDislikeResponse;
 import com.angadi.tripmanagementa.models.ProfileFavResponse;
@@ -36,14 +40,15 @@ import com.angadi.tripmanagementa.models.ShowAllMembersResponse;
 import com.angadi.tripmanagementa.models.ShowMembersResponse;
 import com.angadi.tripmanagementa.models.ShowPlacesResponse;
 import com.angadi.tripmanagementa.models.ShowSubEventResponse;
+import com.angadi.tripmanagementa.models.SponsorsLogoResponse;
 import com.angadi.tripmanagementa.models.SubCategoriesResponse;
 import com.angadi.tripmanagementa.models.SubEventResponse;
+import com.angadi.tripmanagementa.models.UploadGallery;
 import com.angadi.tripmanagementa.models.VerifyOtp;
 
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface ApiInterface {
@@ -118,6 +123,12 @@ public interface ApiInterface {
     @FormUrlEncoded
     Call<ProfileResponse> getProfile(@Field("show") String show,
                                      @Field("token") String token);
+
+    @POST("profile/show/")
+    @FormUrlEncoded
+    Call<ProfileResponse> getProfileGallery(@Field("show") String show,
+                                     @Field("token") String token,
+            @Field("profile_id") String profile_id);
 
     @POST("profile/show/")
     @FormUrlEncoded
@@ -421,4 +432,53 @@ public interface ApiInterface {
                                               @Field("token") String token,
                                               @Field("pro_id") String pro_id,
                                               @Field("pro_rate") String pro_rate);
+
+    @POST("Demoday/logos/")
+    @FormUrlEncoded
+    Call<SponsorsLogoResponse> getSponsorsLogos(@Field("logos") String logos);
+
+    @POST("ProfileImage/upload/")
+    @FormUrlEncoded
+    Call<UploadGallery> uploadProfileGallery(@Field("upload") String upload,
+                                             @Field("token") String token,
+                                             @Field("profile_id") String profile_id,
+                                             @Field("profile_image") String profile_image);
+
+    @POST("ProfileImage/delete/")
+    @FormUrlEncoded
+    Call<DeleteGallery> deleteProfileGallery(@Field("delete") String delete,
+                                             @Field("token") String token,
+                                             @Field("profile_id") String profile_id,
+                                             @Field("profile_image_id") String profile_image_id);
+
+    @POST("QrcodeImage/upload/")
+    @FormUrlEncoded
+    Call<UploadGallery> uploadQrGallery(@Field("upload") String upload,
+                                             @Field("token") String token,
+                                             @Field("qrcode_id") String qrcode_id,
+                                             @Field("qrcode_image") String qrcode_image);
+
+    @POST("QrcodeImage/delete/")
+    @FormUrlEncoded
+    Call<DeleteGallery> deleteQrGallery(@Field("delete") String delete,
+                                             @Field("token") String token,
+                                             @Field("qrcode_id") String qrcode_id,
+                                             @Field("qrcode_image_id") String qrcode_image_id);
+
+    @POST("InfluencersDemoDay/Influencers/")
+    @FormUrlEncoded
+    Call<InfluencersResponse> getInfluencers(@Field("Influencers") String logos);
+
+    @POST("events/live_news/")
+    @FormUrlEncoded
+    Call<AddUpdateResponse> addEventLiveUpdate(@Field("live_news") String live_news,
+                                               @Field("token") String token,
+                                               @Field("msg") String msg,
+                                               @Field("event_id") String event_id);
+
+    @POST("events/show_live_news/")
+    @FormUrlEncoded
+    Call<GetUpdateResponse> getEventLiveUpdate(@Field("show_live_news") String live_news,
+                                               @Field("token") String token,
+                                               @Field("event_id") String event_id);
 }

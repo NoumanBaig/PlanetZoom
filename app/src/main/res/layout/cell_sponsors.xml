@@ -10,12 +10,9 @@
     android:layout_height="wrap_content">
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/img_logo"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center"
-        app:roundAsCircle="true"
-        app:roundingBorderWidth="1dp"
-        app:roundingBorderColor="@color/demo_day_green"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:scaleType="fitCenter"
         fresco:failureImage="@drawable/ic_placeholder"
         fresco:placeholderImage="@drawable/ic_placeholder" />
 

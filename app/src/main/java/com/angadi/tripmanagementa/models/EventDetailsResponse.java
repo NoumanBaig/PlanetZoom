@@ -72,6 +72,9 @@ public class EventDetailsResponse {
     @SerializedName("pea_emergency_no")
     @Expose
     private String pea_emergency_no;
+    @SerializedName("tickets_id")
+    @Expose
+    private String tickets_id;
 
     public String getPeaId() {
         return peaId;
@@ -247,6 +250,14 @@ public class EventDetailsResponse {
 
     public void setPea_emergency_no(String pea_emergency_no) {
         this.pea_emergency_no = pea_emergency_no;
+    }
+
+    public String getTickets_id() {
+        return tickets_id;
+    }
+
+    public void setTickets_id(String tickets_id) {
+        this.tickets_id = tickets_id;
     }
 
 }

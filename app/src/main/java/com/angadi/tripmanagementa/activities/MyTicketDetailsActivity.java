@@ -75,8 +75,8 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
     BitMatrix result;
     //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
-    //    @BindView(R.id.txt_name)
-//    TextView txt_name;
+        @BindView(R.id.txt_name)
+    TextView txt_name;
     @BindView(R.id.txt_id)
     TextView txt_id;
     @BindView(R.id.txt_desc)
@@ -112,6 +112,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
 
         if (getIntent().getExtras() != null) {
             event_id = getIntent().getStringExtra("event_id");
+            Log.e("event_id",""+event_id);
             getTicketDetails(event_id);
         }
 
@@ -152,13 +153,14 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
 
-                        txt_id.setText("Ticket ID: "+response.body().getPeaTickets());
+                        txt_id.setText("Ticket ID: "+response.body().getTickets_id());
                         event_name = response.body().getPeaName();
                         event_desc = response.body().getPeaDesc();
                         txt_desc.setText(event_desc);
+                        txt_desc.setText(response.body().getPeaName());
 //                        txt_address.setText(response.body().getPeaLocation());
                         String formatedDate = parseDate(response.body().getPeaDate());
-                        txt_date.setText("Date: " + formatedDate);
+                        txt_date.setText("Date: " + response.body().getPeaDate());
                         txt_time.setText("Time: " + response.body().getPeaDateTime());
                         txt_venue.setText(response.body().getPeaVenue());
                         txt_amount.setText(response.body().getPeaPrice());
@@ -168,7 +170,8 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
                         } else {
                             imageView.setImageURI(Uri.parse(Constants.BASE_URL + response.body().getPeaLogo()));
                         }
-                        String bitmap_name = response.body().getPeaName()+" TICKET";
+                        String name_str = capitalizeWord(response.body().getPeaName());
+                        String bitmap_name = name_str+" TICKET";
                         bitmapQrborder = writeTextOnDrawable(R.drawable.new_pro_frame, bitmap_name).getBitmap();
                         showQrCode(response.body().getPeaQrCodeIdSecureLink());
 
@@ -188,6 +191,18 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
         });
 
     }
+
+    private String capitalizeWord(String string){
+        String[] words = string.split("\\s");
+        StringBuilder capitalizeWord= new StringBuilder();
+        for(String w:words){
+            String first=w.substring(0,1);
+            String afterfirst=w.substring(1);
+            capitalizeWord.append(first.toUpperCase()).append(afterfirst).append(" ");
+        }
+        return capitalizeWord.toString().trim();
+    }
+
 
     public String parseDate(String str_date) {
         String inputPattern = "dd-mm-yyyy";

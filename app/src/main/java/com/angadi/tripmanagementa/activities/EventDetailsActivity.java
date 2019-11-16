@@ -52,7 +52,9 @@ import com.angadi.tripmanagementa.models.MembersResponse;
 import com.angadi.tripmanagementa.models.MembersResult;
 import com.angadi.tripmanagementa.models.PeaGallery;
 import com.angadi.tripmanagementa.models.ShowSubEventResponse;
+import com.angadi.tripmanagementa.models.SponsorsLogoResponse;
 import com.angadi.tripmanagementa.models.SubEventResult;
+import com.angadi.tripmanagementa.models.Website;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
@@ -91,7 +93,7 @@ import retrofit2.Response;
 import static android.graphics.Color.BLACK;
 import static android.graphics.Color.WHITE;
 
-public class EventDetailsActivity extends AppCompatActivity implements SubEventDetailsDialogFragment.DetailsDialogListener,SubEventDetailsDialogFragment.DialogListener{
+public class EventDetailsActivity extends AppCompatActivity implements SubEventDetailsDialogFragment.DetailsDialogListener, SubEventDetailsDialogFragment.DialogListener {
 
     //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
@@ -101,6 +103,8 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     TextView txt_desc;
     @BindView(R.id.txt_date)
     TextView txt_date;
+    @BindView(R.id.txt_time)
+    TextView txt_time;
     @BindView(R.id.txt_price)
     TextView txt_price;
     @BindView(R.id.txt_venue)
@@ -108,12 +112,12 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     @BindView(R.id.txt_address)
     TextView txt_address;
     @BindView(R.id.img_logo)
-    SimpleDraweeView img_logo;
+    ImageView img_logo;
     @BindView(R.id.recyclerDates)
     RecyclerView recyclerDates;
     @BindView(R.id.recyclerSponsors)
     RecyclerView recyclerSponsors;
-    String event_id,encoded="no";
+    String event_id, encoded = "no";
     public static final int REQUEST_IMAGE = 100;
     String base64String;
     @BindView(R.id.imageSlider)
@@ -137,6 +141,8 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     double screenInches;
     BitMatrix result;
     Bitmap bitmap, bitmapQrborder;
+    @BindView(R.id.layout_sponsors)
+    LinearLayout layout_sponsors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,18 +158,20 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
         if (getIntent().getExtras() != null) {
             event_id = getIntent().getStringExtra("event_id");
             encoded = getIntent().getStringExtra("encoded");
+            Log.e("event_id", "" + event_id);
+            Log.e("encoded", "" + encoded);
             assert encoded != null;
-            if (encoded.equalsIgnoreCase("yes")){
+            if (encoded.equalsIgnoreCase("yes")) {
                 String scan = null;
                 byte[] tmp = Base64.decode(event_id, Base64.DEFAULT);
                 try {
                     scan = new String(tmp, "UTF-8");
-                    Log.e("scan",""+scan);
+                    Log.e("scan", "" + scan);
                     getEventDetails(scan);
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-            }else {
+            } else {
                 getEventDetails(event_id);
                 Log.e("event_id", "" + event_id);
             }
@@ -174,7 +182,7 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 
     }
 
-    private void getScreenResolution(){
+    private void getScreenResolution() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
@@ -217,17 +225,21 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
                         txt_desc.setText(response.body().getPeaDesc());
                         txt_address.setText(response.body().getPeaLocation());
                         txt_date.setText(response.body().getPeaDate());
+                        txt_time.setText(response.body().getPeaDateTime());
                         txt_venue.setText(response.body().getPeaVenue());
                         txt_price.setText(response.body().getPeaPrice());
                         str_location = response.body().getPeaLocation();
                         str_contact = response.body().getPea_contact_no();
                         str_emergency = response.body().getPea_emergency_no();
-                        String bitmap_name = response.body().getPeaName()+" EVENT";
+                        String name_str = capitalizeWord(response.body().getPeaName());
+                        String bitmap_name = name_str + " EVENT";
                         bitmapQrborder = writeTextOnDrawable(R.drawable.new_pro_frame, bitmap_name).getBitmap();
                         showQrCode(response.body().getPeaQrCodeIdSecureLink());
                         List<PeaGallery> galleryList = response.body().getPeaGallerys();
 
-                        img_logo.setImageURI(Constants.BASE_URL + response.body().getPeaLogo());
+//                        img_logo.setImageURI(Constants.BASE_URL + response.body().getPeaLogo());
+                        Glide.with(EventDetailsActivity.this).load(Constants.BASE_URL + response.body().getPeaLogo())
+                                .placeholder(R.drawable.ic_placeholder).into(img_logo);
                         if (galleryList.size() != 0) {
                             sliderView.setVisibility(View.VISIBLE);
                             imageSlider(galleryList);
@@ -254,34 +266,40 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 
     }
 
-    private void setClickLinks(String contact_num,String emergency_num,String location){
+    private void setClickLinks(String contact_num, String emergency_num, String location) {
 
     }
 
-    @OnClick({R.id.layout_stalls,R.id.layout_location,R.id.layout_floor,R.id.layout_contact,R.id.layout_chat,R.id.layout_emergency})
-    public void onClickLayouts(View view){
-        switch (view.getId()){
+    @OnClick({R.id.layout_stalls, R.id.layout_location, R.id.layout_floor, R.id.layout_contact, R.id.layout_chat,
+            R.id.layout_emergency, R.id.layout_influencers})
+    public void onClickLayouts(View view) {
+        switch (view.getId()) {
             case R.id.layout_stalls:
                 break;
+            case R.id.layout_influencers:
+                if (txt_name.getText().toString().equalsIgnoreCase("DEMO DAY 2019")) {
+                    startActivity(new Intent(EventDetailsActivity.this, InfluencersActivity.class));
+                }
+                break;
             case R.id.layout_location:
-                if (!str_location.equalsIgnoreCase("")){
+                if (!str_location.equalsIgnoreCase("")) {
                     setLocation(str_location);
                 }
                 break;
             case R.id.layout_floor:
                 break;
             case R.id.layout_contact:
-                if (!str_contact.equalsIgnoreCase("")){
+                if (!str_contact.equalsIgnoreCase("")) {
                     callPhoneNumber(str_contact);
                 }
                 break;
             case R.id.layout_chat:
-                if (!str_contact.equalsIgnoreCase("")){
-                   whatsApp(str_contact);
+                if (!str_contact.equalsIgnoreCase("")) {
+                    whatsApp(str_contact);
                 }
                 break;
             case R.id.layout_emergency:
-                if (!str_emergency.equalsIgnoreCase("")){
+                if (!str_emergency.equalsIgnoreCase("")) {
                     callPhoneNumber(str_emergency);
                 }
                 break;
@@ -346,54 +364,67 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
         recyclerDates.setLayoutManager(new LinearLayoutManager(this));
         SubEventsAdapter subEventsAdapter = new SubEventsAdapter(this, resultList);
         recyclerDates.setAdapter(subEventsAdapter);
-        setSponsorsAdapter();
+
         subEventsAdapter.setClickListener(new SubEventsAdapter.ClickListener() {
             @Override
             public void onClick(View view, int position, String id, String title, String desc) {
-                DialogFragment event_ticket = SubEventDetailsDialogFragment.newInstance( title,desc, EventDetailsActivity.this);
+                String demo = txt_name.getText().toString();
+                Log.e("demo--->",""+demo);
+                DialogFragment event_ticket = SubEventDetailsDialogFragment.newInstance(title, desc,demo,position, EventDetailsActivity.this);
                 event_ticket.show(getSupportFragmentManager(), "event_sub");
             }
         });
+
+        if (txt_name.getText().toString().equalsIgnoreCase("DEMO DAY 2019")) {
+            getSponsorsLogos();
+        }
     }
 
-    private void getMembers() {
+    private void getSponsorsLogos() {
 //        MyProgressDialog.show(EventDetailsActivity.this,"Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<MembersResponse> call = apiInterface.getMembers("true");
-        call.enqueue(new Callback<MembersResponse>() {
+        Call<SponsorsLogoResponse> call = apiInterface.getSponsorsLogos("true");
+        call.enqueue(new Callback<SponsorsLogoResponse>() {
             @Override
-            public void onResponse(Call<MembersResponse> call, Response<MembersResponse> response) {
+            public void onResponse(Call<SponsorsLogoResponse> call, Response<SponsorsLogoResponse> response) {
                 Log.e("getMembers", new Gson().toJson(response));
+                layout_sponsors.setVisibility(View.VISIBLE);
 //                MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
-                    List<MembersResult> membersResultList = response.body().getResults();
-                   // setMembersAdapter(membersResultList);
+                    List<Website> websiteList = response.body().getWebsite();
+                    setSponsorsAdapter(websiteList);
                 } else {
                     Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<MembersResponse> call, Throwable t) {
+            public void onFailure(Call<SponsorsLogoResponse> call, Throwable t) {
                 Log.e("getMembers", "" + t);
 //                MyProgressDialog.dismiss();
+                layout_sponsors.setVisibility(View.GONE);
             }
         });
     }
 
-    private void setSponsorsAdapter() {
-        recyclerSponsors.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-        SponsorsAdapter adapter = new SponsorsAdapter(EventDetailsActivity.this);
+    private void setSponsorsAdapter(List<Website> websiteList) {
+        recyclerSponsors.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        SponsorsAdapter adapter = new SponsorsAdapter(EventDetailsActivity.this, websiteList);
         recyclerSponsors.setAdapter(adapter);
-//        MembersAdapter adapter = new MembersAdapter(this, membersResultList);
-//        recyclerSponsors.setAdapter(adapter);
 //
-//        adapter.setClickListener(new MembersAdapter.ClickListener() {
-//            @Override
-//            public void onClick(View view, int position, String id, String title) {
-//                Log.e("title---->", "" + title);
-//            }
-//        });
+        adapter.setClickListener(new SponsorsAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position, String url) {
+                openUri(url);
+            }
+        });
+    }
+
+    private void openUri(String uri) {
+        if (!uri.equals("")) {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            startActivity(intent);
+        }
     }
 
     private void checkTicket() {
@@ -408,9 +439,12 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
                 Log.e("checkTicket", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
-                    showSelfieDialog();
+                   // showSelfieDialog();
+                    Toast.makeText(EventDetailsActivity.this, "Please purchase the Ticket in Demo day website", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(EventDetailsActivity.this, MyTicketDetailsActivity.class)
+                            .putExtra("event_id",event_id));
+                   // Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -577,7 +611,7 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
                             Intent intent = new Intent(Intent.ACTION_CALL);
-                            intent.setData(Uri.parse("tel:"+phoneNumber));
+                            intent.setData(Uri.parse("tel:" + phoneNumber));
                             startActivity(intent);
 //                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel:", phoneNumber, null));
 //                            startActivity(intent);
@@ -681,7 +715,7 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     private void showQrCode(String str_qr_id) {
         try {
             bitmap = encodeAsBitmap(str_qr_id);
-            img_qr_code.setImageBitmap(mergeBitmaps(bitmap,bitmapQrborder));
+            img_qr_code.setImageBitmap(mergeBitmaps(bitmap, bitmapQrborder));
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -692,20 +726,19 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
-            if(screenInches > 5.0 && screenInches < 5.5){
+            if (screenInches > 5.0 && screenInches < 5.5) {
                 Log.e("first", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
-            }else if(screenInches > 5.5 && screenInches < 6.0){
+            } else if (screenInches > 5.5 && screenInches < 6.0) {
                 Log.e("second", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
-            }else if (screenInches > 6.0){
+            } else if (screenInches > 6.0) {
                 Log.e("third", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1200, 1200, null);
-            }else if(screenInches < 5.0 && screenInches > 4.0){
+            } else if (screenInches < 5.0 && screenInches > 4.0) {
                 Log.e("fourth", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 700, 700, null);
-            }
-            else {
+            } else {
                 Log.e("else", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
             }
@@ -768,4 +801,16 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 
         return combined;
     }
+
+    private String capitalizeWord(String string){
+        String[] words = string.split("\\s");
+        StringBuilder capitalizeWord= new StringBuilder();
+        for(String w:words){
+            String first=w.substring(0,1);
+            String afterfirst=w.substring(1);
+            capitalizeWord.append(first.toUpperCase()).append(afterfirst).append(" ");
+        }
+        return capitalizeWord.toString().trim();
+    }
+
 }

@@ -37,6 +37,7 @@ import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -90,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
 //    @BindView(R.id.layout_terms)
 //    LinearLayout layout_terms;
     @BindView(R.id.container)
-    ConstraintLayout container;
+    FrameLayout container;
     //    @BindView(R.id.username)
 //    EditText username;
     @BindView(R.id.edt_mobile)
@@ -118,15 +119,18 @@ public class LoginActivity extends AppCompatActivity {
     PinView pinView;
     @BindView(R.id.layout_terms)
     LinearLayout layout_terms;
-
+    @BindView(R.id.txt_otp)
+    TextView txt_otp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         FirebaseApp.initializeApp(LoginActivity.this);
         setContentView(R.layout.activity_login);
+
         ButterKnife.bind(this);
 
         getCameraPermission();
@@ -342,6 +346,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String str_uid = String.valueOf(response.body().getUID());
                                 Prefs.with(LoginActivity.this).save("firstName",str_fname);
                                 Prefs.with(LoginActivity.this).save("str_uid",str_uid);
+                                txt_otp.setText(getResources().getString(R.string.otp)+" "+username);
                                 toggle();
                                // pinView.setText(str_otp);
                             }
@@ -457,11 +462,8 @@ public class LoginActivity extends AppCompatActivity {
                             String user_id = response.body().getUser_id();
                             Prefs.with(LoginActivity.this).save("token",token);
                             Prefs.with(LoginActivity.this).save("user_id",user_id);
-
-                            WelcomeFragment welcomeFragment = new WelcomeFragment();
-                            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                            fragmentTransaction.replace(R.id.container, welcomeFragment);
-                            fragmentTransaction.commit();
+                            startActivity(new Intent(LoginActivity.this, WelcomeActivity.class));
+                            finish();
                         } else {
                             Log.e("else", "----->");
                             Toast.makeText(LoginActivity.this, "Invalid OTP", Toast.LENGTH_SHORT).show();

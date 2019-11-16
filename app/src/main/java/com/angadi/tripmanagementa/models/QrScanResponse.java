@@ -3,6 +3,8 @@ package com.angadi.tripmanagementa.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class QrScanResponse {
     @SerializedName("qcaa_uid")
     @Expose
@@ -28,6 +30,9 @@ public class QrScanResponse {
     @SerializedName("qcaa_name")
     @Expose
     private String qcaaName;
+    @SerializedName("qcaa_desc")
+    @Expose
+    private String qcaaDesc;
     @SerializedName("qcaa_email_id")
     @Expose
     private String qcaaEmailId;
@@ -52,6 +57,9 @@ public class QrScanResponse {
     @SerializedName("qcaa_profile_logo")
     @Expose
     private String qcaaProfileLogo;
+    @SerializedName("qcaa_gallerys")
+    @Expose
+    private List<QRCodeGallery> qcaaGallerys = null;
     @SerializedName("status")
     @Expose
     private String status;
@@ -120,6 +128,14 @@ public class QrScanResponse {
         this.qcaaName = qcaaName;
     }
 
+    public String getQcaaDesc() {
+        return qcaaDesc;
+    }
+
+    public void setQcaaDesc(String qcaaDesc) {
+        this.qcaaDesc = qcaaDesc;
+    }
+
     public String getQcaaEmailId() {
         return qcaaEmailId;
     }
@@ -184,6 +200,14 @@ public class QrScanResponse {
         this.qcaaProfileLogo = qcaaProfileLogo;
     }
 
+    public List<QRCodeGallery> getQcaaGallerys() {
+        return qcaaGallerys;
+    }
+
+    public void setQcaaGallerys(List<QRCodeGallery> qcaaGallerys) {
+        this.qcaaGallerys = qcaaGallerys;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -191,4 +215,5 @@ public class QrScanResponse {
     public void setStatus(String status) {
         this.status = status;
     }
+
 }

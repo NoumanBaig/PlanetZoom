@@ -36,6 +36,7 @@
 
     <com.angadi.tripmanagementa.utils.CustomFontTextView
         android:id="@+id/txt_live"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -43,6 +44,7 @@
         android:layout_marginRight="10dp"
         android:background="@drawable/edittext_background_three"
         android:ellipsize="marquee"
+        android:gravity="center"
         android:fadingEdge="horizontal"
         android:marqueeRepeatLimit="marquee_forever"
         android:padding="10dp"
@@ -50,7 +52,6 @@
         android:singleLine="true"
         android:textStyle="bold"
         android:textSize="@dimen/textmed"
-        android:text="Live text details appear here.... bla bla bla bla bla bla bla bla bla bka"
         android:textColor="@color/white"
         app:layout_constraintTop_toTopOf="parent" />
 

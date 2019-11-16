@@ -24,11 +24,12 @@
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/img"
-                android:layout_gravity="center"
                 android:layout_width="match_parent"
+                fresco:actualImageScaleType="fitCenter"
+                fresco:viewAspectRatio="1.33"
                 fresco:placeholderImage="@drawable/ic_placeholder"
                 fresco:failureImage="@drawable/ic_placeholder"
-                android:layout_height="100dp"/>
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

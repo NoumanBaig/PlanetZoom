@@ -193,7 +193,6 @@ public class ScanResultDialogFragment extends DialogFragment {
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
 //            MyProgressDialog.show(mContext,"Loading...");
-
         }
     }
 
@@ -258,7 +257,7 @@ public class ScanResultDialogFragment extends DialogFragment {
     }
 
     private void getScanResult(String id){
-
+        Log.e("scan_resid", ""+id);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<QrScanResponse> responseCall = apiInterface.scanResult("true",id,token);
         responseCall.enqueue(new Callback<QrScanResponse>() {

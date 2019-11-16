@@ -270,6 +270,7 @@ public class ScanEventDialogFragment extends DialogFragment {
                 Log.e("getTracking", new Gson().toJson(response));
                 progressBar.setVisibility(View.GONE);
                 if (response.body().getStatus().equalsIgnoreCase("success")){
+                    Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_LONG).show();
                     List<TrackResult> trackResultList = response.body().getResults();
                     List<TrackData> dataList = null;
                     for (int i=0; i<trackResultList.size(); i++){

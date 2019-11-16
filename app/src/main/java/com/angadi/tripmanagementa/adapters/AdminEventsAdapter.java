@@ -17,6 +17,7 @@ import com.angadi.tripmanagementa.models.AdminEventResult;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.bumptech.glide.Glide;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
@@ -51,7 +52,9 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        holder.txt_title.setText(resultList.get(position).getPeaName());
+//        substring(0, 1).toUpperCase() + name.substring(1)
+        String name_str = capitalizeWord(resultList.get(position).getPeaName());
+        holder.txt_title.setText(name_str);
         holder.txt_date.setText(resultList.get(position).getPeaDate());
         holder.txt_location.setText(resultList.get(position).getPeaVenue());
 //        if (resultList.get(position).getPea_logo().equalsIgnoreCase("NULL")) {
@@ -60,9 +63,10 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
 //        } else {
 //            Glide.with(mContext).load(Constants.BASE_URL + resultList.get(position).getPea_logo()).into(holder.imageView);
 //        }
-
+//        holder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         holder.imageView.setImageURI(Constants.BASE_URL + resultList.get(position).getPea_logo());
 
+//        holder.imageView.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.CENTER_CROP);
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -93,5 +97,16 @@ public class AdminEventsAdapter extends RecyclerView.Adapter<AdminEventsAdapter.
             txt_location = itemView.findViewById(R.id.txt_location);
             imageView = itemView.findViewById(R.id.img);
         }
+    }
+
+    private String capitalizeWord(String string){
+        String[] words = string.split("\\s");
+        StringBuilder capitalizeWord= new StringBuilder();
+        for(String w:words){
+            String first=w.substring(0,1);
+            String afterfirst=w.substring(1);
+            capitalizeWord.append(first.toUpperCase()).append(afterfirst).append(" ");
+        }
+        return capitalizeWord.toString().trim();
     }
 }

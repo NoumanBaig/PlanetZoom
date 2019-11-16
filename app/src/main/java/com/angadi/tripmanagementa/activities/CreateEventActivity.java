@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,7 +24,13 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -37,6 +44,7 @@ import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.adapters.AddImageAdapter;
 import com.angadi.tripmanagementa.adapters.EventsAdapter;
 import com.angadi.tripmanagementa.adapters.MembersAdapter;
+import com.angadi.tripmanagementa.models.AddUpdateResponse;
 import com.angadi.tripmanagementa.models.AllEventsResponse;
 import com.angadi.tripmanagementa.models.AllEventsResult;
 import com.angadi.tripmanagementa.models.CreateEventResponse;
@@ -115,9 +123,9 @@ public class CreateEventActivity extends AppCompatActivity {
     @BindView(R.id.edt_contact)
     EditText edt_contact;
     @BindView(R.id.txt_date)
-    TextView txt_date;
+    EditText txt_date;
     @BindView(R.id.txt_time)
-    TextView txt_time;
+    EditText txt_time;
     @BindView(R.id.layout_add)
     LinearLayout layout_add;
     @BindView(R.id.layout_members)
@@ -139,7 +147,6 @@ public class CreateEventActivity extends AppCompatActivity {
     RecyclerView recyclerUploadedImages;
     ArrayList<Bitmap> imageArray = new ArrayList<>();
     AddImageAdapter addImageAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -237,12 +244,12 @@ public class CreateEventActivity extends AppCompatActivity {
     @OnClick({R.id.img_loc, R.id.btn_create, R.id.img_logo, R.id.txt_date, R.id.txt_time,R.id.btn_addDays,R.id.btn_addMembers,R.id.img_map})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.txt_date:
-                setDateWithPicker();
-                break;
-            case R.id.txt_time:
-                setTimePicker();
-                break;
+//            case R.id.txt_date:
+//                setDateWithPicker();
+//                break;
+//            case R.id.txt_time:
+//                setTimePicker();
+//                break;
             case R.id.btn_create:
                 validate();
                 break;
@@ -510,11 +517,13 @@ public class CreateEventActivity extends AppCompatActivity {
             Toast.makeText(this, "Please enter Date", Toast.LENGTH_SHORT).show();
         } else if (txt_time.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please enter Time", Toast.LENGTH_SHORT).show();
-        } else if (edt_noOfTickets.getText().toString().equalsIgnoreCase("")) {
-            Toast.makeText(this, "Please enter No of tickets", Toast.LENGTH_SHORT).show();
-        } else if (edt_price.getText().toString().equalsIgnoreCase("")) {
-            Toast.makeText(this, "Please enter price", Toast.LENGTH_SHORT).show();
         }
+//        else if (edt_noOfTickets.getText().toString().equalsIgnoreCase("")) {
+//            Toast.makeText(this, "Please enter No of tickets", Toast.LENGTH_SHORT).show();
+//        }
+//        else if (edt_price.getText().toString().equalsIgnoreCase("")) {
+//            Toast.makeText(this, "Please enter price", Toast.LENGTH_SHORT).show();
+//        }
         else if (edt_contact.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please enter contact number", Toast.LENGTH_SHORT).show();
         }
@@ -684,7 +693,7 @@ public class CreateEventActivity extends AppCompatActivity {
                         edt_desc.setText(response.body().getPeaDesc());
                         edt_location.setText(response.body().getPeaLocation());
                         txt_date.setText(response.body().getPeaDate());
-                        txt_time.setText(response.body().getPeaTime());
+                        txt_time.setText(response.body().getPeaDateTime());
                         edt_venue.setText(response.body().getPeaVenue());
                         edt_noOfTickets.setText(response.body().getPeaTickets());
                         edt_price.setText(response.body().getPeaPrice());
@@ -871,5 +880,92 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_event, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.update) {
+            if (btn_create.getText().toString().equalsIgnoreCase("Update Event")){
+                showUpdateDialog();
+            }else {
+                Toast.makeText(this, "Try this feature after creating event", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showUpdateDialog(){
+        final Dialog alertDialog=new Dialog(CreateEventActivity.this,android.R.style.Theme_Material_Light_Dialog_NoActionBar);
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alertDialog.setContentView(R.layout.update_dialog);
+        Window window = alertDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.CENTER;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        EditText editText=(EditText)alertDialog.findViewById(R.id.editText);
+        Button ok=(Button)alertDialog.findViewById(R.id.dialog_btn);
+        ok.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (editText.getText().toString().equalsIgnoreCase("")){
+                    Toast.makeText(CreateEventActivity.this, "Please enter something", Toast.LENGTH_SHORT).show();
+                }else {
+                    alertDialog.dismiss();
+                    updateLiveEvent(editText.getText().toString());
+                }
+
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void updateLiveEvent(String message) {
+        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+        String token = Prefs.with(CreateEventActivity.this).getString("token", "");
+        Log.e("token", token);
+
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<AddUpdateResponse> call = apiInterface.addEventLiveUpdate("true",token,message,event_id);
+        call.enqueue(new Callback<AddUpdateResponse>() {
+            @Override
+            public void onResponse(Call<AddUpdateResponse> call, Response<AddUpdateResponse> response) {
+                Log.e("updateLiveEvent", new Gson().toJson(response));
+                MyProgressDialog.dismiss();
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Prefs.with(CreateEventActivity.this).save("live_message",event_id);
+                    } else {
+                        Prefs.with(CreateEventActivity.this).save("live_message","");
+                        Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AddUpdateResponse> call, Throwable t) {
+                Log.e("updateLiveEvent", "" + t);
+                MyProgressDialog.dismiss();
+            }
+        });
+    }
 
 }
