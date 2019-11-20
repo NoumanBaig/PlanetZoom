@@ -41,6 +41,7 @@ import com.angadi.tripmanagementa.models.ShowMembersResponse;
 import com.angadi.tripmanagementa.models.ShowPlacesResponse;
 import com.angadi.tripmanagementa.models.ShowSubEventResponse;
 import com.angadi.tripmanagementa.models.SponsorsLogoResponse;
+import com.angadi.tripmanagementa.models.StallsResponse;
 import com.angadi.tripmanagementa.models.SubCategoriesResponse;
 import com.angadi.tripmanagementa.models.SubEventResponse;
 import com.angadi.tripmanagementa.models.UploadGallery;
@@ -70,7 +71,8 @@ public interface ApiInterface {
 
     @POST("login/")
     @FormUrlEncoded
-    Call<LoginResponse> login(@Field("username") String user_id);
+    Call<LoginResponse> login(@Field("username") String user_id,
+                              @Field("disable_otp") String disable_otp);
 
     @POST("logout/")
     @FormUrlEncoded
@@ -79,7 +81,8 @@ public interface ApiInterface {
     @POST("signup/")
     @FormUrlEncoded
     Call<RegisterResponse> register(@Field("fname") String firstName,
-                                    @Field("username") String userName);
+                                    @Field("username") String userName,
+                                    @Field("disable_otp") String disable_otp);
 
     @POST("login/otp/")
     @FormUrlEncoded
@@ -100,8 +103,26 @@ public interface ApiInterface {
                                      @Field("qcaa_social_youtube") String qcaa_social_youtube,
                                      @Field("qcaa_website") String qcaa_website,
                                      @Field("qcaa_place") String qcaa_place,
-                                     @Field("qcaa_profile_logo") String qcaa_profile_logo
-    );
+                                     @Field("qcaa_profile_logo") String qcaa_profile_logo,
+                                     @Field("qcaa_desc") String qcaa_desc);
+
+    @POST("qrcode/create/")
+    @FormUrlEncoded
+    Call<CreateQrResponse> edit_qr(@Field("token") String token,
+                                   @Field("qcaa_cat") String qcaa_cat,
+                                   @Field("qcaa_sub_cat") String qcaa_sub_cat,
+                                   @Field("qcaa_name") String qcaa_name,
+                                   @Field("qcaa_email_id") String qcaa_email_id,
+                                   @Field("qcaa_phone_no") String qcaa_phone_no,
+                                   @Field("qcaa_social_whatsapp") String qcaa_social_whatsapp,
+                                   @Field("qcaa_social_facebook") String qcaa_social_facebook,
+                                   @Field("qcaa_social_youtube") String qcaa_social_youtube,
+                                   @Field("qcaa_website") String qcaa_website,
+                                   @Field("qcaa_place") String qcaa_place,
+                                   @Field("qcaa_profile_logo") String qcaa_profile_logo,
+                                   @Field("qcaa_desc") String qcaa_desc,
+                                   @Field("qcaa_edit") String qcaa_edit,
+                                   @Field("qcaa_id") String qcaa_id);
 
     @POST("qrcode/show_all_categories/")
     @FormUrlEncoded
@@ -113,11 +134,12 @@ public interface ApiInterface {
     Call<QrScanResponse> scanResult(@Field("scan") String show,
                                     @Field("scan_id") String scan_id,
                                     @Field("token") String token);
+
     @POST("qrcode/scan_event_qr/")
     @FormUrlEncoded
     Call<QrScanResponse> scanEventResult(@Field("scan") String show,
-                                    @Field("scan_id") String scan_id,
-                                    @Field("token") String token);
+                                         @Field("scan_id") String scan_id,
+                                         @Field("token") String token);
 
     @POST("profile/show/")
     @FormUrlEncoded
@@ -127,13 +149,13 @@ public interface ApiInterface {
     @POST("profile/show/")
     @FormUrlEncoded
     Call<ProfileResponse> getProfileGallery(@Field("show") String show,
-                                     @Field("token") String token,
-            @Field("profile_id") String profile_id);
+                                            @Field("token") String token,
+                                            @Field("profile_id") String profile_id);
 
     @POST("profile/show/")
     @FormUrlEncoded
     Call<ProfileResponse> getScanProfile(@Field("show") String show,
-                                     @Field("token") String token,
+                                         @Field("token") String token,
                                          @Field("profile_id") String profile_id);
 
     @POST("profile/edit/")
@@ -267,9 +289,9 @@ public interface ApiInterface {
     @POST("events/add_volunteers/")
     @FormUrlEncoded
     Call<AddVolunteerResponse> addVolunteer(@Field("add_volunteers") String show,
-                                              @Field("token") String token,
-                                              @Field("eavqa_uid") String event_id,
-                                              @Field("eavqa_event_id") String sub_event_id,
+                                            @Field("token") String token,
+                                            @Field("eavqa_uid") String event_id,
+                                            @Field("eavqa_event_id") String sub_event_id,
                                             @Field("eavqa_about") String eavqa_about,
                                             @Field("eavqa_map_place_id") String eavqa_map_place_id,
                                             @Field("eavqa_users_type") String eavqa_users_type);
@@ -277,49 +299,50 @@ public interface ApiInterface {
     @POST("events/add_volunteers/")
     @FormUrlEncoded
     Call<AddVolunteerResponse> updateVolunteer(@Field("add_volunteers") String show,
-                                            @Field("token") String token,
-                                            @Field("eavqa_uid") String event_id,
-                                            @Field("eavqa_event_id") String sub_event_id,
-                                            @Field("eavqa_about") String eavqa_about,
-                                            @Field("eavqa_map_place_id") String eavqa_map_place_id,
-                                            @Field("eavqa_users_type") String eavqa_users_type,
+                                               @Field("token") String token,
+                                               @Field("eavqa_uid") String event_id,
+                                               @Field("eavqa_event_id") String sub_event_id,
+                                               @Field("eavqa_about") String eavqa_about,
+                                               @Field("eavqa_map_place_id") String eavqa_map_place_id,
+                                               @Field("eavqa_users_type") String eavqa_users_type,
                                                @Field("update_volunteers") String update
-                                               );
+    );
 
     @POST("events/searching_volunteers/")
     @FormUrlEncoded
     Call<SearchVolunteerResponse> searchVolunteer(@Field("searching_volunteers") String show,
-                                               @Field("login_id") String login_id);
+                                                  @Field("login_id") String login_id);
 
     @POST("events/add_map_places/")
     @FormUrlEncoded
     Call<AddPlacesResponse> addPlaces(@Field("add_map_places") String show,
-                                            @Field("token") String token,
+                                      @Field("token") String token,
                                       @Field("etlaa_event_id") String etlaa_event_id,
                                       @Field("etlaa_places") String etlaa_places);
 
     @POST("events/show_map_places/")
     @FormUrlEncoded
     Call<ShowPlacesResponse> showPlaces(@Field("show_map_places") String show,
-                                       @Field("etlaa_event_id") String etlaa_event_id);
+                                        @Field("etlaa_event_id") String etlaa_event_id);
 
     @POST("events/show_added_members/")
     @FormUrlEncoded
     Call<ShowMembersResponse> showMembers(@Field("show_added_members") String show,
-                                         @Field("token") String token,
+                                          @Field("token") String token,
                                           @Field("show_event_id") String show_event_id,
                                           @Field("list_id") String list_id);
+
     @POST("events/show_added_members/")
     @FormUrlEncoded
     Call<ShowAllMembersResponse> showAllMembers(@Field("show_added_members") String show,
-                                             @Field("token") String token,
-                                             @Field("show_event_id") String show_event_id,
-                                             @Field("list_id") String list_id);
+                                                @Field("token") String token,
+                                                @Field("show_event_id") String show_event_id,
+                                                @Field("list_id") String list_id);
 
     @POST("events/is_set_admin/")
     @FormUrlEncoded
     Call<CheckAdminResponse> checkAdmin(@Field("is_set_admin") String set,
-                                      @Field("token") String token);
+                                        @Field("token") String token);
 
     @POST("tickets/check_tickets/")
     @FormUrlEncoded
@@ -330,9 +353,11 @@ public interface ApiInterface {
     @POST("tickets/buying/")
     @FormUrlEncoded
     Call<BuyTicketResponse> buyTicket(@Field("buying") String buy,
-                                        @Field("token") String token,
-                                        @Field("event_id") String event_id,
-                                      @Field("photo_upload") String photo_upload);
+                                      @Field("token") String token,
+                                      @Field("event_id") String event_id,
+                                      @Field("photo_upload") String photo_upload,
+                                      @Field("ticket_category") String ticket_category,
+                                      @Field("ticket_count") String ticket_count);
 
     @POST("tickets/my_tickets/")
     @FormUrlEncoded
@@ -342,7 +367,7 @@ public interface ApiInterface {
     @POST("qrcode/scan_event_qr/")
     @FormUrlEncoded
     Call<ScanEventQrResponse> scanEventQr(@Field("scan_event_qr") String scan,
-                                        @Field("token") String token,
+                                          @Field("token") String token,
                                           @Field("user_id") String user_id,
                                           @Field("scan_id") String scan_id);
 
@@ -359,6 +384,7 @@ public interface ApiInterface {
                                           @Field("token") String token,
                                           @Field("event_id") String event_id,
                                           @Field("event_image_id") String event_image_id);
+
     @POST("mapping/track/")
     @FormUrlEncoded
     Call<EventTrackResponse> eventTracking(@Field("track") String track,
@@ -399,39 +425,40 @@ public interface ApiInterface {
                                               @Field("token") String token,
                                               @Field("pro_id") String pro_id,
                                               @Field("pro_rate") String pro_rate);
+
     @POST("qrcode/fav/")
     @FormUrlEncoded
     Call<ProfileFavResponse> qrCodeFav(@Field("fav") String fav,
-                                        @Field("token") String token,
-                                        @Field("pro_id") String pro_id,
-                                        @Field("pro_type") String pro_type);
+                                       @Field("token") String token,
+                                       @Field("pro_id") String pro_id,
+                                       @Field("pro_type") String pro_type);
 
     @POST("qrcode/like/")
     @FormUrlEncoded
     Call<ProfileLikeResponse> qrCodeLike(@Field("like") String like,
-                                          @Field("token") String token,
-                                          @Field("pro_id") String pro_id,
-                                          @Field("pro_type") String pro_type);
+                                         @Field("token") String token,
+                                         @Field("pro_id") String pro_id,
+                                         @Field("pro_type") String pro_type);
 
     @POST("qrcode/dislike/")
     @FormUrlEncoded
     Call<ProfileDislikeResponse> qrCodeDisLike(@Field("dislike") String dislike,
-                                                @Field("token") String token,
-                                                @Field("pro_id") String pro_id,
-                                                @Field("pro_type") String pro_type);
+                                               @Field("token") String token,
+                                               @Field("pro_id") String pro_id,
+                                               @Field("pro_type") String pro_type);
 
     @POST("qrcode/profile_status/")
     @FormUrlEncoded
     Call<ProfileStatusResponse> qrCodeStatus(@Field("profile_status") String dislike,
-                                              @Field("token") String token,
-                                              @Field("pro_id") String pro_id);
+                                             @Field("token") String token,
+                                             @Field("pro_id") String pro_id);
 
     @POST("qrcode/rate/")
     @FormUrlEncoded
     Call<ProfileRatingResponse> qrCodeRating(@Field("rate") String rate,
-                                              @Field("token") String token,
-                                              @Field("pro_id") String pro_id,
-                                              @Field("pro_rate") String pro_rate);
+                                             @Field("token") String token,
+                                             @Field("pro_id") String pro_id,
+                                             @Field("pro_rate") String pro_rate);
 
     @POST("Demoday/logos/")
     @FormUrlEncoded
@@ -454,20 +481,20 @@ public interface ApiInterface {
     @POST("QrcodeImage/upload/")
     @FormUrlEncoded
     Call<UploadGallery> uploadQrGallery(@Field("upload") String upload,
-                                             @Field("token") String token,
-                                             @Field("qrcode_id") String qrcode_id,
-                                             @Field("qrcode_image") String qrcode_image);
+                                        @Field("token") String token,
+                                        @Field("qrcode_id") String qrcode_id,
+                                        @Field("qrcode_image") String qrcode_image);
 
     @POST("QrcodeImage/delete/")
     @FormUrlEncoded
     Call<DeleteGallery> deleteQrGallery(@Field("delete") String delete,
-                                             @Field("token") String token,
-                                             @Field("qrcode_id") String qrcode_id,
-                                             @Field("qrcode_image_id") String qrcode_image_id);
+                                        @Field("token") String token,
+                                        @Field("qrcode_id") String qrcode_id,
+                                        @Field("qrcode_image_id") String qrcode_image_id);
 
     @POST("InfluencersDemoDay/Influencers/")
     @FormUrlEncoded
-    Call<InfluencersResponse> getInfluencers(@Field("Influencers") String logos);
+    Call<InfluencersResponse> getInfluencers(@Field("Influencers") String Influencers);
 
     @POST("events/live_news/")
     @FormUrlEncoded
@@ -481,4 +508,8 @@ public interface ApiInterface {
     Call<GetUpdateResponse> getEventLiveUpdate(@Field("show_live_news") String live_news,
                                                @Field("token") String token,
                                                @Field("event_id") String event_id);
+
+    @POST("StallDemoDay/stall/")
+    @FormUrlEncoded
+    Call<StallsResponse> getStalls(@Field("stall") String stall);
 }

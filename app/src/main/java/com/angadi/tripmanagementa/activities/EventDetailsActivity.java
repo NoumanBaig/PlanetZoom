@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -30,9 +31,18 @@ import android.provider.Settings;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -123,7 +133,7 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     @BindView(R.id.imageSlider)
     SliderView sliderView;
     ArrayList<Integer> slider_images;
-    String str_location, str_contact, str_emergency;
+    String str_location, str_contact, str_emergency, selected_category;
     @BindView(R.id.layout_stalls)
     LinearLayout layout_stalls;
     @BindView(R.id.layout_location)
@@ -143,6 +153,7 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     Bitmap bitmap, bitmapQrborder;
     @BindView(R.id.layout_sponsors)
     LinearLayout layout_sponsors;
+    String[] categories = {"Select Category", "VIP", "Pioneer", "Attendee", "Influencer", "Partner","Core Team","Organizing Team"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -275,6 +286,9 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     public void onClickLayouts(View view) {
         switch (view.getId()) {
             case R.id.layout_stalls:
+                if (txt_name.getText().toString().equalsIgnoreCase("DEMO DAY 2019")) {
+                    startActivity(new Intent(EventDetailsActivity.this, StallsActivity.class));
+                }
                 break;
             case R.id.layout_influencers:
                 if (txt_name.getText().toString().equalsIgnoreCase("DEMO DAY 2019")) {
@@ -369,8 +383,8 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
             @Override
             public void onClick(View view, int position, String id, String title, String desc) {
                 String demo = txt_name.getText().toString();
-                Log.e("demo--->",""+demo);
-                DialogFragment event_ticket = SubEventDetailsDialogFragment.newInstance(title, desc,demo,position, EventDetailsActivity.this);
+                Log.e("demo--->", "" + demo);
+                DialogFragment event_ticket = SubEventDetailsDialogFragment.newInstance(title, desc, demo, position, EventDetailsActivity.this);
                 event_ticket.show(getSupportFragmentManager(), "event_sub");
             }
         });
@@ -439,12 +453,12 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
                 Log.e("checkTicket", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
-                   // showSelfieDialog();
-                    Toast.makeText(EventDetailsActivity.this, "Please purchase the Ticket in Demo day website", Toast.LENGTH_LONG).show();
+                    showSelfieDialog();
+//                    Toast.makeText(EventDetailsActivity.this, "Please purchase the Ticket in Demo day website", Toast.LENGTH_LONG).show();
                 } else {
-                    startActivity(new Intent(EventDetailsActivity.this, MyTicketDetailsActivity.class)
-                            .putExtra("event_id",event_id));
-                   // Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+//                    startActivity(new Intent(EventDetailsActivity.this, MyTicketDetailsActivity.class)
+//                            .putExtra("event_id",event_id));
+                    Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -563,7 +577,8 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
 //                    Bitmap convertBitmap = ImageUtil.convert(base64String);
 //                    Log.e(TAG, "convertBitmap: " + convertBitmap);
                     // loading profile image from local cache
-                    buyTicket(base64String);
+//                    buyTicket(base64String);
+                    showCategoriesDialog(base64String);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -573,13 +588,62 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
     }
 
 
-    private void buyTicket(String photo) {
+    private void showCategoriesDialog(String photo) {
+        final Dialog alertDialog = new Dialog(EventDetailsActivity.this, android.R.style.Theme_Material_Light_Dialog_NoActionBar);
+        alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        alertDialog.setContentView(R.layout.dialog_ticket_category);
+        Window window = alertDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.gravity = Gravity.CENTER;
+        wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+        alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        Spinner spinner = alertDialog.findViewById(R.id.spinner);
+        Button button = alertDialog.findViewById(R.id.button);
+        EditText editText = alertDialog.findViewById(R.id.editText);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(EventDetailsActivity.this, android.R.layout.simple_spinner_item, categories);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Log.e("onItemSelected", "" + adapterView.getSelectedItem().toString());
+                selected_category = adapterView.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String edt_str = editText.getText().toString();
+                if (selected_category.equalsIgnoreCase("Select Category")) {
+                    Toast.makeText(EventDetailsActivity.this, "Please select ticket category", Toast.LENGTH_SHORT).show();
+                } else if (edt_str.equalsIgnoreCase("")) {
+                    Toast.makeText(EventDetailsActivity.this, "Please type no no Tickets", Toast.LENGTH_SHORT).show();
+                } else {
+                    alertDialog.dismiss();
+                    Log.e("onClick--->", edt_str);
+                    Log.e("selected_category", selected_category);
+                    buyTicket(photo,selected_category,edt_str);
+                }
+            }
+        });
+        alertDialog.show();
+    }
+
+
+    private void buyTicket(String photo,String category,String count) {
         Log.e("photo--->", photo);
         MyProgressDialog.show(EventDetailsActivity.this, "Loading...");
         String token = Prefs.with(EventDetailsActivity.this).getString("token", "");
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<BuyTicketResponse> call = apiInterface.buyTicket("true", token, event_id, photo);
+        Call<BuyTicketResponse> call = apiInterface.buyTicket("true", token, event_id, photo,category,count);
         call.enqueue(new Callback<BuyTicketResponse>() {
             @Override
             public void onResponse(Call<BuyTicketResponse> call, Response<BuyTicketResponse> response) {
@@ -802,12 +866,12 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
         return combined;
     }
 
-    private String capitalizeWord(String string){
+    private String capitalizeWord(String string) {
         String[] words = string.split("\\s");
-        StringBuilder capitalizeWord= new StringBuilder();
-        for(String w:words){
-            String first=w.substring(0,1);
-            String afterfirst=w.substring(1);
+        StringBuilder capitalizeWord = new StringBuilder();
+        for (String w : words) {
+            String first = w.substring(0, 1);
+            String afterfirst = w.substring(1);
             capitalizeWord.append(first.toUpperCase()).append(afterfirst).append(" ");
         }
         return capitalizeWord.toString().trim();

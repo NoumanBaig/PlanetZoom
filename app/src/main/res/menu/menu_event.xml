@@ -7,4 +7,9 @@
         android:icon="@drawable/ic_update"
         android:title="Update Live" />
 
+    <item android:id="@+id/reports"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_receipt"
+        android:title="Reports" />
+
 </menu>

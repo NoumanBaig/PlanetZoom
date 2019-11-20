@@ -57,7 +57,17 @@ public class EventTrackingAdapter extends RecyclerView.Adapter<EventTrackingAdap
 
     @Override
     public void onBindViewHolder(@NonNull CategoryHolder holder, int position) {
-        holder.textView.setText(resultList.get(position).getMtaaTrackPlace());
+        if (resultList.get(position).getMtaaTrackPlace().equalsIgnoreCase("Exit 1") ||
+                resultList.get(position).getMtaaTrackPlace().equalsIgnoreCase("Exit 2")){
+            holder.textView.setText(resultList.get(position).getMtaaTrackPlace());
+            holder.textView.setBackgroundColor(mContext.getResources().getColor(R.color.dark_green));
+        }else {
+            holder.textView.setText(resultList.get(position).getMtaaTrackPlace());
+            holder.textView.setBackgroundColor(mContext.getResources().getColor(R.color.demo_day_green));
+        }
+
+        holder.txt_time.setText(resultList.get(position).getMtaa_time_ago());
+
     }
 
     @Override
@@ -67,12 +77,13 @@ public class EventTrackingAdapter extends RecyclerView.Adapter<EventTrackingAdap
 
     public class CategoryHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
+        TextView textView,txt_time;
 
         public CategoryHolder(@NonNull View itemView) {
             super(itemView);
 //            checkBox = itemView.findViewById(R.id.checkbox);
             textView = itemView.findViewById(R.id.txt);
+            txt_time = itemView.findViewById(R.id.txt_time);
         }
     }
 }

@@ -9,9 +9,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
 //    public static final String BASE_URL = "http://192.168.0.104/Angadi/Jobstreamers/";
-//        private static final String BASE_URL = "http://192.168.0.109/Angadi/PlanetZoomApp/";
+//        private static final String BASE_URL = "http://192.168.0.116/Angadi/PlanetZoomApp/";
 //        private static final String BASE_URL = "https://test.planetzoom.app/";
         private static final String BASE_URL = "https://planetzoom.app/";
+//        private static final String BASE_URL = "https://192.168.0.116/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {

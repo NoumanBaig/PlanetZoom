@@ -23,6 +23,8 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,11 +72,13 @@ public class ScanResultActivity extends AppCompatActivity {
 
 
     @BindView(R.id.imageView)
-    SimpleDraweeView imageView;
+    ImageView imageView;
     @BindView(R.id.img_qr_code)
     ImageView img_qr_code;
     @BindView(R.id.txt_name)
     TextView txt_name;
+    @BindView(R.id.txt_desc)
+    TextView txt_desc;
     @BindView(R.id.txt_cat)
     TextView txt_cat;
     @BindView(R.id.txt_mobile)
@@ -97,7 +101,7 @@ public class ScanResultActivity extends AppCompatActivity {
     TextView txt_ratings_avg;
     double screenInches;
     BitMatrix result;
-    private String str_location,str_mobile,str_email,str_website,str_whatsApp,str_facebook,str_youtube,
+    private String str_location,str_mobile,str_email,str_website,str_whatsApp,str_facebook,str_youtube,str_id,str_url,
             str_instagram,str_linkedin,str_name;
     @BindView(R.id.layout_shareQR)
     LinearLayout layout_shareQR;
@@ -117,11 +121,11 @@ public class ScanResultActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         if (getIntent().getExtras() != null){
-            String string = getIntent().getStringExtra("qr_id");
-            String string_url = getIntent().getStringExtra("qr_url");
-            Log.e("string",""+string);
-            Log.e("string_url",""+string_url);
-            getScanResult(string,string_url);
+            str_id = getIntent().getStringExtra("qr_id");
+            str_url = getIntent().getStringExtra("qr_url");
+            Log.e("str_id",""+str_id);
+            Log.e("str_url",""+str_url);
+            getScanResult(str_id,str_url);
         }
         getScreenResolution();
 
@@ -178,6 +182,9 @@ public class ScanResultActivity extends AppCompatActivity {
         if (!response.body().getQcaaName().equalsIgnoreCase("")) {
             txt_name.setText(response.body().getQcaaName());
         }
+        if (!response.body().getQcaaDesc().equalsIgnoreCase("")) {
+            txt_desc.setText(response.body().getQcaaDesc());
+        }
         if (!response.body().getQcaaCat().equalsIgnoreCase("")) {
             txt_cat.setText(response.body().getQcaaCat()+", "+response.body().getQcaaSubCat());
         }
@@ -198,7 +205,8 @@ public class ScanResultActivity extends AppCompatActivity {
             imageView.setImageResource(R.drawable.ic_placeholder);
         }
         else {
-            imageView.setImageURI(Constants.BASE_URL + response.body().getQcaaProfileLogo());
+            Glide.with(ScanResultActivity.this).load(Constants.BASE_URL + response.body().getQcaaProfileLogo()).into(imageView);
+           // imageView.setImageURI(Constants.BASE_URL + response.body().getQcaaProfileLogo());
 
         }
         str_mobile = response.body().getQcaaPhoneNo();
@@ -443,8 +451,13 @@ public class ScanResultActivity extends AppCompatActivity {
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
             if(screenInches > 5.0 && screenInches < 5.5){
-                Log.e("first", "--->");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+                if (screenInches < 5.3){
+                    Log.e("first", "5.3-->");
+                    result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1250, 1250, null);
+                }else {
+                    Log.e("first", "--->");
+                    result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+                }
             }else if(screenInches > 5.5 && screenInches < 6.0){
                 Log.e("second", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
@@ -628,4 +641,27 @@ public class ScanResultActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(intent, "Choose an email client"));
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_scan_result, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.edit) {
+            startActivity(new Intent(ScanResultActivity.this,EditQRActivity.class)
+            .putExtra("str_id",str_id).putExtra("str_url",str_url));
+            finish();
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

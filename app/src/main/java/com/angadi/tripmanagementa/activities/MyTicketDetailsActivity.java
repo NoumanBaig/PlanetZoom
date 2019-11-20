@@ -79,6 +79,14 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
     TextView txt_name;
     @BindView(R.id.txt_id)
     TextView txt_id;
+    @BindView(R.id.txt_user)
+    TextView txt_user;
+    @BindView(R.id.txt_loginId)
+    TextView txt_loginId;
+    @BindView(R.id.txt_count)
+    TextView txt_count;
+    @BindView(R.id.txt_category)
+    TextView txt_category;
     @BindView(R.id.txt_desc)
     TextView txt_desc;
     @BindView(R.id.txt_date)
@@ -98,6 +106,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
     String event_id,event_name,event_desc;
     File imagePath;
     Bitmap bitmap, bitmapQrborder;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,11 +162,26 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
 
-                        txt_id.setText("Ticket ID: "+response.body().getTickets_id());
-                        event_name = response.body().getPeaName();
+                        txt_id.setText("Ticket ID: SCDD"+response.body().getTickets_id());
+                        txt_user.setText("Name: "+response.body().getUra_fname());
+                        txt_loginId.setText("PZ Login ID: "+response.body().getUra_login_id());
+                        if (response.body().getTickets_count().equalsIgnoreCase("")){
+                            txt_count.setText("1");
+                        }else {
+                            txt_count.setText(response.body().getTickets_count());
+                        }
+                        if (response.body().getTickets_category().equalsIgnoreCase("")){
+                            txt_category.setText("Atendee");
+                        }else {
+                            txt_category.setText(response.body().getTickets_category());
+                        }
+
+
+                        String name_str = capitalizeWord(response.body().getPeaName());
+                        //event_name = response.body().getPeaName();
                         event_desc = response.body().getPeaDesc();
-                        txt_desc.setText(event_desc);
-                        txt_desc.setText(response.body().getPeaName());
+                       // txt_desc.setText(event_desc);
+                        txt_desc.setText(name_str);
 //                        txt_address.setText(response.body().getPeaLocation());
                         String formatedDate = parseDate(response.body().getPeaDate());
                         txt_date.setText("Date: " + response.body().getPeaDate());
@@ -170,7 +194,7 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
                         } else {
                             imageView.setImageURI(Uri.parse(Constants.BASE_URL + response.body().getPeaLogo()));
                         }
-                        String name_str = capitalizeWord(response.body().getPeaName());
+                        //String name_str = capitalizeWord(response.body().getPeaName());
                         String bitmap_name = name_str+" TICKET";
                         bitmapQrborder = writeTextOnDrawable(R.drawable.new_pro_frame, bitmap_name).getBitmap();
                         showQrCode(response.body().getPeaQrCodeIdSecureLink());
@@ -238,8 +262,13 @@ public class MyTicketDetailsActivity extends AppCompatActivity {
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
             if(screenInches > 5.0 && screenInches < 5.5){
-                Log.e("first", "--->");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+                if (screenInches < 5.3){
+                    Log.e("first", "5.3-->");
+                    result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1100, 1100, null);
+                }else {
+                    Log.e("first", "--->");
+                    result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+                }
             }else if(screenInches > 5.5 && screenInches < 6.0){
                 Log.e("second", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);

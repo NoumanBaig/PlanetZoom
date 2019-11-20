@@ -2,10 +2,8 @@
 <LinearLayout
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    xmlns:fresco="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     tools:context=".activities.ScanResultActivity">
 
@@ -23,13 +21,24 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/imageView"
+<!--                <FrameLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="200dp">-->
+<!--                    <com.facebook.drawee.view.SimpleDraweeView-->
+<!--                        android:id="@+id/imageView"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="match_parent"-->
+<!--                        fresco:actualImageScaleType="fitCenter"-->
+<!--                        fresco:viewAspectRatio="1.33"-->
+<!--                        android:layout_gravity="center"-->
+<!--                        fresco:failureImage="@drawable/ic_placeholder"-->
+<!--                        fresco:placeholderImage="@drawable/ic_placeholder" />-->
+
+<!--                </FrameLayout>-->
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_gravity="center"
-                    fresco:failureImage="@drawable/ic_placeholder"
-                    fresco:placeholderImage="@drawable/ic_placeholder" />
+                    android:id="@+id/imageView"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -255,6 +264,15 @@
                         android:layout_marginBottom="8dp"
                         android:paddingTop="5dp"
                         android:paddingBottom="5dp"
+                        android:text="--" />
+
+                    <com.angadi.tripmanagementa.utils.CustomFontTextView
+                        android:id="@+id/txt_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
+                        android:padding="8dp"
+                        android:background="@color/background"
                         android:text="--" />
 
                     <LinearLayout

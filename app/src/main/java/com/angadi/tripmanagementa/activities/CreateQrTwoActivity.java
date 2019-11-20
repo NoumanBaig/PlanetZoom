@@ -85,6 +85,8 @@ public class CreateQrTwoActivity extends AppCompatActivity {
     double latitude = 12.9716, longitude = 77.5946;
     @BindView(R.id.edt_name)
     EditText edt_name;
+    @BindView(R.id.edt_desc)
+    EditText edt_desc;
     @BindView(R.id.edt_email)
     EditText edt_email;
     @BindView(R.id.edt_mobile)
@@ -215,7 +217,8 @@ public class CreateQrTwoActivity extends AppCompatActivity {
                 break;
             case R.id.btn_generate:
                 validate(edt_name.getText().toString(), edt_email.getText().toString(), edt_mobile.getText().toString(), edt_whatsapp.getText().toString(),
-                        edt_facebook.getText().toString(), edt_youtube.getText().toString(), edt_website.getText().toString(), edt_adds.getText().toString());
+                        edt_facebook.getText().toString(), edt_youtube.getText().toString(), edt_website.getText().toString(), edt_adds.getText().toString(),
+                        edt_desc.getText().toString());
                 break;
             case R.id.img_loc:
                 startActivityForResult(new LocationPickerActivity.Builder()
@@ -442,21 +445,21 @@ public class CreateQrTwoActivity extends AppCompatActivity {
     }
 
 
-    private void validate(String name, String email, String mobile, String whatsApp, String faceBook, String youTube, String website, String address) {
+    private void validate(String name, String email, String mobile, String whatsApp, String faceBook, String youTube, String website, String address,String desc) {
         if (name.equalsIgnoreCase("")) {
             Toast.makeText(this, "Please enter Name", Toast.LENGTH_SHORT).show();
         } else {
-            createQRcode(name, email, mobile, whatsApp, faceBook, youTube, website, address);
+            createQRcode(name, email, mobile, whatsApp, faceBook, youTube, website, address,desc);
         }
 
     }
 
 
-    private void createQRcode(String name, String email, String mobile, String whatsApp, String faceBook, String youTube, String website, String address) {
+    private void createQRcode(String name, String email, String mobile, String whatsApp, String faceBook, String youTube, String website, String address,String desc) {
         MyProgressDialog.show(CreateQrTwoActivity.this, "Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<CreateQrResponse> responseCall = apiInterface.create_qr(Prefs.with(CreateQrTwoActivity.this).getString("token", "")
-                , str_cat_id, str_sub_id, name, email, mobile, whatsApp, faceBook, youTube, website, address, base64String);
+                , str_cat_id, str_sub_id, name, email, mobile, whatsApp, faceBook, youTube, website, address, base64String,desc);
         responseCall.enqueue(new Callback<CreateQrResponse>() {
             @Override
             public void onResponse(Call<CreateQrResponse> call, Response<CreateQrResponse> response) {

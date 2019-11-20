@@ -40,16 +40,24 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".activities.InfluencersActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.WelcomeActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.AddVolunteersActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.MyTicketDetailsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".activities.MyTicketActivity"
-            android:screenOrientation="portrait"/>
+        <activity android:name=".activities.EventReportsActivity"></activity>
+        <activity android:name=".activities.EditQRActivity" />
+        <activity android:name=".activities.StallsActivity" />
+        <activity
+            android:name=".activities.InfluencersActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.WelcomeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.AddVolunteersActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MyTicketDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.MyTicketActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.AddMembersActivity"
             android:screenOrientation="portrait" />

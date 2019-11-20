@@ -903,6 +903,13 @@ public class CreateEventActivity extends AppCompatActivity {
                 Toast.makeText(this, "Try this feature after creating event", Toast.LENGTH_SHORT).show();
             }
 
+        }else if (id == R.id.reports) {
+            if (btn_create.getText().toString().equalsIgnoreCase("Update Event")){
+               startActivity(new Intent(CreateEventActivity.this,EventReportsActivity.class).putExtra("str_id",str_id));
+            }else {
+                Toast.makeText(this, "Try this feature after creating event", Toast.LENGTH_SHORT).show();
+            }
+
         }
 
         return super.onOptionsItemSelected(item);

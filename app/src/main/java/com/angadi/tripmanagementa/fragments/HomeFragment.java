@@ -1,8 +1,16 @@
 package com.angadi.tripmanagementa.fragments;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +33,24 @@ import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.LuminanceSource;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Reader;
 import com.google.zxing.Result;
+import com.google.zxing.common.HybridBinarizer;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+
+import java.io.IOException;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +61,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomeFragment extends Fragment implements ZXingScannerView.ResultHandler,
-        ScanResultDialogFragment.MessageDialogListener,ScanEventDialogFragment.EventDialogListener,ScanProfileDialogFragment.ProfileDialogListener {
+        ScanResultDialogFragment.MessageDialogListener, ScanEventDialogFragment.EventDialogListener, ScanProfileDialogFragment.ProfileDialogListener {
 
     //    @BindView(R.id.flash)
 //    ImageView flash;
@@ -61,9 +86,9 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         mScannerView.setBorderColor(getActivity().getResources().getColor(R.color.colorAccent));
 
         String event_id = Prefs.with(getActivity()).getString("live_message", "");
-        if (!event_id.equalsIgnoreCase("")){
+        if (!event_id.equalsIgnoreCase("")) {
             getLiveEvent(event_id);
-        }else {
+        } else {
             txt_live.setVisibility(View.GONE);
         }
         return view;
@@ -76,18 +101,47 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         // You can optionally set aspect ratio tolerance level
         // that is used in calculating the optimal Camera preview size
         mScannerView.startCamera();
-      //  mScannerView.setFlash(mFlash);
+        //  mScannerView.setFlash(mFlash);
     }
 
     @OnClick(R.id.fab_flash)
-    void onFlashClick(){
+    void onFlashClick() {
         mFlash = !mFlash;
         mScannerView.setFlash(mFlash);
-        if (mFlash){
+        if (mFlash) {
             fab_flash.setImageResource(R.drawable.ic_flash_on);
-        }else {
+        } else {
             fab_flash.setImageResource(R.drawable.ic_flash_off);
         }
+    }
+
+    @OnClick(R.id.fab_gallery)
+    void onGalleryClick() {
+        Dexter.withActivity(getActivity())
+                .withPermissions(Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if (report.areAllPermissionsGranted()) {
+                            Log.e("permission", "granted");
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1234);
+                        }
+
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            Log.e("permission", "denied");
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).check();
+
+
     }
 
     @Override
@@ -108,35 +162,48 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         try {
             Uri data = Uri.parse(rawResult.getText());
             if (data != null) {
-    //            rawResult: https://planetzoom.app/qr/MTQ=?qr_type=profile
-                String new_qr_id = String.valueOf(rawResult);
-                if (Constants.BASE_URL.equalsIgnoreCase("https://test.planetzoom.app/")){
-                    Log.e("dev","---->");
-                    Log.e("result_length",""+new_qr_id.length());
-                    if (new_qr_id.length()<=46){
-                        Toast.makeText(getActivity(), "Invalid QR", Toast.LENGTH_SHORT).show();
-                    }else {
-                        new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 25);
-                    }
-                }else {
-                    Log.e("pro","---->");
-                    Log.e("result_length",""+new_qr_id.length());
-                    if (new_qr_id.length()>=46){
-                        Toast.makeText(getActivity(), "Invalid QR", Toast.LENGTH_SHORT).show();
-                    }else {
-                        new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 20);
-                    }
-                }
-                new_qr_id = new_qr_id.substring(0, new_qr_id.indexOf("?"));
-                Log.e("new_qr_id", new_qr_id);
-
+                //            rawResult: https://planetzoom.app/qr/MTQ=?qr_type=profile
                 String qr_type = data.getQueryParameter("qr_type");
                 String qr_user_id = data.getQueryParameter("qr_user_id");
                 Log.e("qr_type ", "" + qr_type);
                 Log.e("qr_user_id ", "" + qr_user_id);
-
+                String new_qr_id = String.valueOf(rawResult);
+//                if (Constants.BASE_URL.equalsIgnoreCase("https://test.planetzoom.app/")) {
+//                    Log.e("dev", "---->");
+//                    Log.e("result_length", "" + new_qr_id.length());
+//                    int count  = countNumOfChars(new_qr_id);
+//                    Log.e("result_count", "" + count);
+//                    if (new_qr_id.length() > 47) {
+//                        new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 25);
+//                        new_qr_id = new_qr_id.substring(0, new_qr_id.indexOf("?"));
+//                        showResultDialog(new_qr_id, qr_type, String.valueOf(rawResult), qr_user_id);
+//                    } else {
+//                        Toast.makeText(getActivity(), "Invalid Test QR", Toast.LENGTH_SHORT).show();
+//                    }
+//                } else {
+//                    Log.e("pro", "---->");
+//                    Log.e("result_length", "" + new_qr_id.length());
+//                    int count  = countNumOfChars(new_qr_id);
+//                    Log.e("result_count", "" + count);
+//                    if (new_qr_id.length() > 47) {
+//                        Toast.makeText(getActivity(), "Invalid Live QR", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 20);
+//                        new_qr_id = new_qr_id.substring(0, new_qr_id.indexOf("?"));
+//                        showResultDialog(new_qr_id, qr_type, String.valueOf(rawResult), qr_user_id);
+//                    }
+//                }
+//                Log.e("result_length", "" + new_qr_id.length());
+//                int count  = countNumOfChars(new_qr_id);
+//                Log.e("result_count", "" + count);
+                if (!new_qr_id.contains("planetzoom")) {
+                    showAlert(new_qr_id);
+                }
+                Log.e("result_length", "" + new_qr_id.length());
+                new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 20);
+                new_qr_id = new_qr_id.substring(0, new_qr_id.indexOf("?"));
+                Log.e("new_qr_id", new_qr_id);
                 showResultDialog(new_qr_id, qr_type, String.valueOf(rawResult), qr_user_id);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -154,17 +221,32 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //        }, 2000);
     }
 
+
+    private void showAlert(String message) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle("Looks like its not a PlanetZoom QR");
+        alert.setMessage("Scanned Content:  "+message);
+        alert.setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                clearScanner();
+            }
+        });
+        alert.show();
+    }
+
     private void showResultDialog(String qr_code_id, String qr_code_type, String qr_url, String user_id) {
-        if (qr_code_type.equalsIgnoreCase("event")){
+        if (qr_code_type.equalsIgnoreCase("event")) {
             DialogFragment event_ticket = ScanEventDialogFragment.newInstance("Event Ticket", qr_code_id, qr_code_type, qr_url, user_id, this);
             event_ticket.show(getActivity().getSupportFragmentManager(), "event_ticket");
 
-        }else if (qr_code_type.equalsIgnoreCase("user")){
+        } else if (qr_code_type.equalsIgnoreCase("user")) {
             DialogFragment user_profile = ScanProfileDialogFragment.newInstance("User Profile", qr_code_id, qr_code_type, qr_url, user_id, this);
             user_profile.show(getActivity().getSupportFragmentManager(), "user_profile");
 
-        }else {
-            DialogFragment scan_results = ScanResultDialogFragment.newInstance(getActivity(),"Scan Results", qr_code_id, qr_code_type, qr_url, user_id, this);
+        } else {
+            DialogFragment scan_results = ScanResultDialogFragment.newInstance(getActivity(), "Scan Results", qr_code_id, qr_code_type, qr_url, user_id, this);
             scan_results.show(getActivity().getSupportFragmentManager(), "scan_results");
 
         }
@@ -184,6 +266,9 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //        mScannerView.resumeCameraPreview(this);
 //    }
 
+    private void clearScanner() {
+        mScannerView.resumeCameraPreview(this);
+    }
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
@@ -212,7 +297,7 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         Log.e("token", token);
         Log.e("event_id", event_id);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<GetUpdateResponse> call = apiInterface.getEventLiveUpdate("true",token,event_id);
+        Call<GetUpdateResponse> call = apiInterface.getEventLiveUpdate("true", token, event_id);
         call.enqueue(new Callback<GetUpdateResponse>() {
             @Override
             public void onResponse(Call<GetUpdateResponse> call, Response<GetUpdateResponse> response) {
@@ -220,13 +305,13 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //                MyProgressDialog.dismiss();
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
-                        Log.e("success","live----->");
+                        Log.e("success", "live----->");
                         txt_live.setVisibility(View.VISIBLE);
                         txt_live.setText(response.body().getLiveMsg());
                         txt_live.setSelected(true);
                     } else {
                         txt_live.setVisibility(View.GONE);
-                        Log.e("failure","live----->");
+                        Log.e("failure", "live----->");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -239,6 +324,66 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
 //                MyProgressDialog.dismiss();
             }
         });
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == 1234) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (intent != null) {
+                    try {
+                        Bitmap bMap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), intent.getData());
+//                        Bitmap bMap = [...];
+                        String contents = null;
+
+                        int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
+//copy pixel data from the Bitmap into the 'intArray' array
+                        bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
+
+                        LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
+                        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+                        Reader reader = new MultiFormatReader();
+                        Result result = reader.decode(bitmap);
+                        contents = result.getText();
+                        Log.e("contents--->", "" + contents);
+                        try {
+                            Uri data = Uri.parse(result.getText());
+                            if (data != null) {
+                                String qr_type = data.getQueryParameter("qr_type");
+                                String qr_user_id = data.getQueryParameter("qr_user_id");
+                                Log.e("qr_type ", "" + qr_type);
+                                Log.e("qr_user_id ", "" + qr_user_id);
+
+                                if (!contents.contains("planetzoom")) {
+                                    showAlert(contents);
+                                }
+                                Log.e("result_length", "" + contents.length());
+                                contents = contents.substring(contents.indexOf("/") + 20);
+                                contents = contents.substring(0, contents.indexOf("?"));
+                                Log.e("contents", contents);
+                                showResultDialog(contents, qr_type, String.valueOf(result), qr_user_id);
+                            }
+                        } catch (Exception e) {
+                            Log.e("cant read the image","--->");
+                            e.printStackTrace();
+                        }
+
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (FormatException e) {
+                        e.printStackTrace();
+                    } catch (ChecksumException e) {
+                        e.printStackTrace();
+                    } catch (NotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
     }
 
 }

@@ -563,12 +563,16 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
     Bitmap encodeAsBitmap(String list) throws WriterException {
         Log.e("-----------------", String.valueOf(screenInches));
-
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
             if (screenInches > 5.0 && screenInches < 5.5) {
-                Log.e("first", "--->");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+                if (screenInches < 5.3){
+                    Log.e("first", "5.3-->");
+                    result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1250, 1250, null);
+                }else {
+                    Log.e("first", "--->");
+                    result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+                }
             } else if (screenInches > 5.5 && screenInches < 6.0) {
                 Log.e("second", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);

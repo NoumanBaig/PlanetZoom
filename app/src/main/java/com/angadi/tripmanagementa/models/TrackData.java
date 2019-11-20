@@ -28,6 +28,9 @@ public class TrackData {
     @SerializedName("mtaa_time")
     @Expose
     private String mtaaTime;
+    @SerializedName("mtaa_time_ago")
+    @Expose
+    private String mtaa_time_ago;
     @SerializedName("mtaa_date")
     @Expose
     private String mtaaDate;
@@ -95,6 +98,14 @@ public class TrackData {
 
     public void setMtaaPlace(String mtaaPlace) {
         this.mtaaPlace = mtaaPlace;
+    }
+
+    public String getMtaa_time_ago() {
+        return mtaa_time_ago;
+    }
+
+    public void setMtaa_time_ago(String mtaa_time_ago) {
+        this.mtaa_time_ago = mtaa_time_ago;
     }
 
     public String getMtaaTime() {

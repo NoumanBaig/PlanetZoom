@@ -1,5 +1,6 @@
 package com.angadi.tripmanagementa.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -78,6 +80,16 @@ public class ScanEventDialogFragment extends DialogFragment {
     TextView txt_name;
     @BindView(R.id.txt_date)
     TextView txt_date;
+    @BindView(R.id.txt_login_name)
+    TextView txt_login_name;
+    @BindView(R.id.txt_login_id)
+    TextView txt_login_id;
+    @BindView(R.id.txt_id)
+    TextView txt_id;
+    @BindView(R.id.txt_count)
+    TextView txt_count;
+    @BindView(R.id.txt_category)
+    TextView txt_category;
     @BindView(R.id.txt_venue)
     TextView txt_venue;
     @BindView(R.id.txt_location)
@@ -96,6 +108,8 @@ public class ScanEventDialogFragment extends DialogFragment {
 //    LinearLayout layout_animation;
     @BindView(R.id.recyclerTracking)
     RecyclerView recyclerTracking;
+    @BindView(R.id.scrollView)
+    NestedScrollView scrollView;
 
 
     @Override
@@ -221,15 +235,23 @@ public class ScanEventDialogFragment extends DialogFragment {
                 if (response.body().getStatus().equalsIgnoreCase("success")){
                     layout_loading.setVisibility(View.GONE);
                     layout_main.setVisibility(View.VISIBLE);
-//                    layout_ticket.setVisibility(View.VISIBLE);
-//                    layout_animation.setVisibility(View.GONE);
-                    txt_name.setText(response.body().getPeaName());
+                    String name_str = capitalizeWord(response.body().getPeaName());
+                    txt_name.setText(name_str);
+                    txt_id.setText("Ticket ID: SCDD"+response.body().getTickets_id());
+                    txt_login_name.setText("Name: "+response.body().getUra_fname());
+                    txt_login_id.setText("PZ Login ID: "+response.body().getUra_login_id());
+                    txt_count.setText(response.body().getTickets_count());
+                    txt_category.setText(response.body().getTickets_category());
                     txt_date.setText(response.body().getPeaDate());
                     txt_venue.setText(response.body().getPeaVenue());
                     txt_location.setText(response.body().getPeaLocation());
                     txt_amount.setText(response.body().getPeaPrice());
-                    Glide.with(getActivity()).load(Constants.BASE_URL+response.body().getPea_ticket_selfi()).into(imageView);
+                  //  Glide.with(getActivity()).load(Constants.BASE_URL+response.body().getPea_ticket_selfi()).into(imageView);
                     getTracking(user_id,scan_id);
+                    if (!response.body().getMessage().equalsIgnoreCase("Done")){
+                        showAlert(response.body().getMessage());
+                    }
+
                 }else {
 //                    layout_ticket.setVisibility(View.GONE);
 //                    layout_animation.setVisibility(View.GONE);
@@ -246,6 +268,18 @@ public class ScanEventDialogFragment extends DialogFragment {
             }
         });
     }
+
+    private String capitalizeWord(String string){
+        String[] words = string.split("\\s");
+        StringBuilder capitalizeWord= new StringBuilder();
+        for(String w:words){
+            String first=w.substring(0,1);
+            String afterfirst=w.substring(1);
+            capitalizeWord.append(first.toUpperCase()).append(afterfirst).append(" ");
+        }
+        return capitalizeWord.toString().trim();
+    }
+
 
     private void getTracking(String user_id,String scan_id){
         String user = null;
@@ -270,7 +304,6 @@ public class ScanEventDialogFragment extends DialogFragment {
                 Log.e("getTracking", new Gson().toJson(response));
                 progressBar.setVisibility(View.GONE);
                 if (response.body().getStatus().equalsIgnoreCase("success")){
-                    Toast.makeText(getActivity(), ""+response.body().getMessage(), Toast.LENGTH_LONG).show();
                     List<TrackResult> trackResultList = response.body().getResults();
                     List<TrackData> dataList = null;
                     for (int i=0; i<trackResultList.size(); i++){
@@ -280,6 +313,7 @@ public class ScanEventDialogFragment extends DialogFragment {
                     EventTrackingAdapter adapter = new EventTrackingAdapter(getActivity(),dataList);
                     recyclerTracking.setLayoutManager(new LinearLayoutManager(getActivity()));
                     recyclerTracking.setAdapter(adapter);
+//                    scrollDown();
                 }else {
                     Toast.makeText(getActivity(), ""+response.body().getStatus(), Toast.LENGTH_LONG).show();
                 }
@@ -292,6 +326,29 @@ public class ScanEventDialogFragment extends DialogFragment {
             }
         });
 
+    }
+
+    private void showAlert(String message){
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        alert.setTitle("Scan Alert!");
+        alert.setMessage(message);
+        alert.setCancelable(false);
+        alert.setPositiveButton("Dismiss", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alert.show();
+    }
+
+    private void scrollDown() {
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 
 }

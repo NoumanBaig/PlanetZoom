@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <com.angadi.tripmanagementa.utils.CustomFontTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please select Ticket Category"
+            android:padding="10dp"
+            android:gravity="center"
+            android:textSize="@dimen/textmed"
+            android:textColor="@color/black"
+            android:textStyle="bold"/>
+
+        <Spinner
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/spinner"/>
+
+<!--        <com.angadi.tripmanagementa.utils.CustomFontTextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Please type no of tickets"-->
+<!--            android:padding="10dp"-->
+<!--            android:gravity="center"-->
+<!--            android:textSize="@dimen/textmed"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:textStyle="bold"/>-->
+
+        <com.angadi.tripmanagementa.utils.CustomFontEditText
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:id="@+id/editText"
+            android:layout_marginTop="10dp"
+            android:hint="no of tickets"
+            android:gravity="center"
+            android:inputType="number"
+            android:imeOptions="actionDone"
+            android:maxLength="2"/>
+
+        <com.angadi.tripmanagementa.utils.CustomFontButton
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/colorAccent"
+            android:textColor="@color/white"
+            android:layout_marginTop="20dp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:id="@+id/button"
+            android:text="Continue"/>
+
+    </LinearLayout>
+</LinearLayout>

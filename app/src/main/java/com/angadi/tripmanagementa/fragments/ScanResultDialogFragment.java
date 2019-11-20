@@ -106,6 +106,8 @@ public class ScanResultDialogFragment extends DialogFragment {
     ImageView img_qr_code;
     @BindView(R.id.txt_name)
     TextView txt_name;
+    @BindView(R.id.txt_desc)
+    TextView txt_desc;
     @BindView(R.id.txt_cat)
     TextView txt_cat;
     @BindView(R.id.txt_mobile)
@@ -289,6 +291,9 @@ public class ScanResultDialogFragment extends DialogFragment {
         if (!response.body().getQcaaName().equalsIgnoreCase("")) {
             txt_name.setText(response.body().getQcaaName());
         }
+        if (!response.body().getQcaaDesc().equalsIgnoreCase("")) {
+            txt_desc.setText(response.body().getQcaaDesc());
+        }
         if (!response.body().getQcaaCat().equalsIgnoreCase("")) {
             txt_cat.setText(response.body().getQcaaCat()+", "+response.body().getQcaaSubCat());
         }
@@ -402,17 +407,17 @@ public class ScanResultDialogFragment extends DialogFragment {
                 break;
             case R.id.layout_facebook:
                 if (!str_facebook.equalsIgnoreCase("")) {
-                    openUri(str_facebook);
+                    openUriFaceBook(str_facebook);
                 }
                 break;
             case R.id.layout_youtube:
                 if (!str_youtube.equalsIgnoreCase("")) {
-                    openUri(str_youtube);
+                    openUriYoutube(str_youtube);
                 }
                 break;
             case R.id.layout_instagram:
                 if (!str_instagram.equalsIgnoreCase("")) {
-                    openUri(str_instagram);
+                    openUriInstaGram(str_instagram);
                 }
                 break;
             case R.id.layout_linkedIn:
@@ -510,6 +515,30 @@ public class ScanResultDialogFragment extends DialogFragment {
 //        String uri = WebsiteFromList;
         if (uri != "") {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://"+uri));
+            startActivity(intent);
+        }
+    }
+
+    private void openUriFaceBook(String uri){
+//        String uri = WebsiteFromList;
+        if (uri != "") {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/"+uri));
+            startActivity(intent);
+        }
+    }
+
+    private void openUriInstaGram(String uri){
+//        String uri = WebsiteFromList;
+        if (uri != "") {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com/"+uri));
+            startActivity(intent);
+        }
+    }
+
+    private void openUriYoutube(String uri){
+//        String uri = WebsiteFromList;
+        if (uri != "") {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.youtube.com/"+uri));
             startActivity(intent);
         }
     }
@@ -767,8 +796,13 @@ public class ScanResultDialogFragment extends DialogFragment {
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
             if (screenInches > 5.0 && screenInches < 5.5) {
-                Log.e("first", "--->");
-                result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+                if (screenInches < 5.3){
+                    Log.e("first", "5.3-->");
+                    result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1250, 1250, null);
+                }else {
+                    Log.e("first", "--->");
+                    result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
+                }
             } else if (screenInches > 5.5 && screenInches < 6.0) {
                 Log.e("second", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);

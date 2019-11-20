@@ -6,8 +6,8 @@ android {
         applicationId "com.angadi.tripmanagementa"
         minSdkVersion 16
         targetSdkVersion 29
-        versionCode 17
-        versionName "2.6"
+        versionCode 20
+        versionName "2.9"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -65,10 +65,8 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.0'
     implementation 'com.github.yalantis:ucrop:2.2.3'
     implementation 'com.truizlop.sectionedrecyclerview:library:1.2.0'
-
     //firebase token
     implementation 'com.google.firebase:firebase-auth:19.1.0'
-
     // location places api
     implementation 'com.schibstedspain.android:leku:6.3.0'
     // image slider

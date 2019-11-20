@@ -149,6 +149,12 @@
                             android:imeOptions="actionNext"
                             android:inputType="textPersonName" />
 
+                        <com.angadi.tripmanagementa.utils.CustomFontEditText
+                            android:id="@+id/edt_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:hint="Business Description"/>
 
                         <com.angadi.tripmanagementa.utils.CustomFontEditText
                             android:id="@+id/edt_email"
@@ -191,9 +197,7 @@
                                 android:layout_weight="0.9"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:hint="@string/adds_loc"
-                                android:imeOptions="actionNext"
-                                android:inputType="textPostalAddress" />
+                                android:hint="@string/adds_loc"/>
 
                             <ImageView
                                 android:id="@+id/img_loc"
@@ -307,7 +311,7 @@
                         android:layout_marginBottom="40dp"
                         android:background="@drawable/black_background"
                         android:foreground="?attr/selectableItemBackground"
-                        android:text="See QR Code"
+                        android:text="View QR Code"
                         android:textColor="@color/white"
                         android:textSize="16sp"
                         android:textStyle="bold" />

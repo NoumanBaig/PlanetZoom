@@ -52,6 +52,21 @@ public class ScanEventQrResponse {
     @SerializedName("pea_ticket_selfi")
     @Expose
     private String pea_ticket_selfi;
+    @SerializedName("tickets_id")
+    @Expose
+    private String tickets_id;
+    @SerializedName("ura_fname")
+    @Expose
+    private String ura_fname;
+    @SerializedName("ura_login_id")
+    @Expose
+    private String ura_login_id;
+    @SerializedName("tickets_category")
+    @Expose
+    private String tickets_category ;
+    @SerializedName("tickets_count")
+    @Expose
+    private String tickets_count ;
 
     public String getPeaUid() {
         return peaUid;
@@ -177,5 +192,44 @@ public class ScanEventQrResponse {
 
     public void setPea_ticket_selfi(String pea_ticket_selfi) {
         this.pea_ticket_selfi = pea_ticket_selfi;
+    }
+    public String getTickets_id() {
+        return tickets_id;
+    }
+
+    public void setTickets_id(String tickets_id) {
+        this.tickets_id = tickets_id;
+    }
+
+    public String getUra_fname() {
+        return ura_fname;
+    }
+
+    public void setUra_fname(String ura_fname) {
+        this.ura_fname = ura_fname;
+    }
+
+    public String getUra_login_id() {
+        return ura_login_id;
+    }
+
+    public void setUra_login_id(String ura_login_id) {
+        this.ura_login_id = ura_login_id;
+    }
+
+    public String getTickets_category() {
+        return tickets_category;
+    }
+
+    public void setTickets_category(String tickets_category) {
+        this.tickets_category = tickets_category;
+    }
+
+    public String getTickets_count() {
+        return tickets_count;
+    }
+
+    public void setTickets_count(String tickets_count) {
+        this.tickets_count = tickets_count;
     }
 }

@@ -10,27 +10,24 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.fragments.HomeFragment;
 import com.angadi.tripmanagementa.fragments.EventsFragment;
-import com.angadi.tripmanagementa.fragments.HomeFragment;
 import com.angadi.tripmanagementa.fragments.ProfileFragment;
 import com.angadi.tripmanagementa.fragments.DashboardFragment;
 import com.angadi.tripmanagementa.fragments.OffersFragment;
 import com.angadi.tripmanagementa.fragments.ScanResultDialogFragment;
 import com.angadi.tripmanagementa.models.CheckAdminResponse;
-import com.angadi.tripmanagementa.models.LogoutResponse;
-import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Prefs;
@@ -39,8 +36,6 @@ import com.google.gson.Gson;
 import com.itparsa.circlenavigation.CircleItem;
 import com.itparsa.circlenavigation.CircleNavigationView;
 import com.itparsa.circlenavigation.CircleOnClickListener;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -234,11 +229,13 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
                 } else {
                     Log.e("checkAdmin", "" + response.body().getMessage());
                 }
+
             }
 
             @Override
             public void onFailure(Call<CheckAdminResponse> call, Throwable t) {
                 Log.e("checkAdmin", "" + t);
+
             }
         });
     }

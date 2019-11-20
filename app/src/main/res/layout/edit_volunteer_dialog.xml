@@ -43,7 +43,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="350dp"/>
 
     <com.angadi.tripmanagementa.utils.CustomFontTextView
         android:id="@+id/dialog_btn"
