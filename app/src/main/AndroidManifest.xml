@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.angadi.tripmanagementa"
-    android:installLocation="auto">
+    package="com.angadi.tripmanagementa">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
@@ -40,7 +39,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".activities.EventReportsActivity"></activity>
+        <activity
+            android:name=".activities.BizQrHistoryActivity"
+            android:label="@string/title_activity_biz_qr_history"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".activities.EventReportsActivity" />
         <activity android:name=".activities.EditQRActivity" />
         <activity android:name=".activities.StallsActivity" />
         <activity

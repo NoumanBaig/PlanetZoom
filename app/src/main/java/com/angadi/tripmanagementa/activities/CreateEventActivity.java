@@ -957,9 +957,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                        Prefs.with(CreateEventActivity.this).save("live_message",event_id);
                     } else {
-                        Prefs.with(CreateEventActivity.this).save("live_message","");
                         Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {

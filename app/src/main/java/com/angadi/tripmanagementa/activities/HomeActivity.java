@@ -1,5 +1,6 @@
 package com.angadi.tripmanagementa.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -9,7 +10,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -17,6 +20,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,11 +31,20 @@ import com.angadi.tripmanagementa.fragments.ProfileFragment;
 import com.angadi.tripmanagementa.fragments.DashboardFragment;
 import com.angadi.tripmanagementa.fragments.OffersFragment;
 import com.angadi.tripmanagementa.fragments.ScanResultDialogFragment;
+import com.angadi.tripmanagementa.models.AuthCheckResponse;
 import com.angadi.tripmanagementa.models.CheckAdminResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Prefs;
 import com.bumptech.glide.Glide;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.itparsa.circlenavigation.CircleItem;
 import com.itparsa.circlenavigation.CircleNavigationView;
@@ -43,17 +56,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeActivity extends AppCompatActivity implements ScanResultDialogFragment.MessageDialogListener{
+public class HomeActivity extends AppCompatActivity implements ScanResultDialogFragment.MessageDialogListener,
+        OnSuccessListener<AppUpdateInfo> {
 
     private static final int ZXING_CAMERA_PERMISSION = 1;
     @BindView(R.id.img_toolbar)
     ImageView img_toolbar;
+    private AppUpdateManager appUpdateManager;
+    private boolean mNeedsFlexibleUpdate;
+    public static final int REQUEST_CODE = 1234;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        appUpdateManager = AppUpdateManagerFactory.create(HomeActivity.this);
+        setVersionText();
+        mNeedsFlexibleUpdate = false;
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final CircleNavigationView mCircleNavigationView;
@@ -85,29 +105,27 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
             @Override
             public void onItemClick(int itemIndex, String itemName) {
 //
-               if (itemIndex==0){
-                   Log.e("Zero","---->");
-                   Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-                   OffersFragment zeroFragment = new OffersFragment();
-                   loadFragment(zeroFragment);
-               }else if (itemIndex==1){
-                   Log.e("One","---->");
-                   Glide.with(HomeActivity.this).load(R.drawable.planet_event).into(img_toolbar);
-                   EventsFragment oneFragment = new EventsFragment();
-                   loadFragment(oneFragment);
-               }
-               else if (itemIndex==2){
-                   Log.e("Two","---->");
-                   Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-                   DashboardFragment zeroFragment = new DashboardFragment();
-                   loadFragment(zeroFragment);
-               }
-               else if (itemIndex==3){
-                   Log.e("Three","---->");
-                   Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-                   ProfileFragment zeroFragment = new ProfileFragment();
-                   loadFragment(zeroFragment);
-               }
+                if (itemIndex == 0) {
+                    Log.e("Zero", "---->");
+                    Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
+                    OffersFragment zeroFragment = new OffersFragment();
+                    loadFragment(zeroFragment);
+                } else if (itemIndex == 1) {
+                    Log.e("One", "---->");
+                    Glide.with(HomeActivity.this).load(R.drawable.planet_event).into(img_toolbar);
+                    EventsFragment oneFragment = new EventsFragment();
+                    loadFragment(oneFragment);
+                } else if (itemIndex == 2) {
+                    Log.e("Two", "---->");
+                    Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
+                    DashboardFragment zeroFragment = new DashboardFragment();
+                    loadFragment(zeroFragment);
+                } else if (itemIndex == 3) {
+                    Log.e("Three", "---->");
+                    Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
+                    ProfileFragment zeroFragment = new ProfileFragment();
+                    loadFragment(zeroFragment);
+                }
 //                if (itemIndex == 2)
 //                    mCircleNavigationView.hideBadgeAtIndex(2);
 //
@@ -129,39 +147,40 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
     @Override
     protected void onResume() {
         super.onResume();
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(this);
         Intent intent = getIntent();
         String action = intent.getAction();
         Uri data = intent.getData();
 
         if (data != null) {
-            Log.e("data",""+data);
+            Log.e("data", "" + data);
             String qr_code_id = data.getQueryParameter("qr_code_id");
             String qr_type = data.getQueryParameter("qr_type");
             String qr_user_id = data.getQueryParameter("qr_user_id");
 
-            Log.e("qr_code_id ",""+qr_code_id);
-            Log.e("qr_type ",""+qr_type);
-            Log.e("qr_user_id ",""+qr_user_id);
-           showResultDialog(qr_code_id,qr_type, String.valueOf(data),qr_user_id);
+            Log.e("qr_code_id ", "" + qr_code_id);
+            Log.e("qr_type ", "" + qr_type);
+            Log.e("qr_user_id ", "" + qr_user_id);
+            showResultDialog(qr_code_id, qr_type, String.valueOf(data), qr_user_id);
         }
     }
 
-    public void showResultDialog(String qr_code_id,String qr_code_type,String qr_url,String user_id) {
-        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance(HomeActivity.this,"Scan Results", qr_code_id,qr_code_type,qr_url,user_id,this);
+    public void showResultDialog(String qr_code_id, String qr_code_type, String qr_url, String user_id) {
+        DialogFragment newFragment2 = ScanResultDialogFragment.newInstance(HomeActivity.this, "Scan Results", qr_code_id, qr_code_type, qr_url, user_id, this);
         newFragment2.show(HomeActivity.this.getSupportFragmentManager(), "scan_results");
 //        ScanResultDialogFragment fragment = MessageDialogFragment.newInstance("Scan Results", message, this);
 //        fragment.show(getActivity().getSupportFragmentManager(), "scan_results");
     }
 
 
-    private void loadFragment(Fragment fragment){
+    private void loadFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container,fragment);
+        fragmentTransaction.replace(R.id.container, fragment);
 //        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
-    private void cameraPermission(){
+    private void cameraPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
@@ -170,11 +189,11 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,  String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case ZXING_CAMERA_PERMISSION:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("Camera--->","PERMISSION_GRANTED");
+                    Log.e("Camera--->", "PERMISSION_GRANTED");
                 } else {
                     Toast.makeText(this, "Please grant camera permission to use the QR Scanner", Toast.LENGTH_SHORT).show();
                 }
@@ -198,8 +217,8 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.create_qr) {
-           startActivity(new Intent(HomeActivity.this,CreateQrActivity.class));
-        }else if (id == R.id.search){
+            startActivity(new Intent(HomeActivity.this, CreateQrActivity.class));
+        } else if (id == R.id.search) {
             Toast.makeText(this, "Search clicked...", Toast.LENGTH_SHORT).show();
         }
 
@@ -213,19 +232,19 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
 
     private void checkAdmin() {
 //        loadingIndicator.setVisibility(View.VISIBLE);
-        String token = Prefs.with(HomeActivity.this).getString("token","");
+        String token = Prefs.with(HomeActivity.this).getString("token", "");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<CheckAdminResponse> call = apiInterface.checkAdmin("true",token);
+        Call<CheckAdminResponse> call = apiInterface.checkAdmin("true", token);
         call.enqueue(new Callback<CheckAdminResponse>() {
             @Override
             public void onResponse(Call<CheckAdminResponse> call, Response<CheckAdminResponse> response) {
                 Log.e("checkAdmin", new Gson().toJson(response));
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
-                  if (response.body().getStatusAdmin().equalsIgnoreCase("ADMIN")){
-                      Prefs.with(HomeActivity.this).save("organiser","true");
-                  }else {
-                      Prefs.with(HomeActivity.this).save("organiser","false");
-                  }
+                    if (response.body().getStatusAdmin().equalsIgnoreCase("ADMIN")) {
+                        Prefs.with(HomeActivity.this).save("organiser", "true");
+                    } else {
+                        Prefs.with(HomeActivity.this).save("organiser", "false");
+                    }
                 } else {
                     Log.e("checkAdmin", "" + response.body().getMessage());
                 }
@@ -240,4 +259,95 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         });
     }
 
+
+
+    @Override
+    public void onSuccess(AppUpdateInfo appUpdateInfo) {
+        if (appUpdateInfo.updateAvailability()
+                == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+            Log.e("UPDATE_IN_PROGRESS", "onSuccess");
+            // If an in-app update is already running, resume the update.
+            startUpdate(appUpdateInfo, AppUpdateType.IMMEDIATE);
+        } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+            Log.e("DOWNLOADED", "onSuccess");
+            // If the update is downloaded but not installed,
+            // notify the user to complete the update.
+            popupSnackbarForCompleteUpdate();
+        } else if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+            Log.e("UPDATE_AVAILABLE", "onSuccess");
+            if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                startUpdate(appUpdateInfo, AppUpdateType.IMMEDIATE);
+            } else if (appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                mNeedsFlexibleUpdate = true;
+                showFlexibleUpdateNotification();
+            }
+        }
+    }
+
+    private void setVersionText() {
+        PackageInfo packageInfo = null;
+        try {
+            packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+        } catch (Exception e) {
+
+        }
+        Log.e("mVersionNumber", "" + packageInfo.versionName);
+//        mVersionNumber.setText(packageInfo.versionName);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Log.e(MainActivity.class.getSimpleName(), "Update flow completed! Result code: " + resultCode);
+            } else {
+                Log.e(MainActivity.class.getSimpleName(), "Update flow failed! Result code: " + resultCode);
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void startUpdate(final AppUpdateInfo appUpdateInfo, final int appUpdateType) {
+        final Activity activity = this;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(appUpdateInfo,
+                            appUpdateType,
+                            activity,
+                            REQUEST_CODE);
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    /* Displays the snackbar notification and call to action. */
+    private void popupSnackbarForCompleteUpdate() {
+        Snackbar snackbar =
+                Snackbar.make(
+                        findViewById(R.id.container),
+                        "An update has just been downloaded.",
+                        Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("RESTART", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                appUpdateManager.completeUpdate();
+            }
+        });
+        snackbar.setActionTextColor(getResources().getColor(R.color.colorAccent));
+        snackbar.show();
+    }
+
+    private void showFlexibleUpdateNotification() {
+        Snackbar snackbar =
+                Snackbar.make(
+                        findViewById(R.id.container),
+                        "An update is available and accessible in More.",
+                        Snackbar.LENGTH_LONG);
+        snackbar.show();
+    }
 }

@@ -12,28 +12,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.models.ReportsTrackData;
 import com.angadi.tripmanagementa.models.ShowMembersResult;
-import com.angadi.tripmanagementa.models.Website;
-import com.angadi.tripmanagementa.utils.Constants;
-import com.bumptech.glide.Glide;
-import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
-public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.MyViewHolder> {
+public class ReportsAdapter extends RecyclerView.Adapter<ReportsAdapter.MyViewHolder> {
 
     Context mContext;
-    List<Website> websiteList;
+    List<ReportsTrackData> resultList;
     ClickListener clickListener;
 
-    public SponsorsAdapter(Context context,List<Website> websiteList) {
+    public ReportsAdapter(Context context, List<ReportsTrackData> resultList) {
         super();
         this.mContext = context;
-        this.websiteList = websiteList;
+        this.resultList = resultList;
     }
 
     public interface ClickListener {
-        void onClick(View view, int position, String url);
+        void onClick(View view, int position, String id);
     }
 
     public void setClickListener(ClickListener clickListener) {
@@ -43,7 +40,7 @@ public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.MyView
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.cell_sponsors, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.cell_reports, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -54,32 +51,37 @@ public class SponsorsAdapter extends RecyclerView.Adapter<SponsorsAdapter.MyView
             @Override
             public void onClick(View view) {
                 if (clickListener != null) {
-                    clickListener.onClick(view, position,websiteList.get(position).getWeb());
+                    clickListener.onClick(view, position,resultList.get(position).getMtaaUid());
                 }
             }
         });
 
-//        holder.imageView.setImageURI(Constants.BASE_URL+websiteList.get(position).getImage());
-        Glide.with(mContext).load(Constants.BASE_URL+websiteList.get(position).getImage())
-                .override(120,120)
-                .placeholder(R.drawable.ic_placeholder).into(holder.imageView);
+      holder.txt_date.setText("Date: "+resultList.get(position).getMtaaDate());
+      holder.txt_name.setText("Name: "+resultList.get(position).getMtaaUserName());
+      holder.txt_scName.setText("Scanner Name: "+resultList.get(position).getMtaaVolunteerName());
+      holder.txt_loginId.setText("Login ID: "+resultList.get(position).getMtaaUserLoginId());
+      holder.txt_place.setText("Scanned Place: "+resultList.get(position).getMtaaTrackPlace());
     }
 
     @Override
     public int getItemCount() {
-        return websiteList.size();
+        return resultList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView imageView;
+        TextView txt_date,txt_place,txt_loginId,txt_scName,txt_name;
         LinearLayout layout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             layout = itemView.findViewById(R.id.linear);
-            imageView = itemView.findViewById(R.id.img_logo);
+            txt_name = itemView.findViewById(R.id.txt_name);
+            txt_scName = itemView.findViewById(R.id.txt_scName);
+            txt_loginId = itemView.findViewById(R.id.txt_loginId);
+            txt_place = itemView.findViewById(R.id.txt_place);
+            txt_date = itemView.findViewById(R.id.txt_date);
 
         }
     }

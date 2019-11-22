@@ -51,7 +51,9 @@ public class StallsAdapter extends RecyclerView.Adapter<StallsAdapter.MyViewHold
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
 //        holder.imageView.setImageURI(Constants.BASE_URL+stallsList.get(position).getImage());
-        Glide.with(mContext).load(Constants.BASE_URL+stallsList.get(position).getImage()).into(holder.imageView);
+        Glide.with(mContext).load(Constants.BASE_URL+stallsList.get(position).getImage())
+                .override(200,200)
+                .placeholder(R.drawable.ic_placeholder).into(holder.imageView);
         holder.textView.setText(stallsList.get(position).getName());
 
         holder.layout.setOnClickListener(new View.OnClickListener() {

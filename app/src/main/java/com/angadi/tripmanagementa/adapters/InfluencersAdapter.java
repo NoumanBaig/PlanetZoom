@@ -14,9 +14,12 @@ import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.models.Influencers;
 import com.angadi.tripmanagementa.models.Website;
 import com.angadi.tripmanagementa.utils.Constants;
+import com.bumptech.glide.Glide;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class InfluencersAdapter extends RecyclerView.Adapter<InfluencersAdapter.MyViewHolder> {
 
@@ -48,7 +51,9 @@ public class InfluencersAdapter extends RecyclerView.Adapter<InfluencersAdapter.
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        holder.imageView.setImageURI(Constants.BASE_URL+influencersList.get(position).getImage());
+//        holder.imageView.setImageURI(Constants.BASE_URL+influencersList.get(position).getImage());
+        Glide.with(mContext).load(Constants.BASE_URL+influencersList.get(position).getImage()).override(100,100)
+                .placeholder(R.drawable.ic_placeholder).into(holder.imageView);
         holder.textView.setText(influencersList.get(position).getName());
         holder.textView2.setText(influencersList.get(position).getDes());
     }
@@ -60,7 +65,7 @@ public class InfluencersAdapter extends RecyclerView.Adapter<InfluencersAdapter.
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        SimpleDraweeView imageView;
+        CircleImageView imageView;
         LinearLayout layout;
         TextView textView,textView2;
 

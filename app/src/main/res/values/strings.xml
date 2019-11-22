@@ -73,6 +73,7 @@
     <string name="share">Share</string>
     <string name="save">Save</string>
     <string name="loading">Loading...</string>
+    <string name="biz_history">BIZ QR History</string>
 
     <string name="transition">transit</string>
     <string name="live_msg">This is a demo live message which is going to be shared in the event and other things</string>
@@ -87,4 +88,7 @@
     <string name="youAreNotUpdatedMessage">A new version of YOUR_APP_NAME is available. Please update to version\s</string>
     <string name="youAreNotUpdatedMessage1">\s now</string>
     <string name="update">Update</string>
+    <string name="title_activity_biz_qr_history">BizQrHistoryActivity</string>
+    <string name="tab_text_1">Scanned By Me</string>
+    <string name="tab_text_2">Who Scanned Me</string>
 </resources>

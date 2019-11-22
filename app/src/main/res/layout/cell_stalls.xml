@@ -21,7 +21,7 @@
 
             <ImageView
                 android:id="@+id/img_logo"
-                android:scaleType="fitXY"
+                android:scaleType="fitCenter"
                 android:padding="30dp"
                 android:background="@color/gray"
                 android:layout_width="match_parent"

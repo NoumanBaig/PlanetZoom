@@ -453,12 +453,12 @@ public class EventDetailsActivity extends AppCompatActivity implements SubEventD
                 Log.e("checkTicket", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
                 if (response.body().getStatus().equalsIgnoreCase("success")) {
-                    showSelfieDialog();
-//                    Toast.makeText(EventDetailsActivity.this, "Please purchase the Ticket in Demo day website", Toast.LENGTH_LONG).show();
+//                    showSelfieDialog();
+                    Toast.makeText(EventDetailsActivity.this, "Please purchase the Ticket in Demo day website", Toast.LENGTH_LONG).show();
                 } else {
-//                    startActivity(new Intent(EventDetailsActivity.this, MyTicketDetailsActivity.class)
-//                            .putExtra("event_id",event_id));
-                    Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(EventDetailsActivity.this, MyTicketDetailsActivity.class)
+                            .putExtra("event_id",event_id));
+//                    Toast.makeText(EventDetailsActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 

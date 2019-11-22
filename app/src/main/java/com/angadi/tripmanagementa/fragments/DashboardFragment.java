@@ -1,5 +1,6 @@
 package com.angadi.tripmanagementa.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.activities.BizQrHistoryActivity;
 import com.angadi.tripmanagementa.adapters.CountSectionAdapter;
 import com.angadi.tripmanagementa.models.DashboardResponse;
 import com.angadi.tripmanagementa.models.DashboardResult;
@@ -32,6 +34,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -102,5 +105,10 @@ public class DashboardFragment extends Fragment {
                 recyclerView.setVisibility(View.GONE);
             }
         });
+    }
+
+    @OnClick(R.id.fab_bizQrHistory)
+    public void onFabClick(View view) {
+        startActivity(new Intent(getActivity(), BizQrHistoryActivity.class));
     }
 }

@@ -5,10 +5,12 @@ import com.angadi.tripmanagementa.models.AddMembersResponse;
 import com.angadi.tripmanagementa.models.AddPlacesResponse;
 import com.angadi.tripmanagementa.models.AddUpdateResponse;
 import com.angadi.tripmanagementa.models.AddVolunteerResponse;
+import com.angadi.tripmanagementa.models.AuthCheckResponse;
 import com.angadi.tripmanagementa.models.BuyTicketResponse;
 import com.angadi.tripmanagementa.models.CheckAdminResponse;
 import com.angadi.tripmanagementa.models.DeleteGallery;
 import com.angadi.tripmanagementa.models.DeleteSubEventResponse;
+import com.angadi.tripmanagementa.models.EventReportsResponse;
 import com.angadi.tripmanagementa.models.EventTrackResponse;
 import com.angadi.tripmanagementa.models.GetUpdateResponse;
 import com.angadi.tripmanagementa.models.ImageUploadResponse;
@@ -32,6 +34,7 @@ import com.angadi.tripmanagementa.models.LoginResponse;
 import com.angadi.tripmanagementa.models.LogoutResponse;
 import com.angadi.tripmanagementa.models.MembersResponse;
 import com.angadi.tripmanagementa.models.ProfileStatusResponse;
+import com.angadi.tripmanagementa.models.QRHistoryResponse;
 import com.angadi.tripmanagementa.models.QrScanResponse;
 import com.angadi.tripmanagementa.models.RegisterResponse;
 import com.angadi.tripmanagementa.models.ScanEventQrResponse;
@@ -512,4 +515,24 @@ public interface ApiInterface {
     @POST("StallDemoDay/stall/")
     @FormUrlEncoded
     Call<StallsResponse> getStalls(@Field("stall") String stall);
+
+    @POST("Mapping/all_track_data/")
+    @FormUrlEncoded
+    Call<EventReportsResponse> getEventReport(@Field("all_track_data") String all_track_data,
+                                              @Field("token") String token,
+                                              @Field("list_id") String list_id,
+                                              @Field("event_id") String event_id,
+                                              @Field("limit_num") String limit_num);
+
+    @POST("ScanningResults/scanning_data/")
+    @FormUrlEncoded
+    Call<QRHistoryResponse> getScanHistory(@Field("scanning_data") String scanning_data,
+                                           @Field("token") String token,
+                                           @Field("id_for") String id_for,
+                                           @Field("limit_num") String limit_num);
+
+    @POST("auth/check/")
+    @FormUrlEncoded
+    Call<AuthCheckResponse> authCheck(@Field("check") String check,
+                                      @Field("token") String token);
 }

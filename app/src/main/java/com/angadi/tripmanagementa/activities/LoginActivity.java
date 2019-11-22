@@ -222,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
             case R.id.img_close:
                 toggle();
                 // resetting time when close
-                time = 60;
+                time = 30;
                 break;
             case R.id.txt_resend:
                 setTimer();
@@ -305,9 +305,9 @@ public class LoginActivity extends AppCompatActivity {
     private void setTimer() {
         layout_loading.setVisibility(View.VISIBLE);
         layout_resend.setVisibility(View.GONE);
-        time = 60;
+        time = 30;
         TextView textTimer = (TextView) findViewById(R.id.txt_timer);
-        new CountDownTimer(60000, 1000) {
+        new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
                 textTimer.setText("0:" + checkDigit(time));
                 time--;
@@ -328,7 +328,7 @@ public class LoginActivity extends AppCompatActivity {
     private void callLogin(String username) {
         avi.smoothToShow();
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"YES");
+        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"NO");
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -347,7 +347,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Prefs.with(LoginActivity.this).save("firstName",str_fname);
                                 Prefs.with(LoginActivity.this).save("str_uid",str_uid);
                                 txt_otp.setText(getResources().getString(R.string.otp)+" "+username);
-                                Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
                                 toggle();
                                // pinView.setText(str_otp);
                             }
@@ -372,7 +372,7 @@ public class LoginActivity extends AppCompatActivity {
     private void resendOtp(String username) {
         avi.smoothToShow();
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"YES");
+        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"NO");
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -383,6 +383,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.body().getStatus().equalsIgnoreCase("success")) {
                             if (!response.body().getStatusLogin().equalsIgnoreCase("creating_new")) {
 //                                layout_firstName.setVisibility(View.VISIBLE);
+                                pinView.setText("");
                                 Toast.makeText(LoginActivity.this, "Resent OTP", Toast.LENGTH_SHORT).show();
                             }
 //                            else {
@@ -418,7 +419,7 @@ public class LoginActivity extends AppCompatActivity {
         avi.smoothToShow();
         Prefs.with(LoginActivity.this).save("firstName",firstName);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<RegisterResponse> responseCall = apiInterface.register(firstName, username,"YES");
+        Call<RegisterResponse> responseCall = apiInterface.register(firstName, username,"NO");
         responseCall.enqueue(new Callback<RegisterResponse>() {
             @Override
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
@@ -429,7 +430,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.body().getStatus().equalsIgnoreCase("success")) {
                             str_otp = String.valueOf(response.body().getRand());
                             toggle();
-                            Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
 //                            pinView.setText(str_otp);
                         } else {
                             Log.e("else", "----->");

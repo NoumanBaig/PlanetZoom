@@ -1,123 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activities.EditQRActivity">
 
-    <include layout="@layout/toolbar_two"/>
+    <include layout="@layout/toolbar_two" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <ImageView
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/ic_placeholder"
+                android:id="@+id/imageView"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:id="@+id/imageView"/>
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:src="@drawable/ic_placeholder" />
 
             <LinearLayout
-                android:padding="20dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-                <com.angadi.tripmanagementa.utils.CustomFontEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/name"
-                    android:id="@+id/edt_name"
-                    android:imeOptions="actionDone"
-                    android:inputType="textCapWords"/>
+                android:orientation="vertical"
+                android:padding="20dp">
 
-                <com.angadi.tripmanagementa.utils.CustomFontEditText
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="@string/desc"
-                    android:id="@+id/edt_desc"/>
-                <com.angadi.tripmanagementa.utils.CustomFontEditText
+                    app:hintTextAppearance="@string/name"
+                    app:hintTextColor="@color/colorAccent">
+
+                    <com.angadi.tripmanagementa.utils.CustomFontEditText
+                        android:id="@+id/edt_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/name"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/mobile"
-                    android:id="@+id/edt_mobile"
-                    android:layout_marginTop="10dp"
-                    android:imeOptions="actionDone"
-                    android:inputType="textCapWords"/>
-                <com.angadi.tripmanagementa.utils.CustomFontEditText
+                    app:hintTextAppearance="@string/desc"
+                    app:hintTextColor="@color/colorAccent">
+
+                    <com.angadi.tripmanagementa.utils.CustomFontEditText
+                        android:id="@+id/edt_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/desc" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/email"
-                    android:id="@+id/edt_email"
-                    android:imeOptions="actionDone"
-                    android:layout_marginTop="10dp"
-                    android:inputType="textCapWords"/>
-                <com.angadi.tripmanagementa.utils.CustomFontEditText
+                    app:hintTextAppearance="@string/mobile"
+                    app:hintTextColor="@color/colorAccent">
+
+
+                    <com.angadi.tripmanagementa.utils.CustomFontEditText
+                        android:id="@+id/edt_mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/mobile"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/website"
-                    android:id="@+id/edt_website"
-                    android:layout_marginTop="10dp"
-                    android:imeOptions="actionDone"
-                    android:inputType="textCapWords"/>
+                    app:hintTextAppearance="@string/email"
+                    app:hintTextColor="@color/colorAccent">
+
+                    <com.angadi.tripmanagementa.utils.CustomFontEditText
+                        android:id="@+id/edt_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/email"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintTextAppearance="@string/website"
+                    app:hintTextColor="@color/colorAccent">
+
+                    <com.angadi.tripmanagementa.utils.CustomFontEditText
+                        android:id="@+id/edt_website"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/website"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <LinearLayout
-                    android:weightSum="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:weightSum="1">
 
-                    <com.angadi.tripmanagementa.utils.CustomFontEditText
-                        android:id="@+id/edt_adds"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_weight="0.9"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:hint="@string/adds_loc"/>
+                        app:hintTextAppearance="@string/adds_loc"
+                        app:hintTextColor="@color/colorAccent">
+
+                        <com.angadi.tripmanagementa.utils.CustomFontEditText
+                            android:id="@+id/edt_adds"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/adds_loc" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <ImageView
                         android:id="@+id/img_loc"
-                        android:layout_weight="0.1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_weight="0.1"
                         android:src="@drawable/ic_my_location" />
 
                 </LinearLayout>
-                <com.angadi.tripmanagementa.utils.CustomFontEditText
-                    android:id="@+id/edt_whatsapp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="WhatsApp"
-                    android:imeOptions="actionNext"
-                    android:inputType="number" />
 
-                <com.angadi.tripmanagementa.utils.CustomFontEditText
-                    android:id="@+id/edt_facebook"
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="Facebook"
-                    android:imeOptions="actionNext"
-                    android:inputType="text" />
+                    app:hintTextAppearance="@string/whatsapp"
+                    app:hintTextColor="@color/colorAccent">
 
-                <com.angadi.tripmanagementa.utils.CustomFontEditText
-                    android:id="@+id/edt_youtube"
+                    <com.angadi.tripmanagementa.utils.CustomFontEditText
+                        android:id="@+id/edt_whatsapp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/whatsapp"
+                        android:imeOptions="actionNext"
+                        android:inputType="number" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:hint="Youtube"
-                    android:imeOptions="actionDone"
-                    android:inputType="text" />
+                    app:hintTextAppearance="@string/facebook"
+                    app:hintTextColor="@color/colorAccent">
+
+                    <com.angadi.tripmanagementa.utils.CustomFontEditText
+                        android:id="@+id/edt_facebook"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/facebook"
+                        android:imeOptions="actionNext"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintTextAppearance="@string/youtube"
+                    app:hintTextColor="@color/colorAccent">
+
+                    <com.angadi.tripmanagementa.utils.CustomFontEditText
+                        android:id="@+id/edt_youtube"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:hint="@string/youtube"
+                        android:imeOptions="actionDone"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.angadi.tripmanagementa.utils.CustomFontButton
                     android:id="@+id/btn_update"

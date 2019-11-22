@@ -101,12 +101,14 @@ public class ScanResultActivity extends AppCompatActivity {
     TextView txt_ratings_avg;
     double screenInches;
     BitMatrix result;
-    private String str_location,str_mobile,str_email,str_website,str_whatsApp,str_facebook,str_youtube,str_id,str_url,
-            str_instagram,str_linkedin,str_name;
+    private String str_location, str_mobile, str_email, str_website, str_whatsApp, str_facebook, str_youtube, str_id, str_url,
+            str_instagram, str_linkedin, str_name;
     @BindView(R.id.layout_shareQR)
     LinearLayout layout_shareQR;
     @BindView(R.id.layout_save)
     LinearLayout layout_save;
+    @BindView(R.id.layout_shareAndSave)
+    LinearLayout layout_shareAndSave;
     Bitmap bitmap, bitmapQrborder;
 
     @Override
@@ -120,18 +122,18 @@ public class ScanResultActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        if (getIntent().getExtras() != null){
+        if (getIntent().getExtras() != null) {
             str_id = getIntent().getStringExtra("qr_id");
             str_url = getIntent().getStringExtra("qr_url");
-            Log.e("str_id",""+str_id);
-            Log.e("str_url",""+str_url);
-            getScanResult(str_id,str_url);
+            Log.e("str_id", "" + str_id);
+            Log.e("str_url", "" + str_url);
+            getScanResult(str_id, str_url);
         }
         getScreenResolution();
 
     }
 
-    private void getScreenResolution(){
+    private void getScreenResolution() {
         DisplayMetrics dm = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
@@ -150,33 +152,33 @@ public class ScanResultActivity extends AppCompatActivity {
         return true;
     }
 
-    private void getScanResult(String id,String qr_url){
-        MyProgressDialog.show(ScanResultActivity.this,"Loading...");
-        String token = Prefs.with(ScanResultActivity.this).getString("token","");
-        Log.e("token",token);
+    private void getScanResult(String id, String qr_url) {
+        MyProgressDialog.show(ScanResultActivity.this, "Loading...");
+        String token = Prefs.with(ScanResultActivity.this).getString("token", "");
+        Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<QrScanResponse> responseCall = apiInterface.scanResult("true",id,token);
+        Call<QrScanResponse> responseCall = apiInterface.scanResult("true", id, token);
         responseCall.enqueue(new Callback<QrScanResponse>() {
             @Override
             public void onResponse(Call<QrScanResponse> call, Response<QrScanResponse> response) {
                 Log.e("scan_res", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
-                if (response.body().getStatus().equalsIgnoreCase("success")){
-                    displayTexts(response,qr_url,id);
-                }else {
+                if (response.body().getStatus().equalsIgnoreCase("success")) {
+                    displayTexts(response, qr_url, id);
+                } else {
                     Toast.makeText(ScanResultActivity.this, "Error while fetching data", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<QrScanResponse> call, Throwable t) {
-                Log.e("scan_res", ""+t);
-               MyProgressDialog.dismiss();
+                Log.e("scan_res", "" + t);
+                MyProgressDialog.dismiss();
             }
         });
     }
 
-    private void displayTexts(Response<QrScanResponse> response,String url,String id) {
+    private void displayTexts(Response<QrScanResponse> response, String url, String id) {
         assert response.body() != null;
 
         if (!response.body().getQcaaName().equalsIgnoreCase("")) {
@@ -186,7 +188,7 @@ public class ScanResultActivity extends AppCompatActivity {
             txt_desc.setText(response.body().getQcaaDesc());
         }
         if (!response.body().getQcaaCat().equalsIgnoreCase("")) {
-            txt_cat.setText(response.body().getQcaaCat()+", "+response.body().getQcaaSubCat());
+            txt_cat.setText(response.body().getQcaaCat() + ", " + response.body().getQcaaSubCat());
         }
         if (!response.body().getQcaaEmailId().equalsIgnoreCase("")) {
             txt_email.setText(response.body().getQcaaEmailId());
@@ -201,12 +203,11 @@ public class ScanResultActivity extends AppCompatActivity {
             txt_mobile.setText(response.body().getQcaaPhoneNo());
         }
 
-        if (response.body().getQcaaProfileLogo().equalsIgnoreCase("NULL")){
+        if (response.body().getQcaaProfileLogo().equalsIgnoreCase("NULL")) {
             imageView.setImageResource(R.drawable.ic_placeholder);
-        }
-        else {
+        } else {
             Glide.with(ScanResultActivity.this).load(Constants.BASE_URL + response.body().getQcaaProfileLogo()).into(imageView);
-           // imageView.setImageURI(Constants.BASE_URL + response.body().getQcaaProfileLogo());
+            // imageView.setImageURI(Constants.BASE_URL + response.body().getQcaaProfileLogo());
 
         }
         str_mobile = response.body().getQcaaPhoneNo();
@@ -220,19 +221,25 @@ public class ScanResultActivity extends AppCompatActivity {
 //        str_linkedin = response.body().getUraLinkedin();
         str_name = response.body().getQcaaName();
 
-        String bitmap_name = response.body().getQcaaName()+" BIZ QR";
+        String bitmap_name = response.body().getQcaaName() + " BIZ QR";
         bitmapQrborder = writeTextOnDrawable(R.drawable.new_pro_frame, bitmap_name).getBitmap();
 
-        showQrCode(url);
+        if (!url.equalsIgnoreCase("")) {
+            showQrCode(url);
+        } else {
+            img_qr_code.setVisibility(View.GONE);
+            layout_shareAndSave.setVisibility(View.GONE);
+        }
+
         decodeId(id);
     }
 
-    private void decodeId(String id){
-        Log.e("id---->",id);
+    private void decodeId(String id) {
+        Log.e("id---->", id);
         byte[] tmp = Base64.decode(id, Base64.DEFAULT);
         try {
-           String str_profile_id = new String(tmp, "UTF-8");
-            Log.e("str_profile_id",""+str_profile_id);
+            String str_profile_id = new String(tmp, "UTF-8");
+            Log.e("str_profile_id", "" + str_profile_id);
             getStatus(str_profile_id);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -242,9 +249,9 @@ public class ScanResultActivity extends AppCompatActivity {
 
 
     private void getStatus(String pro_id) {
-        MyProgressDialog.show(ScanResultActivity.this,"Loading...");
-        String token = Prefs.with(ScanResultActivity.this).getString("token","");
-        Log.e("token",token);
+        MyProgressDialog.show(ScanResultActivity.this, "Loading...");
+        String token = Prefs.with(ScanResultActivity.this).getString("token", "");
+        Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<ProfileStatusResponse> call = apiInterface.qrCodeStatus("true", token, pro_id);
         call.enqueue(new Callback<ProfileStatusResponse>() {
@@ -279,9 +286,9 @@ public class ScanResultActivity extends AppCompatActivity {
         txt_dislike.setText(response.body().getDislikeCnt() + " Dislikes");
         txt_fav.setText(response.body().getFavCnt() + " Favorites");
         txt_ratings.setText(response.body().getRateCnt() + " Ratings");
-        if (response.body().getRateAvg().equalsIgnoreCase("")){
+        if (response.body().getRateAvg().equalsIgnoreCase("")) {
             txt_ratings_avg.setText("0");
-        }else {
+        } else {
             txt_ratings_avg.setText(response.body().getRateAvg());
         }
 
@@ -290,7 +297,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
     @OnClick({R.id.layout_fav, R.id.layout_like, R.id.layout_dislike, R.id.layout_share, R.id.layout_ratings, R.id.layout_mobile,
             R.id.layout_email, R.id.layout_website, R.id.layout_location, R.id.layout_whatsApp, R.id.layout_facebook, R.id.layout_youtube,
-            R.id.layout_instagram, R.id.layout_linkedIn,R.id.layout_shareQR,R.id.layout_save,R.id.btn_reach_us})
+            R.id.layout_instagram, R.id.layout_linkedIn, R.id.layout_shareQR, R.id.layout_save, R.id.btn_reach_us})
     public void onLayoutClick(View view) {
         switch (view.getId()) {
             case R.id.layout_fav:
@@ -304,7 +311,7 @@ public class ScanResultActivity extends AppCompatActivity {
             case R.id.layout_ratings:
                 break;
             case R.id.layout_mobile:
-                if (!str_mobile.equalsIgnoreCase("")){
+                if (!str_mobile.equalsIgnoreCase("")) {
                     callPhoneNumber(str_mobile);
                 }
                 break;
@@ -315,12 +322,12 @@ public class ScanResultActivity extends AppCompatActivity {
                 openUri(str_website);
                 break;
             case R.id.layout_location:
-                if (!str_location.equalsIgnoreCase("")){
+                if (!str_location.equalsIgnoreCase("")) {
                     setLocation(str_location);
                 }
                 break;
             case R.id.layout_whatsApp:
-                if (!str_whatsApp.equalsIgnoreCase("")){
+                if (!str_whatsApp.equalsIgnoreCase("")) {
                     whatsApp(str_whatsApp);
                 }
                 break;
@@ -343,9 +350,9 @@ public class ScanResultActivity extends AppCompatActivity {
                 saveQrToGallery();
                 break;
             case R.id.btn_reach_us:
-                if (!str_email.equalsIgnoreCase("")){
-                    sendReachUsMail(str_email,str_name);
-                }else {
+                if (!str_email.equalsIgnoreCase("")) {
+                    sendReachUsMail(str_email, str_name);
+                } else {
                     Toast.makeText(ScanResultActivity.this, "Email not found", Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -362,7 +369,7 @@ public class ScanResultActivity extends AppCompatActivity {
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
                             Intent intent = new Intent(Intent.ACTION_CALL);
-                            intent.setData(Uri.parse("tel:"+phoneNumber));
+                            intent.setData(Uri.parse("tel:" + phoneNumber));
                             startActivity(intent);
 //                            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel:", phoneNumber, null));
 //                            startActivity(intent);
@@ -428,18 +435,20 @@ public class ScanResultActivity extends AppCompatActivity {
         return found;
     }
 
-    private void openUri(String uri){
+    private void openUri(String uri) {
 //        String uri = WebsiteFromList;
         if (uri != "") {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://"+uri));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + uri));
             startActivity(intent);
         }
     }
 
-    private void showQrCode(String str_qr_id){
+    private void showQrCode(String str_qr_id) {
+        img_qr_code.setVisibility(View.VISIBLE);
+        layout_shareAndSave.setVisibility(View.VISIBLE);
         try {
             bitmap = encodeAsBitmap(str_qr_id);
-            img_qr_code.setImageBitmap(mergeBitmaps(bitmap,bitmapQrborder));
+            img_qr_code.setImageBitmap(mergeBitmaps(bitmap, bitmapQrborder));
         } catch (WriterException e) {
             e.printStackTrace();
         }
@@ -450,25 +459,24 @@ public class ScanResultActivity extends AppCompatActivity {
 
         try {
             Log.e("screenInches---->", String.valueOf(screenInches));
-            if(screenInches > 5.0 && screenInches < 5.5){
-                if (screenInches < 5.3){
+            if (screenInches > 5.0 && screenInches < 5.5) {
+                if (screenInches < 5.3) {
                     Log.e("first", "5.3-->");
                     result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1250, 1250, null);
-                }else {
+                } else {
                     Log.e("first", "--->");
                     result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
                 }
-            }else if(screenInches > 5.5 && screenInches < 6.0){
+            } else if (screenInches > 5.5 && screenInches < 6.0) {
                 Log.e("second", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1000, 1000, null);
-            }else if (screenInches > 6.0){
+            } else if (screenInches > 6.0) {
                 Log.e("third", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 1200, 1200, null);
-            }else if(screenInches < 5.0 && screenInches > 4.0){
+            } else if (screenInches < 5.0 && screenInches > 4.0) {
                 Log.e("fourth", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 700, 700, null);
-            }
-            else {
+            } else {
                 Log.e("else", "--->");
                 result = new MultiFormatWriter().encode(String.valueOf(list), BarcodeFormat.QR_CODE, 800, 800, null);
             }
@@ -524,14 +532,14 @@ public class ScanResultActivity extends AppCompatActivity {
 
     }
 
-    private void shareQr(){
+    private void shareQr() {
         Dexter.withActivity(ScanResultActivity.this)
                 .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
-                            Bitmap bitmap_share = mergeBitmaps(bitmap,bitmapQrborder);
+                            Bitmap bitmap_share = mergeBitmaps(bitmap, bitmapQrborder);
                             shareQrCodeImage(bitmap_share);
                         }
 
@@ -548,7 +556,7 @@ public class ScanResultActivity extends AppCompatActivity {
 
     }
 
-    private void shareQrCodeImage(Bitmap mBitmap){
+    private void shareQrCodeImage(Bitmap mBitmap) {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("image/jpeg");
 
@@ -629,7 +637,7 @@ public class ScanResultActivity extends AppCompatActivity {
         return combined;
     }
 
-    private void sendReachUsMail(String str_email,String fName){
+    private void sendReachUsMail(String str_email, String fName) {
         String[] recipients = str_email.split(",");
 
         Intent intent = new Intent(Intent.ACTION_SEND);
@@ -657,9 +665,14 @@ public class ScanResultActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.edit) {
-            startActivity(new Intent(ScanResultActivity.this,EditQRActivity.class)
-            .putExtra("str_id",str_id).putExtra("str_url",str_url));
-            finish();
+            if (str_url.equalsIgnoreCase("")) {
+                Toast.makeText(this, "Sorry! You don't have access to edit", Toast.LENGTH_SHORT).show();
+            } else {
+                startActivity(new Intent(ScanResultActivity.this, EditQRActivity.class)
+                        .putExtra("str_id", str_id).putExtra("str_url", str_url));
+                finish();
+            }
+
         }
 
         return super.onOptionsItemSelected(item);

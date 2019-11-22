@@ -32,7 +32,9 @@
             android:textColor="@color/black"/>
     </LinearLayout>
 
-
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerDashboard"
             android:layout_width="match_parent"
@@ -40,5 +42,18 @@
             android:paddingTop="10dp"
             android:paddingBottom="42dp"/>
 
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="70dp"
+            android:src="@drawable/ic_history"
+            android:layout_marginRight="20dp"
+            app:fabSize="mini"
+            android:contentDescription="@string/biz_history"
+            android:id="@+id/fab_bizQrHistory"/>
+
+
+    </FrameLayout>
 
 </LinearLayout>

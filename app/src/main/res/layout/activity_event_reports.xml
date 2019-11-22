@@ -79,6 +79,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.angadi.tripmanagementa.utils.CustomFontTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:gravity="center"
+                android:padding="8dp"
+                android:textStyle="bold"
+                android:id="@+id/txt_count">
+
+            </com.angadi.tripmanagementa.utils.CustomFontTextView>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"

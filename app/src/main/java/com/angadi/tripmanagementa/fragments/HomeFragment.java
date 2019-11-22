@@ -24,13 +24,19 @@ import androidx.fragment.app.Fragment;
 
 import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.activities.CreateEventActivity;
+import com.angadi.tripmanagementa.activities.HomeActivity;
+import com.angadi.tripmanagementa.activities.LoginActivity;
 import com.angadi.tripmanagementa.models.AddUpdateResponse;
+import com.angadi.tripmanagementa.models.AuthCheckResponse;
 import com.angadi.tripmanagementa.models.GetUpdateResponse;
 import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.Constants;
 import com.angadi.tripmanagementa.utils.MyProgressDialog;
 import com.angadi.tripmanagementa.utils.Prefs;
+import com.google.android.gms.vision.Frame;
+import com.google.android.gms.vision.barcode.Barcode;
+import com.google.android.gms.vision.barcode.BarcodeDetector;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.google.zxing.BinaryBitmap;
@@ -85,12 +91,14 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         mScannerView.setFocusable(true);
         mScannerView.setBorderColor(getActivity().getResources().getColor(R.color.colorAccent));
 
-        String event_id = Prefs.with(getActivity()).getString("live_message", "");
-        if (!event_id.equalsIgnoreCase("")) {
-            getLiveEvent(event_id);
-        } else {
-            txt_live.setVisibility(View.GONE);
-        }
+//        String event_id = Prefs.with(getActivity()).getString("live_message", "");
+//        if (!event_id.equalsIgnoreCase("")) {
+            getLiveEvent("10");
+            authCheck();
+//        }
+//        else {
+//            txt_live.setVisibility(View.GONE);
+//        }
         return view;
     }
 
@@ -306,12 +314,14 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
                 try {
                     if (response.body().getStatus().equalsIgnoreCase("success")) {
                         Log.e("success", "live----->");
-                        txt_live.setVisibility(View.VISIBLE);
+                       // txt_live.setVisibility(View.VISIBLE);
                         txt_live.setText(response.body().getLiveMsg());
                         txt_live.setSelected(true);
                     } else {
-                        txt_live.setVisibility(View.GONE);
+                      //  txt_live.setVisibility(View.GONE);
                         Log.e("failure", "live----->");
+                        txt_live.setText("Thank you for downloading PlanetZoom");
+                        txt_live.setSelected(true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -326,6 +336,32 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
         });
     }
 
+    private void authCheck() {
+        String token = Prefs.with(getActivity()).getString("token", "");
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<AuthCheckResponse> call = apiInterface.authCheck("true", token);
+        call.enqueue(new Callback<AuthCheckResponse>() {
+            @Override
+            public void onResponse(Call<AuthCheckResponse> call, Response<AuthCheckResponse> response) {
+                Log.e("authCheck", new Gson().toJson(response));
+                if (response.body().getStatus().equalsIgnoreCase("success")) {
+                    Log.e("success", response.body().getMessage());
+                } else {
+                    Log.e("failure", response.body().getMessage());
+                    Prefs.with(getActivity()).remove();
+                    Intent i = new Intent(getActivity(), LoginActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(i);
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<AuthCheckResponse> call, Throwable t) {
+                Log.e("authCheck", "" + t);
+            }
+        });
+    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
@@ -334,50 +370,60 @@ public class HomeFragment extends Fragment implements ZXingScannerView.ResultHan
                 if (intent != null) {
                     try {
                         Bitmap bMap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), intent.getData());
-//                        Bitmap bMap = [...];
-                        String contents = null;
 
-                        int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
-//copy pixel data from the Bitmap into the 'intArray' array
-                        bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
+                      //  String contents = null;
 
-                        LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
-                        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+//                        int[] intArray = new int[bMap.getWidth() * bMap.getHeight()];
+//                        bMap.getPixels(intArray, 0, bMap.getWidth(), 0, 0, bMap.getWidth(), bMap.getHeight());
+//                        LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
+//                        BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
+//                        Barcode data = new Barcode();
 
-                        Reader reader = new MultiFormatReader();
-                        Result result = reader.decode(bitmap);
-                        contents = result.getText();
-                        Log.e("contents--->", "" + contents);
-                        try {
-                            Uri data = Uri.parse(result.getText());
-                            if (data != null) {
-                                String qr_type = data.getQueryParameter("qr_type");
-                                String qr_user_id = data.getQueryParameter("qr_user_id");
-                                Log.e("qr_type ", "" + qr_type);
-                                Log.e("qr_user_id ", "" + qr_user_id);
+                        Frame frame = new Frame.Builder().setBitmap(bMap).build();
+                        BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(getActivity())
+                                .build();
+                        if (barcodeDetector.isOperational()) {
+                            SparseArray<Barcode> sparseArray = barcodeDetector.detect(frame);
+                            if (sparseArray != null && sparseArray.size() > 0) {
+                                for (int i = 0; i < sparseArray.size(); i++) {
+                                    Log.e("LOG_TAG", "Value: " + sparseArray.valueAt(i).rawValue);
+                                   // onObjectDetected(sparseArray.valueAt(i));
+                                    Uri data = Uri.parse(sparseArray.valueAt(i).rawValue);
+                                    if (data != null) {
+                                        String qr_type = data.getQueryParameter("qr_type");
+                                        String qr_user_id = data.getQueryParameter("qr_user_id");
+                                        Log.e("qr_type ", "" + qr_type);
+                                        Log.e("qr_user_id ", "" + qr_user_id);
+                                        String new_qr_id = sparseArray.valueAt(i).rawValue;
+                                        Log.e("result_length", "" + new_qr_id.length());
+                                        Log.e("new_qr_id", new_qr_id);
+                                        if (!new_qr_id.contains("planetzoom.app")) {
+                                            showAlert(new_qr_id);
+                                        }else {
+                                            if (new_qr_id.contains("test")){
+                                                Log.e("dev","environment-->");
+                                            }else {
+                                                new_qr_id = new_qr_id.substring(new_qr_id.indexOf("/") + 20);
+                                                new_qr_id = new_qr_id.substring(0, new_qr_id.indexOf("?"));
 
-                                if (!contents.contains("planetzoom")) {
-                                    showAlert(contents);
+                                                showResultDialog(new_qr_id, qr_type, sparseArray.valueAt(i).rawValue, qr_user_id);
+                                            }
+
+                                        }
+
+                                    }
                                 }
-                                Log.e("result_length", "" + contents.length());
-                                contents = contents.substring(contents.indexOf("/") + 20);
-                                contents = contents.substring(0, contents.indexOf("?"));
-                                Log.e("contents", contents);
-                                showResultDialog(contents, qr_type, String.valueOf(result), qr_user_id);
+                            } else {
+                                Log.e("LOG_TAG", "SparseArray null or empty");
+
                             }
-                        } catch (Exception e) {
-                            Log.e("cant read the image","--->");
-                            e.printStackTrace();
+
+                        } else {
+                            Log.e("LOG_TAG", "Detector dependencies are not yet downloaded");
                         }
 
-
                     } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (FormatException e) {
-                        e.printStackTrace();
-                    } catch (ChecksumException e) {
-                        e.printStackTrace();
-                    } catch (NotFoundException e) {
+                        Log.e("IOException","--->"+e);
                         e.printStackTrace();
                     }
                 }

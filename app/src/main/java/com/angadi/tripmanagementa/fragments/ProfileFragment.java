@@ -67,6 +67,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -608,14 +609,14 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
     private void saveQrToGallery() {
         Dexter.withActivity(getActivity())
-                .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
                         if (report.areAllPermissionsGranted()) {
                             if (bitmap != null) {
                                 Log.e("Bitmapforboreder", String.valueOf(bitmapQrborder));
-                                String Filepath = getImageUri(getActivity(), mergeBitmaps(bitmap, bitmapQrborder)).getPath();
+                                String Filepath = getImageUri(Objects.requireNonNull(getActivity()), mergeBitmaps(bitmap, bitmapQrborder)).getPath();
                                 if (Filepath != null) {
                                     addImageToGallery(Filepath, getActivity());
                                 }
@@ -678,7 +679,7 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outstream);
             outstream.close();
         } catch (Exception e) {
-            System.err.println(e.toString());
+            Log.e("shareQrCodeImageExp",""+e);
         }
 
         share.putExtra(Intent.EXTRA_STREAM, uri);
