@@ -39,10 +39,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
+        <activity android:name=".activities.ProfileResultActivity"></activity>
         <activity
             android:name=".activities.BizQrHistoryActivity"
             android:label="@string/title_activity_biz_qr_history"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.EventReportsActivity" />
         <activity android:name=".activities.EditQRActivity" />
         <activity android:name=".activities.StallsActivity" />

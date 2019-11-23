@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.activities.BizQrHistoryActivity;
 import com.angadi.tripmanagementa.activities.ImagePickerActivity;
 import com.angadi.tripmanagementa.adapters.GalleryAdapter;
 import com.angadi.tripmanagementa.models.DeleteGallery;
@@ -742,5 +743,8 @@ public class ProfileFragment extends Fragment implements SettingsDialogFragment.
 
         return combined;
     }
-
+    @OnClick(R.id.fab_proQrHistory)
+    public void onFabClick(View view) {
+        startActivity(new Intent(getActivity(), BizQrHistoryActivity.class).putExtra("scan_history","profile"));
+    }
 }

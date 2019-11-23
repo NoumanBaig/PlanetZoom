@@ -2,10 +2,13 @@ package com.angadi.tripmanagementa.fragments;
 
 import android.Manifest;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -406,17 +409,17 @@ public class ScanProfileDialogFragment extends DialogFragment {
                 break;
             case R.id.layout_youtube:
                 if (!str_youtube.equalsIgnoreCase("")) {
-                    openUri(str_youtube);
+                    watchYoutubeVideo(str_youtube);
                 }
                 break;
             case R.id.layout_instagram:
                 if (!str_instagram.equalsIgnoreCase("")) {
-                    openUri(str_instagram);
+                   instagram(str_instagram);
                 }
                 break;
             case R.id.layout_linkedIn:
                 if (!str_linkedin.equalsIgnoreCase("")) {
-                    openUri(str_linkedin);
+                    linkedIn(str_linkedin);
                 }
                 break;
             case R.id.btn_reach_us:
@@ -504,9 +507,61 @@ public class ScanProfileDialogFragment extends DialogFragment {
     }
 
     private void openUri(String uri) {
+        String FACEBOOK_URL = "https://www.facebook.com/"+uri;
+        String FACEBOOK_PAGE_ID = uri;
         if (!uri.equals("")) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://" + uri));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getFacebookPageURL(getActivity(),FACEBOOK_URL,FACEBOOK_PAGE_ID)));
             startActivity(intent);
+        }
+    }
+
+    private void linkedIn(String name){
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("linkedin://"+name));
+        final PackageManager packageManager = getContext().getPackageManager();
+        final List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (list.isEmpty()) {
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.linkedin.com/profile/view?id="+name));
+        }
+        startActivity(intent);
+    }
+
+    private void instagram(String name){
+        Uri uri = Uri.parse("http://instagram.com/_u/"+name);
+        Intent likeIng = new Intent(Intent.ACTION_VIEW, uri);
+
+        likeIng.setPackage("com.instagram.android");
+
+        try {
+            startActivity(likeIng);
+        } catch (ActivityNotFoundException e) {
+            startActivity(new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://instagram.com/"+name)));
+        }
+    }
+
+        public void watchYoutubeVideo(String id) {
+            Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
+            Intent webIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http://www.youtube.com/watch?v=" + id));
+            try {
+                startActivity(appIntent);
+            } catch (ActivityNotFoundException ex) {
+                startActivity(webIntent);
+            }
+        }
+
+    //method to get the right URL to use in the intent
+    public String getFacebookPageURL(Context context,String facebook_url,String facebook_id) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
+            if (versionCode >= 3002850) { //newer versions of fb app
+                return "fb://facewebmodal/f?href=" + facebook_url;
+            } else { //older versions of fb app
+                return "fb://page/" + facebook_id;
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return facebook_url; //normal web url
         }
     }
 

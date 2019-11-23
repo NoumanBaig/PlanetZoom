@@ -535,4 +535,11 @@ public interface ApiInterface {
     @FormUrlEncoded
     Call<AuthCheckResponse> authCheck(@Field("check") String check,
                                       @Field("token") String token);
+
+    @POST("ScanningResults/scanning_user_data/")
+    @FormUrlEncoded
+    Call<QRHistoryResponse> getProfileScanHistory(@Field("scanning_user_data") String scanning_data,
+                                           @Field("token") String token,
+                                           @Field("id_for") String id_for,
+                                           @Field("limit_num") String limit_num);
 }

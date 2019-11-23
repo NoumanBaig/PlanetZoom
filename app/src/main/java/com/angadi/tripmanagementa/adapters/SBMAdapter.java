@@ -21,11 +21,13 @@ public class SBMAdapter extends RecyclerView.Adapter<SBMAdapter.MyViewHolder> {
     Context mContext;
     List<QRHisData> resultList;
     ClickListener clickListener;
+    String string;
 
-    public SBMAdapter(Context context, List<QRHisData> resultList) {
+    public SBMAdapter(Context context, List<QRHisData> resultList, String string) {
         super();
         this.mContext = context;
         this.resultList = resultList;
+        this.string = string;
     }
 
     public interface ClickListener {
@@ -46,18 +48,34 @@ public class SBMAdapter extends RecyclerView.Adapter<SBMAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-      holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (clickListener != null) {
-                    clickListener.onClick(view, position,resultList.get(position).getSraaQrId());
+        if (string.equalsIgnoreCase("dashboard")) {
+            holder.layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (clickListener != null) {
+                        clickListener.onClick(view, position, resultList.get(position).getSraaQrId());
+                    }
                 }
-            }
-        });
+            });
 
-      holder.txt_date.setText("Date: "+resultList.get(position).getSraaDate());
-      holder.txt_name.setText(resultList.get(position).getSraaQrCodeName());
-      holder.txt_cat.setText("Category: "+resultList.get(position).getSraaQrCodeCat());
+            holder.txt_date.setText("Date: " + resultList.get(position).getSraaDate());
+            holder.txt_name.setText(resultList.get(position).getSraaQrCodeName());
+            holder.txt_cat.setText("Category: " + resultList.get(position).getSraaQrCodeCat());
+        } else {
+            holder.layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (clickListener != null) {
+                        clickListener.onClick(view, position, resultList.get(position).getSraaUid());
+                    }
+                }
+            });
+
+            holder.txt_date.setText("Date: " + resultList.get(position).getSraaDate());
+            holder.txt_name.setText(resultList.get(position).getSraaFirstName());
+            holder.txt_cat.setText("Login ID: " + resultList.get(position).getSraaLoginId());
+        }
+
     }
 
     @Override
@@ -67,7 +85,7 @@ public class SBMAdapter extends RecyclerView.Adapter<SBMAdapter.MyViewHolder> {
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txt_date,txt_cat,txt_name;
+        TextView txt_date, txt_cat, txt_name;
         LinearLayout layout;
 
         public MyViewHolder(@NonNull View itemView) {

@@ -3,6 +3,7 @@ package com.angadi.tripmanagementa.activities;
 import android.os.Bundle;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.utils.Prefs;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -32,7 +33,18 @@ public class BizQrHistoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("BIZ QR History");
+        if (getIntent().getExtras()!=null){
+            String string = getIntent().getStringExtra("scan_history");
+            assert string != null;
+            if (string.equalsIgnoreCase("dashboard")){
+                getSupportActionBar().setTitle("BIZ QR History");
+                Prefs.with(BizQrHistoryActivity.this).save("scan_history",string);
+            }else {
+                getSupportActionBar().setTitle("Profile QR History");
+                Prefs.with(BizQrHistoryActivity.this).save("scan_history",string);
+            }
+        }
+
     }
 
     @Override

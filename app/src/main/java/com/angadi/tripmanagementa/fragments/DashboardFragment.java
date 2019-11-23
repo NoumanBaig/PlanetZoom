@@ -109,6 +109,6 @@ public class DashboardFragment extends Fragment {
 
     @OnClick(R.id.fab_bizQrHistory)
     public void onFabClick(View view) {
-        startActivity(new Intent(getActivity(), BizQrHistoryActivity.class));
+        startActivity(new Intent(getActivity(), BizQrHistoryActivity.class).putExtra("scan_history","dashboard"));
     }
 }

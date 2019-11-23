@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,6 +26,8 @@ import com.angadi.tripmanagementa.activities.EditQRActivity;
 import com.angadi.tripmanagementa.activities.ScanResultActivity;
 import com.angadi.tripmanagementa.adapters.CountSectionAdapter;
 import com.angadi.tripmanagementa.adapters.SBMAdapter;
+import com.angadi.tripmanagementa.fragments.ScanProfileDialogFragment;
+import com.angadi.tripmanagementa.fragments.ScanResultDialogFragment;
 import com.angadi.tripmanagementa.models.DashboardResponse;
 import com.angadi.tripmanagementa.models.DashboardResult;
 import com.angadi.tripmanagementa.models.QRHisData;
@@ -50,7 +53,7 @@ import retrofit2.Response;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class SBMFragment extends Fragment {
+public class SBMFragment extends Fragment implements ScanResultDialogFragment.MessageDialogListener, ScanProfileDialogFragment.ProfileDialogListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -59,6 +62,7 @@ public class SBMFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.layout_not_found)
     LinearLayout layout_not_found;
+    String string;
 
 //    public static SBMFragment newInstance(int index) {
 //        SBMFragment fragment = new SBMFragment();
@@ -83,8 +87,13 @@ public class SBMFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View root = inflater.inflate(R.layout.fragment_sbm, container, false);
-        ButterKnife.bind(this,root);
-        getHistory();
+        ButterKnife.bind(this, root);
+        string = Prefs.with(getActivity()).getString("scan_history", "");
+        if (string.equalsIgnoreCase("dashboard")) {
+            getHistory();
+        } else {
+            getProfileHistory();
+        }
         return root;
     }
 
@@ -93,7 +102,7 @@ public class SBMFragment extends Fragment {
         String token = Prefs.with(getActivity()).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<QRHistoryResponse> responseCall = apiInterface.getScanHistory("true", token,"0","0");
+        Call<QRHistoryResponse> responseCall = apiInterface.getScanHistory("true", token, "0", "0");
         responseCall.enqueue(new Callback<QRHistoryResponse>() {
             @Override
             public void onResponse(Call<QRHistoryResponse> call, Response<QRHistoryResponse> response) {
@@ -122,26 +131,83 @@ public class SBMFragment extends Fragment {
         });
     }
 
-    private void setAdapter(List<QRHisData> dataList){
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            SBMAdapter adapter = new SBMAdapter(getActivity(),dataList);
-            recyclerView.setAdapter(adapter);
-
-            adapter.setClickListener(new SBMAdapter.ClickListener() {
-                @Override
-                public void onClick(View view, int position, String id) {
-                    byte[] data = new byte[0];
-                    try {
-                        data = id.getBytes("UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+    private void getProfileHistory() {
+        MyProgressDialog.show(getActivity(), "Loading...");
+        String token = Prefs.with(getActivity()).getString("token", "");
+        Log.e("token", token);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+        Call<QRHistoryResponse> responseCall = apiInterface.getProfileScanHistory("true", token, "1", "0");
+        responseCall.enqueue(new Callback<QRHistoryResponse>() {
+            @Override
+            public void onResponse(Call<QRHistoryResponse> call, Response<QRHistoryResponse> response) {
+                Log.e("wsm_history", new Gson().toJson(response));
+                MyProgressDialog.dismiss();
+                try {
+                    if (response.body().getStatus().equalsIgnoreCase("success")) {
+                        layout_not_found.setVisibility(View.GONE);
+                        List<QRHisResult> results = response.body().getResults();
+                        List<QRHisData> dataList = results.get(0).getScanData();
+                        setAdapter(dataList);
+                    } else {
+                        layout_not_found.setVisibility(View.VISIBLE);
                     }
-                    String base64 = Base64.encodeToString(data, Base64.DEFAULT);
-                    startActivity(new Intent(getActivity(), ScanResultActivity.class)
-                            .putExtra("qr_id", base64).putExtra("qr_url", ""));
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            });
+            }
+
+            @Override
+            public void onFailure(Call<QRHistoryResponse> call, Throwable t) {
+                Log.e("wsm_history", "" + t);
+                MyProgressDialog.dismiss();
+                layout_not_found.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void setAdapter(List<QRHisData> dataList) {
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        SBMAdapter adapter = new SBMAdapter(getActivity(), dataList, string);
+        recyclerView.setAdapter(adapter);
+
+        adapter.setClickListener(new SBMAdapter.ClickListener() {
+            @Override
+            public void onClick(View view, int position, String id) {
+                Log.e("id--->", id);
+                byte[] data = new byte[0];
+                try {
+                    data = id.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                String base64 = Base64.encodeToString(data, Base64.DEFAULT);
+                if (string.equalsIgnoreCase("dashboard")) {
+                    onBizClick(base64);
+                } else {
+                    onProfileClick(base64);
+                }
+            }
+        });
 
     }
 
+    private void onProfileClick(String base64) {
+        DialogFragment user_profile = ScanProfileDialogFragment.newInstance("User Profile", base64, "", "", "", this);
+        user_profile.show(getActivity().getSupportFragmentManager(), "user_profile");
+    }
+
+    private void onBizClick(String base64) {
+        DialogFragment scan_results = ScanResultDialogFragment.newInstance(getActivity(), "Scan Results", base64, "", "", "", this);
+        scan_results.show(getActivity().getSupportFragmentManager(), "scan_results");
+    }
+
+    @Override
+    public void onProfilePositiveClick(DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+
+    }
 }
