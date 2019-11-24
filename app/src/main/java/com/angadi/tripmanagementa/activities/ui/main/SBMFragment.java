@@ -136,7 +136,7 @@ public class SBMFragment extends Fragment implements ScanResultDialogFragment.Me
         String token = Prefs.with(getActivity()).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<QRHistoryResponse> responseCall = apiInterface.getProfileScanHistory("true", token, "1", "0");
+        Call<QRHistoryResponse> responseCall = apiInterface.getProfileScanHistory("true", token, "0", "0");
         responseCall.enqueue(new Callback<QRHistoryResponse>() {
             @Override
             public void onResponse(Call<QRHistoryResponse> call, Response<QRHistoryResponse> response) {
