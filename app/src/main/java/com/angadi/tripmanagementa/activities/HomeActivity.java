@@ -17,6 +17,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +26,9 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
+import com.angadi.tripmanagementa.circlenavigation.CircleItem;
+import com.angadi.tripmanagementa.circlenavigation.CircleNavigationView;
+import com.angadi.tripmanagementa.circlenavigation.CircleOnClickListener;
 import com.angadi.tripmanagementa.fragments.HomeFragment;
 import com.angadi.tripmanagementa.fragments.EventsFragment;
 import com.angadi.tripmanagementa.fragments.ProfileFragment;
@@ -46,10 +50,6 @@ import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.OnSuccessListener;
 import com.google.gson.Gson;
-import com.itparsa.circlenavigation.CircleItem;
-import com.itparsa.circlenavigation.CircleNavigationView;
-import com.itparsa.circlenavigation.CircleOnClickListener;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -65,6 +65,8 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
     private AppUpdateManager appUpdateManager;
     private boolean mNeedsFlexibleUpdate;
     public static final int REQUEST_CODE = 1234;
+    boolean doubleBackToExitPressedOnce = false;
+    CircleNavigationView mCircleNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +78,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mNeedsFlexibleUpdate = false;
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        final CircleNavigationView mCircleNavigationView;
+
         mCircleNavigationView = (CircleNavigationView) findViewById(R.id.navigation);
         mCircleNavigationView.initWithSaveInstanceState(savedInstanceState);
         mCircleNavigationView.setCentreButtonSelectable(true);
@@ -87,7 +89,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mCircleNavigationView.addCircleItem(new CircleItem("Profile", R.drawable.user));
         Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
         HomeFragment homeFragment = new HomeFragment();
-        loadFragment(homeFragment);
+        loadFragment(homeFragment, "home");
         //checking whether user is a organiser or not
         checkAdmin();
         mCircleNavigationView.setCircleOnClickListener(new CircleOnClickListener() {
@@ -95,7 +97,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
             public void onCentreButtonClick() {
                 Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
                 HomeFragment homeFragment = new HomeFragment();
-                loadFragment(homeFragment);
+                loadFragment(homeFragment, "home");
 //                Toast.makeText(HomeActivity.this, "Center Item Click", Toast.LENGTH_SHORT).show();
 //                mCircleNavigationView.showBadgeAtIndex(2, 80, getResources().getColor(R.color.colorAccent)
 //                        , 16, getResources().getColor(R.color.colorPrimary));
@@ -108,23 +110,23 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
                 if (itemIndex == 0) {
                     Log.e("Zero", "---->");
                     Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-                    OffersFragment zeroFragment = new OffersFragment();
-                    loadFragment(zeroFragment);
+                    OffersFragment offersFragment = new OffersFragment();
+                    loadFragment(offersFragment, "offers");
                 } else if (itemIndex == 1) {
                     Log.e("One", "---->");
                     Glide.with(HomeActivity.this).load(R.drawable.planet_event).into(img_toolbar);
-                    EventsFragment oneFragment = new EventsFragment();
-                    loadFragment(oneFragment);
+                    EventsFragment eventsFragment = new EventsFragment();
+                    loadFragment(eventsFragment, "events");
                 } else if (itemIndex == 2) {
                     Log.e("Two", "---->");
                     Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-                    DashboardFragment zeroFragment = new DashboardFragment();
-                    loadFragment(zeroFragment);
+                    DashboardFragment dashboardFragment = new DashboardFragment();
+                    loadFragment(dashboardFragment, "dashboard");
                 } else if (itemIndex == 3) {
                     Log.e("Three", "---->");
                     Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-                    ProfileFragment zeroFragment = new ProfileFragment();
-                    loadFragment(zeroFragment);
+                    ProfileFragment profileFragment = new ProfileFragment();
+                    loadFragment(profileFragment, "profile");
                 }
 //                if (itemIndex == 2)
 //                    mCircleNavigationView.hideBadgeAtIndex(2);
@@ -173,9 +175,9 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
     }
 
 
-    private void loadFragment(Fragment fragment) {
+    private void loadFragment(Fragment fragment, String tag) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment);
+        fragmentTransaction.replace(R.id.container, fragment, tag);
 //        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
@@ -258,7 +260,6 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
             }
         });
     }
-
 
 
     @Override
@@ -349,5 +350,57 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
                         "An update is available and accessible in More.",
                         Snackbar.LENGTH_LONG);
         snackbar.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        HomeFragment home = new HomeFragment();
+        Fragment homeFragment = getSupportFragmentManager().findFragmentByTag("home");
+        Fragment dashboardFragment = getSupportFragmentManager().findFragmentByTag("dashboard");
+        Fragment eventsFragment = getSupportFragmentManager().findFragmentByTag("events");
+        Fragment profileFragment = getSupportFragmentManager().findFragmentByTag("profile");
+        Fragment offersFragment = getSupportFragmentManager().findFragmentByTag("offers");
+        if (homeFragment != null && homeFragment.isVisible()) {
+            Log.e("home", "--->");
+            doubleTapExit();
+        } else if (dashboardFragment != null && dashboardFragment.isVisible()) {
+            Log.e("dashboard", "--->");
+            loadFragment(home, "home");
+            mCircleNavigationView.setCentreButtonSelectable(true);
+            mCircleNavigationView.updateSpaceItems(-1);
+        } else if (eventsFragment != null && eventsFragment.isVisible()) {
+            Log.e("events", "--->");
+            loadFragment(home, "home");
+            mCircleNavigationView.setCentreButtonSelectable(true);
+            mCircleNavigationView.updateSpaceItems(-1);
+        } else if (profileFragment != null && profileFragment.isVisible()) {
+            Log.e("profile", "--->");
+            loadFragment(home, "home");
+            mCircleNavigationView.setCentreButtonSelectable(true);
+            mCircleNavigationView.updateSpaceItems(-1);
+        } else if (offersFragment != null && offersFragment.isVisible()) {
+            Log.e("offers", "--->");
+            loadFragment(home, "home");
+            mCircleNavigationView.setCentreButtonSelectable(true);
+            mCircleNavigationView.updateSpaceItems(-1);
+        }
+    }
+
+    private void doubleTapExit() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
     }
 }
