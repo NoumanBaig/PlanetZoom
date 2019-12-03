@@ -12,6 +12,8 @@ import com.angadi.tripmanagementa.models.DeleteGallery;
 import com.angadi.tripmanagementa.models.DeleteSubEventResponse;
 import com.angadi.tripmanagementa.models.EventReportsResponse;
 import com.angadi.tripmanagementa.models.EventTrackResponse;
+import com.angadi.tripmanagementa.models.EventVisitorSingleRes;
+import com.angadi.tripmanagementa.models.EventVisitorsResponse;
 import com.angadi.tripmanagementa.models.GetUpdateResponse;
 import com.angadi.tripmanagementa.models.ImageUploadResponse;
 import com.angadi.tripmanagementa.models.InfluencersResponse;
@@ -539,7 +541,17 @@ public interface ApiInterface {
     @POST("ScanningResults/scanning_user_data/")
     @FormUrlEncoded
     Call<QRHistoryResponse> getProfileScanHistory(@Field("scanning_user_data") String scanning_data,
-                                           @Field("token") String token,
-                                           @Field("id_for") String id_for,
-                                           @Field("limit_num") String limit_num);
+                                                  @Field("token") String token,
+                                                  @Field("id_for") String id_for,
+                                                  @Field("limit_num") String limit_num);
+
+    @POST("admin/mapping_count/")
+    @FormUrlEncoded
+    Call<EventVisitorsResponse> getEventVisitors(@Field("mapping_count") String scanning_data,
+                                                 @Field("day") String day);
+
+    @POST("admin/mapping_data/")
+    @FormUrlEncoded
+    Call<EventVisitorSingleRes> getVisitor(@Field("day") String day,
+                                           @Field("category") String category);
 }

@@ -12,4 +12,10 @@
         android:icon="@drawable/ic_receipt"
         android:title="Reports" />
 
+    <item android:id="@+id/dashboard"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_dashboard_white"
+        android:iconTint="@color/white"
+        android:title="Dashboard" />
+
 </menu>

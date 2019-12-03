@@ -328,7 +328,7 @@ public class LoginActivity extends AppCompatActivity {
     private void callLogin(String username) {
         avi.smoothToShow();
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"NO");
+        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"YES");
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -347,7 +347,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Prefs.with(LoginActivity.this).save("firstName",str_fname);
                                 Prefs.with(LoginActivity.this).save("str_uid",str_uid);
                                 txt_otp.setText(getResources().getString(R.string.otp)+" "+username);
-//                                Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
                                 toggle();
                                // pinView.setText(str_otp);
                             }
@@ -372,7 +372,7 @@ public class LoginActivity extends AppCompatActivity {
     private void resendOtp(String username) {
         avi.smoothToShow();
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"NO");
+        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"YES");
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -419,7 +419,7 @@ public class LoginActivity extends AppCompatActivity {
         avi.smoothToShow();
         Prefs.with(LoginActivity.this).save("firstName",firstName);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<RegisterResponse> responseCall = apiInterface.register(firstName, username,"NO");
+        Call<RegisterResponse> responseCall = apiInterface.register(firstName, username,"YES");
         responseCall.enqueue(new Callback<RegisterResponse>() {
             @Override
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
@@ -430,7 +430,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.body().getStatus().equalsIgnoreCase("success")) {
                             str_otp = String.valueOf(response.body().getRand());
                             toggle();
-//                            Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
 //                            pinView.setText(str_otp);
                         } else {
                             Log.e("else", "----->");

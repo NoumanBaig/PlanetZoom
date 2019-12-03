@@ -101,8 +101,8 @@ public class CreateEventActivity extends AppCompatActivity {
     ImageView img_logo;
     @BindView(R.id.img_map)
     ImageView img_map;
-    String base64String,base64StringImages,base64Map;
-//    @BindView(R.id.loading_layout)
+    String base64String, base64StringImages, base64Map;
+    //    @BindView(R.id.loading_layout)
 //    View loadingIndicator;
     @BindView(R.id.edt_name)
     EditText edt_name;
@@ -136,7 +136,7 @@ public class CreateEventActivity extends AppCompatActivity {
     RecyclerView recyclerMembers;
     @BindView(R.id.btn_create)
     Button btn_create;
-    String pea_id,str_id,event_id;
+    String pea_id, str_id, event_id;
     @BindView(R.id.layout_images)
     LinearLayout layout_images;
     @BindView(R.id.recyclerImages)
@@ -161,7 +161,7 @@ public class CreateEventActivity extends AppCompatActivity {
         getCurrentLocation();
         setImagesAdapter();
 
-        if (getIntent().getExtras() != null){
+        if (getIntent().getExtras() != null) {
             str_id = getIntent().getStringExtra("id");
             event_id = getIntent().getStringExtra("id");
             getSupportActionBar().setTitle("Update Event");
@@ -169,25 +169,25 @@ public class CreateEventActivity extends AppCompatActivity {
             getEventDetails(str_id);
             layout_images.setVisibility(View.GONE);
             layout_uploaded_images.setVisibility(View.VISIBLE);
-            Log.e("event_id",""+event_id);
-        }else {
+            Log.e("event_id", "" + event_id);
+        } else {
             getSupportActionBar().setTitle("Create Event");
             btn_create.setText("Create Event");
-            Log.e("btn_create",btn_create.getText().toString());
+            Log.e("btn_create", btn_create.getText().toString());
             layout_images.setVisibility(View.VISIBLE);
             layout_uploaded_images.setVisibility(View.GONE);
         }
 
-      //  showHideLayouts();
+        //  showHideLayouts();
     }
 
-    private void showHideLayouts(){
-        if (Constants.event_created){
+    private void showHideLayouts() {
+        if (Constants.event_created) {
             layout_add.setVisibility(View.VISIBLE);
             layout_members.setVisibility(View.VISIBLE);
             layout_images.setVisibility(View.VISIBLE);
 //            getMembers();
-        }else {
+        } else {
             layout_add.setVisibility(View.GONE);
             layout_images.setVisibility(View.GONE);
             layout_members.setVisibility(View.GONE);
@@ -206,11 +206,11 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void goBack() {
-        startActivity(new Intent(CreateEventActivity.this, ShowEventsActivity.class).putExtra("events","created"));
+        startActivity(new Intent(CreateEventActivity.this, ShowEventsActivity.class).putExtra("events", "created"));
         finish();
     }
 
-    private void scrollDown(){
+    private void scrollDown() {
         scrollView.post(new Runnable() {
             @Override
             public void run() {
@@ -241,7 +241,7 @@ public class CreateEventActivity extends AppCompatActivity {
                 });
     }
 
-    @OnClick({R.id.img_loc, R.id.btn_create, R.id.img_logo, R.id.txt_date, R.id.txt_time,R.id.btn_addDays,R.id.btn_addMembers,R.id.img_map})
+    @OnClick({R.id.img_loc, R.id.btn_create, R.id.img_logo, R.id.txt_date, R.id.txt_time, R.id.btn_addDays, R.id.btn_addMembers, R.id.img_map})
     public void onClick(View view) {
         switch (view.getId()) {
 //            case R.id.txt_date:
@@ -304,8 +304,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
                 break;
             case R.id.btn_addDays:
-                startActivity(new Intent(this,AddSubEventsActivity.class)
-                .putExtra("id",pea_id));
+                startActivity(new Intent(this, AddSubEventsActivity.class)
+                        .putExtra("id", pea_id));
                 break;
             case R.id.btn_addMembers:
                 getMembers();
@@ -376,9 +376,9 @@ public class CreateEventActivity extends AppCompatActivity {
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_WIDTH, 1000);
         intent.putExtra(ImagePickerActivity.INTENT_BITMAP_MAX_HEIGHT, 1000);
 
-        if (num==1){
+        if (num == 1) {
             startActivityForResult(intent, REQUEST_IMAGE);
-        }else {
+        } else {
             startActivityForResult(intent, REQUEST_IMAGE_MAP);
         }
 
@@ -392,9 +392,9 @@ public class CreateEventActivity extends AppCompatActivity {
         intent.putExtra(ImagePickerActivity.INTENT_LOCK_ASPECT_RATIO, false);
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_X, 1); // 16x9, 1x1, 3:4, 3:2
         intent.putExtra(ImagePickerActivity.INTENT_ASPECT_RATIO_Y, 1);
-        if (num==1){
+        if (num == 1) {
             startActivityForResult(intent, REQUEST_IMAGE);
-        }else {
+        } else {
             startActivityForResult(intent, REQUEST_IMAGE_MAP);
         }
     }
@@ -477,12 +477,12 @@ public class CreateEventActivity extends AppCompatActivity {
                     // You can update this bitmap to your server
                     Bitmap bitmapProfile = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
                     base64StringImages = ImageUtil.convert(bitmapProfile);
-                    Log.e("base64StringImages", ""+ base64StringImages);
+                    Log.e("base64StringImages", "" + base64StringImages);
 
                     imageArray.add(imageArray.size() - 1, bitmapProfile);
                     recyclerImages.scrollToPosition(addImageAdapter.getItemCount() - 1);
                     addImageAdapter.notifyDataSetChanged();
-                    uploadImages(event_id,base64StringImages);
+                    uploadImages(event_id, base64StringImages);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -526,31 +526,30 @@ public class CreateEventActivity extends AppCompatActivity {
 //        }
         else if (edt_contact.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please enter contact number", Toast.LENGTH_SHORT).show();
-        }
-        else if (edt_emergency.getText().toString().equalsIgnoreCase("")) {
+        } else if (edt_emergency.getText().toString().equalsIgnoreCase("")) {
             Toast.makeText(this, "Please enter emergency number", Toast.LENGTH_SHORT).show();
-        }else {
-            if (btn_create.getText().toString().equalsIgnoreCase("Create Event")){
+        } else {
+            if (btn_create.getText().toString().equalsIgnoreCase("Create Event")) {
                 createEvent(edt_name.getText().toString(), edt_price.getText().toString(), edt_noOfTickets.getText().toString(),
                         edt_location.getText().toString(), edt_venue.getText().toString(), edt_desc.getText().toString(), txt_date.getText().toString(),
-                        txt_time.getText().toString(), edt_organisation.getText().toString(),edt_contact.getText().toString(),edt_emergency.getText().toString());
+                        txt_time.getText().toString(), edt_organisation.getText().toString(), edt_contact.getText().toString(), edt_emergency.getText().toString());
 
-            }else {
+            } else {
                 updateEvent(edt_name.getText().toString(), edt_price.getText().toString(), edt_noOfTickets.getText().toString(),
                         edt_location.getText().toString(), edt_venue.getText().toString(), edt_desc.getText().toString(), txt_date.getText().toString(),
-                        txt_time.getText().toString(), edt_organisation.getText().toString(),pea_id,edt_contact.getText().toString(),edt_emergency.getText().toString());
+                        txt_time.getText().toString(), edt_organisation.getText().toString(), pea_id, edt_contact.getText().toString(), edt_emergency.getText().toString());
             }
         }
     }
 
     private void createEvent(String name, String price, String tickets, String location, String venue, String desc,
-                             String date, String time, String organisation,String contact, String emergency) {
-        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+                             String date, String time, String organisation, String contact, String emergency) {
+        MyProgressDialog.show(CreateEventActivity.this, "Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<CreateEventResponse> call = apiInterface.addEvents("true", token, name, price, tickets, location, venue, desc, date, time, organisation, "0", base64String,contact,emergency);
+        Call<CreateEventResponse> call = apiInterface.addEvents("true", token, name, price, tickets, location, venue, desc, date, time, organisation, "0", base64String, contact, emergency);
 
         call.enqueue(new Callback<CreateEventResponse>() {
             @Override
@@ -562,11 +561,11 @@ public class CreateEventActivity extends AppCompatActivity {
                         Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         Prefs.with(CreateEventActivity.this).save("event_id", response.body().getNewEventId());
 //                        goBack();
-                        Constants.event_created=true;
+                        Constants.event_created = true;
                         scrollDown();
                         event_id = response.body().getNewEventId();
                         pea_id = response.body().getNewEventId();
-                        Log.e("",""+event_id);
+                        Log.e("", "" + event_id);
                         layout_images.setVisibility(View.VISIBLE);
                         layout_add.setVisibility(View.VISIBLE);
                     } else {
@@ -587,12 +586,12 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private void updateEvent(String name, String price, String tickets, String location, String venue, String desc,
                              String date, String time, String organisation, String id, String contact, String emergency) {
-        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+        MyProgressDialog.show(CreateEventActivity.this, "Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<CreateEventResponse> call = apiInterface.updateEvents("true", token, name, price, tickets, location, venue, desc, date, time, organisation, "0", base64String,id,"1",contact,emergency);
+        Call<CreateEventResponse> call = apiInterface.updateEvents("true", token, name, price, tickets, location, venue, desc, date, time, organisation, "0", base64String, id, "1", contact, emergency);
 
         call.enqueue(new Callback<CreateEventResponse>() {
             @Override
@@ -620,53 +619,53 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-    private void getMembers(){
-        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+    private void getMembers() {
+        MyProgressDialog.show(CreateEventActivity.this, "Loading...");
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
         Call<MembersResponse> call = apiInterface.getMembers("true");
         call.enqueue(new Callback<MembersResponse>() {
             @Override
             public void onResponse(Call<MembersResponse> call, Response<MembersResponse> response) {
-                Log.e("getMembers",new Gson().toJson(response));
+                Log.e("getMembers", new Gson().toJson(response));
                 MyProgressDialog.dismiss();
-                if (response.body().getStatus().equalsIgnoreCase("success")){
+                if (response.body().getStatus().equalsIgnoreCase("success")) {
                     List<MembersResult> membersResultList = response.body().getResults();
                     layout_members.setVisibility(View.VISIBLE);
                     setMembersAdapter(membersResultList);
                     scrollDown();
-                }else {
-                    Toast.makeText(CreateEventActivity.this, ""+response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<MembersResponse> call, Throwable t) {
-                Log.e("getMembers",""+t);
+                Log.e("getMembers", "" + t);
                 MyProgressDialog.dismiss();
             }
         });
     }
 
-    private void setMembersAdapter(List<MembersResult> membersResultList){
+    private void setMembersAdapter(List<MembersResult> membersResultList) {
         recyclerMembers.setLayoutManager(new LinearLayoutManager(this));
-        MembersAdapter adapter = new MembersAdapter(this,membersResultList);
+        MembersAdapter adapter = new MembersAdapter(this, membersResultList);
         recyclerMembers.setAdapter(adapter);
 
         adapter.setClickListener(new MembersAdapter.ClickListener() {
             @Override
-            public void onClick(View view, int position, String id,String title) {
-                Log.e("id---->",""+id);
-                if (title.equalsIgnoreCase("Volunteers")){
-                    startActivity(new Intent(CreateEventActivity.this,AddVolunteersActivity.class)
-                            .putExtra("mem_id",id)
-                            .putExtra("str_id",str_id)
-                            .putExtra("mem_title",title));
+            public void onClick(View view, int position, String id, String title) {
+                Log.e("id---->", "" + id);
+                if (title.equalsIgnoreCase("Volunteers")) {
+                    startActivity(new Intent(CreateEventActivity.this, AddVolunteersActivity.class)
+                            .putExtra("mem_id", id)
+                            .putExtra("str_id", str_id)
+                            .putExtra("mem_title", title));
 
-                }else {
-                    startActivity(new Intent(CreateEventActivity.this,AddMembersActivity.class)
-                            .putExtra("mem_id",id)
-                            .putExtra("str_id",str_id)
-                            .putExtra("mem_title",title));
+                } else {
+                    startActivity(new Intent(CreateEventActivity.this, AddMembersActivity.class)
+                            .putExtra("mem_id", id)
+                            .putExtra("str_id", str_id)
+                            .putExtra("mem_title", title));
 
                 }
 
@@ -674,13 +673,13 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    private void getEventDetails(String event_id){
-        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+    private void getEventDetails(String event_id) {
+        MyProgressDialog.show(CreateEventActivity.this, "Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        Call<EventDetailsResponse> call = apiInterface.getEventDetails("true",token,event_id);
+        Call<EventDetailsResponse> call = apiInterface.getEventDetails("true", token, event_id);
         call.enqueue(new Callback<EventDetailsResponse>() {
             @Override
             public void onResponse(Call<EventDetailsResponse> call, Response<EventDetailsResponse> response) {
@@ -702,8 +701,8 @@ public class CreateEventActivity extends AppCompatActivity {
                         if (response.body().getPeaLogo().equalsIgnoreCase("NULL")) {
                             Glide.with(CreateEventActivity.this).load(R.drawable.organise_event).into(img_logo);
                         } else {
-                            Log.e("getPeaLogo", ""+response.body().getPeaLogo());
-                            Glide.with(CreateEventActivity.this).load(Constants.BASE_URL+response.body().getPeaLogo()).into(img_logo);
+                            Log.e("getPeaLogo", "" + response.body().getPeaLogo());
+                            Glide.with(CreateEventActivity.this).load(Constants.BASE_URL + response.body().getPeaLogo()).into(img_logo);
                         }
                         List<PeaGallery> galleryList = response.body().getPeaGallerys();
                         setImagesAdapterJustShow(galleryList);
@@ -712,10 +711,10 @@ public class CreateEventActivity extends AppCompatActivity {
 //                        layout_images.setVisibility(View.VISIBLE);
                         layout_members.setVisibility(View.VISIBLE);
                         pea_id = response.body().getPeaId();
-                        Log.e("pea_id",""+pea_id);
+                        Log.e("pea_id", "" + pea_id);
 //                        getMembers();
                     } else {
-                         Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(CreateEventActivity.this, "" + response.body().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -732,13 +731,13 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-    private void setImagesAdapter(){
+    private void setImagesAdapter() {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.add_pics);
         imageArray.add(bitmap);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateEventActivity.this,
                 RecyclerView.HORIZONTAL, false);
         recyclerImages.setLayoutManager(linearLayoutManager);
-        addImageAdapter = new AddImageAdapter(CreateEventActivity.this, imageArray,"bitmap");
+        addImageAdapter = new AddImageAdapter(CreateEventActivity.this, imageArray, "bitmap");
         recyclerImages.setAdapter(addImageAdapter);
         recyclerImages.scrollToPosition(addImageAdapter.getItemCount() - 1);
         addImageAdapter.setClickListener(new AddImageAdapter.ImageClickListener() {
@@ -762,13 +761,13 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-    private void setImagesAdapterJustShow(List<PeaGallery> galleryList){
+    private void setImagesAdapterJustShow(List<PeaGallery> galleryList) {
 //        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.add_pics);
 //        imageArray.add(bitmap);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CreateEventActivity.this,
                 RecyclerView.HORIZONTAL, false);
         recyclerUploadedImages.setLayoutManager(linearLayoutManager);
-        addImageAdapter = new AddImageAdapter(CreateEventActivity.this, galleryList,"string");
+        addImageAdapter = new AddImageAdapter(CreateEventActivity.this, galleryList, "string");
         recyclerUploadedImages.setAdapter(addImageAdapter);
         recyclerUploadedImages.scrollToPosition(addImageAdapter.getItemCount() - 1);
 
@@ -818,13 +817,13 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
 
-    private void uploadImages(String event_id,String photo) {
-        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+    private void uploadImages(String event_id, String photo) {
+        MyProgressDialog.show(CreateEventActivity.this, "Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ImageUploadResponse> call = apiInterface.imageUpload("true",token,event_id,photo);
+        Call<ImageUploadResponse> call = apiInterface.imageUpload("true", token, event_id, photo);
         call.enqueue(new Callback<ImageUploadResponse>() {
             @Override
             public void onResponse(Call<ImageUploadResponse> call, Response<ImageUploadResponse> response) {
@@ -849,13 +848,13 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    private void deleteImages(String event_id,String photo) {
-        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+    private void deleteImages(String event_id, String photo) {
+        MyProgressDialog.show(CreateEventActivity.this, "Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<ImageUploadResponse> call = apiInterface.imageUpload("true",token,event_id,photo);
+        Call<ImageUploadResponse> call = apiInterface.imageUpload("true", token, event_id, photo);
         call.enqueue(new Callback<ImageUploadResponse>() {
             @Override
             public void onResponse(Call<ImageUploadResponse> call, Response<ImageUploadResponse> response) {
@@ -897,26 +896,30 @@ public class CreateEventActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.update) {
-            if (btn_create.getText().toString().equalsIgnoreCase("Update Event")){
+            if (btn_create.getText().toString().equalsIgnoreCase("Update Event")) {
                 showUpdateDialog();
-            }else {
+            } else {
                 Toast.makeText(this, "Try this feature after creating event", Toast.LENGTH_SHORT).show();
             }
-
-        }else if (id == R.id.reports) {
-            if (btn_create.getText().toString().equalsIgnoreCase("Update Event")){
-               startActivity(new Intent(CreateEventActivity.this,EventReportsActivity.class).putExtra("str_id",str_id));
-            }else {
+        } else if (id == R.id.reports) {
+            if (btn_create.getText().toString().equalsIgnoreCase("Update Event")) {
+                startActivity(new Intent(CreateEventActivity.this, EventReportsActivity.class).putExtra("str_id", str_id));
+            } else {
                 Toast.makeText(this, "Try this feature after creating event", Toast.LENGTH_SHORT).show();
             }
-
+        } else if (id == R.id.dashboard) {
+            if (btn_create.getText().toString().equalsIgnoreCase("Update Event")) {
+                startActivity(new Intent(CreateEventActivity.this, DashboardActivity.class).putExtra("str_id", str_id));
+            } else {
+                Toast.makeText(this, "Try this feature after creating event", Toast.LENGTH_SHORT).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void showUpdateDialog(){
-        final Dialog alertDialog=new Dialog(CreateEventActivity.this,android.R.style.Theme_Material_Light_Dialog_NoActionBar);
+    private void showUpdateDialog() {
+        final Dialog alertDialog = new Dialog(CreateEventActivity.this, android.R.style.Theme_Material_Light_Dialog_NoActionBar);
         alertDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         alertDialog.setContentView(R.layout.update_dialog);
         Window window = alertDialog.getWindow();
@@ -925,14 +928,14 @@ public class CreateEventActivity extends AppCompatActivity {
         wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
         alertDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        EditText editText=(EditText)alertDialog.findViewById(R.id.editText);
-        Button ok=(Button)alertDialog.findViewById(R.id.dialog_btn);
+        EditText editText = (EditText) alertDialog.findViewById(R.id.editText);
+        Button ok = (Button) alertDialog.findViewById(R.id.dialog_btn);
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (editText.getText().toString().equalsIgnoreCase("")){
+                if (editText.getText().toString().equalsIgnoreCase("")) {
                     Toast.makeText(CreateEventActivity.this, "Please enter something", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     alertDialog.dismiss();
                     updateLiveEvent(editText.getText().toString());
                 }
@@ -943,12 +946,12 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void updateLiveEvent(String message) {
-        MyProgressDialog.show(CreateEventActivity.this,"Loading...");
+        MyProgressDialog.show(CreateEventActivity.this, "Loading...");
         String token = Prefs.with(CreateEventActivity.this).getString("token", "");
         Log.e("token", token);
 
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<AddUpdateResponse> call = apiInterface.addEventLiveUpdate("true",token,message,event_id);
+        Call<AddUpdateResponse> call = apiInterface.addEventLiveUpdate("true", token, message, event_id);
         call.enqueue(new Callback<AddUpdateResponse>() {
             @Override
             public void onResponse(Call<AddUpdateResponse> call, Response<AddUpdateResponse> response) {
