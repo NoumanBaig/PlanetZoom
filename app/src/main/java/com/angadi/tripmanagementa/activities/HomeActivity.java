@@ -29,6 +29,7 @@ import com.angadi.tripmanagementa.R;
 import com.angadi.tripmanagementa.circlenavigation.CircleItem;
 import com.angadi.tripmanagementa.circlenavigation.CircleNavigationView;
 import com.angadi.tripmanagementa.circlenavigation.CircleOnClickListener;
+import com.angadi.tripmanagementa.fragments.ECardFragment;
 import com.angadi.tripmanagementa.fragments.HomeFragment;
 import com.angadi.tripmanagementa.fragments.EventsFragment;
 import com.angadi.tripmanagementa.fragments.ProfileFragment;
@@ -86,7 +87,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         mCircleNavigationView.addCircleItem(new CircleItem("Offers", R.drawable.bargains));
         mCircleNavigationView.addCircleItem(new CircleItem("Events", R.drawable.event));
         mCircleNavigationView.addCircleItem(new CircleItem("Dashboard", R.drawable.dashboard));
-        mCircleNavigationView.addCircleItem(new CircleItem("Profile", R.drawable.user));
+        mCircleNavigationView.addCircleItem(new CircleItem("E-Card", R.drawable.ic_id_card));
         Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
         HomeFragment homeFragment = new HomeFragment();
         loadFragment(homeFragment, "home");
@@ -125,8 +126,10 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
                 } else if (itemIndex == 3) {
                     Log.e("Three", "---->");
                     Glide.with(HomeActivity.this).load(R.drawable.planet_zoom_white).into(img_toolbar);
-                    ProfileFragment profileFragment = new ProfileFragment();
-                    loadFragment(profileFragment, "profile");
+//                    ProfileFragment profileFragment = new ProfileFragment();
+//                    loadFragment(profileFragment, "profile");
+                    ECardFragment eCardFragment = new ECardFragment();
+                    loadFragment(eCardFragment, "e_card");
                 }
 //                if (itemIndex == 2)
 //                    mCircleNavigationView.hideBadgeAtIndex(2);
@@ -358,7 +361,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
         Fragment homeFragment = getSupportFragmentManager().findFragmentByTag("home");
         Fragment dashboardFragment = getSupportFragmentManager().findFragmentByTag("dashboard");
         Fragment eventsFragment = getSupportFragmentManager().findFragmentByTag("events");
-        Fragment profileFragment = getSupportFragmentManager().findFragmentByTag("profile");
+        Fragment profileFragment = getSupportFragmentManager().findFragmentByTag("e_card");
         Fragment offersFragment = getSupportFragmentManager().findFragmentByTag("offers");
         if (homeFragment != null && homeFragment.isVisible()) {
             Log.e("home", "--->");
@@ -374,7 +377,7 @@ public class HomeActivity extends AppCompatActivity implements ScanResultDialogF
             mCircleNavigationView.setCentreButtonSelectable(true);
             mCircleNavigationView.updateSpaceItems(-1);
         } else if (profileFragment != null && profileFragment.isVisible()) {
-            Log.e("profile", "--->");
+            Log.e("e_card", "--->");
             loadFragment(home, "home");
             mCircleNavigationView.setCentreButtonSelectable(true);
             mCircleNavigationView.updateSpaceItems(-1);

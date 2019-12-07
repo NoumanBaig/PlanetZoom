@@ -2,12 +2,6 @@ package com.angadi.tripmanagementa.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.app.ActivityOptionsCompat;
-import androidx.core.util.Pair;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.transition.ChangeBounds;
 import androidx.transition.Slide;
 import androidx.transition.Transition;
 import androidx.transition.TransitionManager;
@@ -15,27 +9,19 @@ import androidx.transition.TransitionManager;
 import android.Manifest;
 import android.animation.LayoutTransition;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnticipateOvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -44,7 +30,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.angadi.tripmanagementa.R;
-import com.angadi.tripmanagementa.fragments.WelcomeFragment;
 import com.angadi.tripmanagementa.models.LoginResponse;
 import com.angadi.tripmanagementa.models.RegisterResponse;
 import com.angadi.tripmanagementa.models.VerifyOtp;
@@ -52,7 +37,6 @@ import com.angadi.tripmanagementa.rest.ApiClient;
 import com.angadi.tripmanagementa.rest.ApiInterface;
 import com.angadi.tripmanagementa.utils.HideKeyboard;
 import com.angadi.tripmanagementa.utils.Prefs;
-import com.angadi.tripmanagementa.utils.ShowSnackBar;
 import com.chaos.view.PinView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -66,8 +50,6 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.wang.avi.AVLoadingIndicatorView;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -328,7 +310,7 @@ public class LoginActivity extends AppCompatActivity {
     private void callLogin(String username) {
         avi.smoothToShow();
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"YES");
+        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"NO");
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -347,7 +329,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Prefs.with(LoginActivity.this).save("firstName",str_fname);
                                 Prefs.with(LoginActivity.this).save("str_uid",str_uid);
                                 txt_otp.setText(getResources().getString(R.string.otp)+" "+username);
-                                Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
                                 toggle();
                                // pinView.setText(str_otp);
                             }
@@ -372,7 +354,7 @@ public class LoginActivity extends AppCompatActivity {
     private void resendOtp(String username) {
         avi.smoothToShow();
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"YES");
+        Call<LoginResponse> loginResponseCall = apiInterface.login(username,"NO");
         loginResponseCall.enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -419,7 +401,7 @@ public class LoginActivity extends AppCompatActivity {
         avi.smoothToShow();
         Prefs.with(LoginActivity.this).save("firstName",firstName);
         ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-        Call<RegisterResponse> responseCall = apiInterface.register(firstName, username,"YES");
+        Call<RegisterResponse> responseCall = apiInterface.register(firstName, username,"NO");
         responseCall.enqueue(new Callback<RegisterResponse>() {
             @Override
             public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
@@ -430,7 +412,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (response.body().getStatus().equalsIgnoreCase("success")) {
                             str_otp = String.valueOf(response.body().getRand());
                             toggle();
-                            Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(LoginActivity.this, ""+str_otp, Toast.LENGTH_SHORT).show();
 //                            pinView.setText(str_otp);
                         } else {
                             Log.e("else", "----->");

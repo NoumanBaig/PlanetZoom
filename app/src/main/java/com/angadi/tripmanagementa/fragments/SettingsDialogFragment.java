@@ -43,7 +43,6 @@ public class SettingsDialogFragment extends DialogFragment {
     public static final String TAG = "settings_dialog";
 
     private Toolbar toolbar;
-
     String title, qr_code_id, qr_code_type, token, qr_url;
     private MessageDialogListener mListener;
     View view;

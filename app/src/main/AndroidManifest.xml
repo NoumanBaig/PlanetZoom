@@ -39,8 +39,13 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup">
-        <activity android:name=".activities.DashboardActivity"></activity>
-        <activity android:name=".activities.ProfileResultActivity" />
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:label="@string/title_activity_settings"></activity>
+        <activity android:name=".activities.AllECardsActivity" />
+        <activity android:name=".activities.FavoritesActivity" />
+        <activity android:name=".activities.DashboardActivity" />
+        <activity android:name=".activities.ProfileActivity" />
         <activity
             android:name=".activities.BizQrHistoryActivity"
             android:label="@string/title_activity_biz_qr_history"
